@@ -10,4 +10,4 @@ We will not use a common pom.xml inn the root of the repo, each prototype will
 be built independently.
 
 [http://fuckyeahtaobao.tumblr.com/](http://fuckyeahtaobao.tumblr.com/) is awesome. 
-[cat in fishbowl](http://www.viralnova.com/fishbowl-cat/) is also awesome. 
+[cat in fishbowl](http://www.viralnova.com/fishbowl-cat/) is also awesome and rocks the llama. 
