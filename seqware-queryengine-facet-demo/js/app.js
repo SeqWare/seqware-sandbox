@@ -17,8 +17,8 @@ angular.module('multiselect.controllers', [])
     // point to your ElasticSearch server
     //var ejs = ejsResource('http://mzgephdfgnfskfpm.api.qbox.io');
     var ejs = ejsResource('http://localhost:9200');
-    var index = 'fullscale';
-    var type = 'multiselectdemo';
+    var index = 'queryengine';
+    var type = 'features';
     
     // the fields we want to facet on
     var facets = ['feature_set', 'variant_type', 'databases', 'consequences'];
