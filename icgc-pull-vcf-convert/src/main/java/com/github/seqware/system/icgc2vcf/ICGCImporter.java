@@ -39,7 +39,8 @@ public class ICGCImporter {
         // convert files to VCF format
         Map<String, File> convertedFiles = convertFiles(unzippedFiles);
         // printout file locations
-        System.out.println("Files converted to VCF and saved to: " + unzippedFiles.get(0).getParent());
+        System.out.println("Files converted to unsorted VCF and saved to: " + unzippedFiles.get(0).getParent());
+        
         Random rand = new Random();
         // import to hbase
         // create a random reference (and thus a new feature table) for testing
@@ -48,7 +49,7 @@ public class ICGCImporter {
         ReferenceCreator.main(new String[]{randomReference});
         System.out.println("Importing VCF files into HBase: ");
         for(Entry<String, File> file : convertedFiles.entrySet()){
-            SGID sgid = SOFeatureImporter.runMain(new String[]{"-i",file.getValue().getAbsolutePath(),"-r",randomReference,"-w","VCFVariantImportWorker","-b","1000"});
+            SGID sgid = SOFeatureImporter.runMain(new String[]{"-i",file.getValue().getAbsolutePath(),"-r",randomReference,"-w","VCFVariantImportWorker","-b","100000"});
             System.out.println("Donor: " + file.getKey() + " file: " + file.getValue().getName() + " imported as feature set " + sgid.getRowKey());
             // double-check feature set level tags
             FeatureSet atomBySGID = SWQEFactory.getQueryInterface().getLatestAtomBySGID(sgid, FeatureSet.class);
