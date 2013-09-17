@@ -50,7 +50,7 @@ public class ICGCImporter {
     // create a random reference (and thus a new feature table) for testing
     String randomReference = "hg19_"+ loadName + "_" + Math.abs(rand.nextInt());
     System.out.println("Attaching feature sets to reference: " + randomReference);
-    ReferenceCreator.main(new String[]{randomReference});
+    /* ReferenceCreator.main(new String[]{randomReference});
     System.out.println("Importing VCF files into HBase: ");
     for (Entry<String, File> file : convertedFiles.entrySet()) {
       SGID sgid = SOFeatureImporter.runMain(new String[]{"-i", file.getValue().getAbsolutePath(), "-r", randomReference, "-w", "VCFVariantImportWorker", "-b", "100000"});
@@ -60,7 +60,7 @@ public class ICGCImporter {
       for (Tag tag : atomBySGID.getTags()) {
         System.out.println("Tagged with " + tag.getKey() + tag.getPredicate() + tag.getValue());
       }
-    }
+    }*/
   }
 
   /**
@@ -131,7 +131,7 @@ public class ICGCImporter {
               // TODO: here we would normally pull out stuff from each line for tags, not sure which tags we want, leaving this blank for now
               // for example, consequence_type looks like it can be converted to SNPEFF_EFFECT, but how to we tie-break?
               //info.append("EnsemblGene=").append(line[header.indexOf("gene_affected")]).append(";");
-              geneIds.put(line[header.indexOf("gene_affected")], "true");
+              if (line[header.indexOf("gene_affected")] != null && !"".equals(line[header.indexOf("gene_affected")])) { geneIds.put(line[header.indexOf("gene_affected")], "true"); }
             }
             if (geneIds.keySet().size() > 0) {
               info.append("EnsemblGene=");
