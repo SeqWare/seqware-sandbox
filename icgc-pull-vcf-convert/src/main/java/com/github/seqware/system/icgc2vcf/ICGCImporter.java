@@ -133,7 +133,7 @@ public class ICGCImporter {
               //info.append("EnsemblGene=").append(line[header.indexOf("gene_affected")]).append(";");
               geneIds.put(line[header.indexOf("gene_affected")], "true");
             }
-            if (geneIds.size() > 0) {
+            if (geneIds.keySet().size() > 0) {
               info.append("EnsemblGene=");
               boolean first = true;
               for (String geneId : geneIds.keySet()) {
