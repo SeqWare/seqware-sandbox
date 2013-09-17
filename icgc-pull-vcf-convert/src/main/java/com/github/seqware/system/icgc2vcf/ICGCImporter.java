@@ -41,28 +41,26 @@ public class ICGCImporter {
     Map<String, File> convertedFiles = convertFiles(unzippedFiles);
     // printout file locations
     System.out.println("Files converted to unsorted VCF and saved to: " + unzippedFiles.get(0).getParent());
-
+    String loadName = "ICGC_load";
+    if (args.length > 0) {
+      loadName = args[0];
+    }
     Random rand = new Random();
     // import to hbase
     // create a random reference (and thus a new feature table) for testing
-
-    // TEMP!
-    
-    /*String randomReference = "hg"+Math.abs(rand.nextInt());
-     System.out.println("Attaching feature sets to reference: " + randomReference);
-     ReferenceCreator.main(new String[]{randomReference});
-     System.out.println("Importing VCF files into HBase: ");
-     for(Entry<String, File> file : convertedFiles.entrySet()){
-     SGID sgid = SOFeatureImporter.runMain(new String[]{"-i",file.getValue().getAbsolutePath(),"-r",randomReference,"-w","VCFVariantImportWorker","-b","100000"});
-     System.out.println("Donor: " + file.getKey() + " file: " + file.getValue().getName() + " imported as feature set " + sgid.getRowKey());
-     // double-check feature set level tags
-     FeatureSet atomBySGID = SWQEFactory.getQueryInterface().getLatestAtomBySGID(sgid, FeatureSet.class);
-     for(Tag tag : atomBySGID.getTags()){
-     System.out.println("Tagged with " + tag.getKey() + tag.getPredicate() + tag.getValue());
-     }
-     }
-     */
-
+    String randomReference = "hg19_"+ loadName + "_" + Math.abs(rand.nextInt());
+    System.out.println("Attaching feature sets to reference: " + randomReference);
+    ReferenceCreator.main(new String[]{randomReference});
+    System.out.println("Importing VCF files into HBase: ");
+    for (Entry<String, File> file : convertedFiles.entrySet()) {
+      SGID sgid = SOFeatureImporter.runMain(new String[]{"-i", file.getValue().getAbsolutePath(), "-r", randomReference, "-w", "VCFVariantImportWorker", "-b", "100000"});
+      System.out.println("Donor: " + file.getKey() + " file: " + file.getValue().getName() + " imported as feature set " + sgid.getRowKey());
+      // double-check feature set level tags
+      FeatureSet atomBySGID = SWQEFactory.getQueryInterface().getLatestAtomBySGID(sgid, FeatureSet.class);
+      for (Tag tag : atomBySGID.getTags()) {
+        System.out.println("Tagged with " + tag.getKey() + tag.getPredicate() + tag.getValue());
+      }
+    }
   }
 
   /**
@@ -103,7 +101,7 @@ public class ICGCImporter {
           String project = file.getName().substring(file.getName().indexOf(".") + 1, file.getName().lastIndexOf("."));
           String filename = project + "." + donorCollection.getKey() + ".vcf";
           File outputFile = new File(createTempDir, filename);
-          System.out.println("   output VCF: "+outputFile.getAbsolutePath());
+          System.out.println("   output VCF: " + outputFile.getAbsolutePath());
           FileUtils.writeStringToFile(outputFile, "##fileformat=VCFv4.1\n", true);
           FileUtils.writeStringToFile(outputFile, "##" + SOFeatureImporter.PRAGMA_QE_TAG_FORMAT + "=project=" + project + "\n", true);
           FileUtils.writeStringToFile(outputFile, "##" + SOFeatureImporter.PRAGMA_QE_TAG_FORMAT + "=donor=" + donorCollection.getKey() + "\n", true);
@@ -139,8 +137,12 @@ public class ICGCImporter {
               info.append("EnsemblGene=");
               boolean first = true;
               for (String geneId : geneIds.keySet()) {
-                if (first) { first = false; info.append(geneId); }
-                else { info.append(","+geneId); }
+                if (first) {
+                  first = false;
+                  info.append(geneId);
+                } else {
+                  info.append("," + geneId);
+                }
               }
             }
             // write final line to file
@@ -188,7 +190,7 @@ public class ICGCImporter {
         for (Line fileLine : fileLines) {
           if (fileLine.name.contains("simple_somatic_mutation")) {
             String url2 = "https://portal.dcc.icgc.org/api/download?fn=" + fileLine.name;
-            System.out.println("  downloading "+url2);
+            System.out.println("  downloading " + url2);
             File file = new File(createTempDir, fileLine.name.substring(fileLine.name.lastIndexOf("/")));
             resultFiles.add(ICGCImporter.downloadFile(fileLine.name, file));
             // HACK
