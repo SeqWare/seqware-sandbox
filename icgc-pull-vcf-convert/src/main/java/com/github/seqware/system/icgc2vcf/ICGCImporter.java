@@ -50,7 +50,7 @@ public class ICGCImporter {
     // create a random reference (and thus a new feature table) for testing
     String randomReference = "hg19_"+ loadName + "_" + Math.abs(rand.nextInt());
     System.out.println("Attaching feature sets to reference: " + randomReference);
-    /* ReferenceCreator.main(new String[]{randomReference});
+    ReferenceCreator.main(new String[]{randomReference});
     System.out.println("Importing VCF files into HBase: ");
     for (Entry<String, File> file : convertedFiles.entrySet()) {
       SGID sgid = SOFeatureImporter.runMain(new String[]{"-i", file.getValue().getAbsolutePath(), "-r", randomReference, "-w", "VCFVariantImportWorker", "-b", "100000"});
@@ -60,7 +60,7 @@ public class ICGCImporter {
       for (Tag tag : atomBySGID.getTags()) {
         System.out.println("Tagged with " + tag.getKey() + tag.getPredicate() + tag.getValue());
       }
-    }*/
+    }
   }
 
   /**
