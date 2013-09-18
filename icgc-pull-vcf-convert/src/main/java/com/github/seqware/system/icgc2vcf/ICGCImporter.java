@@ -30,6 +30,9 @@ import java.util.zip.GZIPInputStream;
 import org.apache.commons.io.FileUtils;
 
 public class ICGCImporter {
+  
+  //String URL = "https://portal.dcc.icgc.org/api/download/info/prod-06e-32-22";
+  public static String URL = "https://portal.dcc.icgc.org/api/download/info/release_14";
 
   public static void main(String[] args) {
     System.out.println("Dowloading files");
@@ -179,7 +182,7 @@ public class ICGCImporter {
     List<File> resultFiles = new ArrayList<File>();
     File createTempDir = Files.createTempDir();
     try {
-      String line = downloadIndex("https://portal.dcc.icgc.org/api/download/info/prod-06e-32-22");
+      String line = downloadIndex(URL);
       Gson gson = new Gson();
 
       Line[] projectLines = gson.fromJson(line, Line[].class);
