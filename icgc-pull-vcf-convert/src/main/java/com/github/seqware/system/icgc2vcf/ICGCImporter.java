@@ -19,11 +19,14 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
@@ -35,11 +38,21 @@ public class ICGCImporter {
   public static String URL = "https://portal.dcc.icgc.org/api/download/info/release_14";
 
   public static void main(String[] args) {
-    System.out.println("Dowloading files");
-    List<File> downloadICGCFiles = downloadICGCFiles();
-    System.out.println("Files downloaded to: " + downloadICGCFiles.get(0).getParent());
-    List<File> unzippedFiles = unzipFiles(downloadICGCFiles);
-    System.out.println("Files unzipped to: " + unzippedFiles.get(0).getParent());
+    List<File> unzippedFiles = null;
+    if (args.length > 1){
+        // this allows us to locate ICGC files that have already been downloaded
+        String targetDirectory = args[1];
+        Collection<File> listFiles = FileUtils.listFiles(new File(targetDirectory), new String[]{"tsv"}, true);
+        unzippedFiles = new ArrayList<File>();
+        unzippedFiles.addAll(listFiles);
+    } else{
+      
+        System.out.println("Downloading files");
+        List<File> downloadICGCFiles = downloadICGCFiles();
+        System.out.println("Files downloaded to: " + downloadICGCFiles.get(0).getParent());
+        unzippedFiles = unzipFiles(downloadICGCFiles);
+        System.out.println("Files unzipped to: " + unzippedFiles.get(0).getParent());
+    }
     // convert files to VCF format
     Map<String, File> convertedFiles = convertFiles(unzippedFiles);
     // printout file locations
@@ -100,8 +113,17 @@ public class ICGCImporter {
         }
         // dump to files named by combination of donor and project
         for (Entry<String, Map<String, List<String[]>>> donorCollection : mappedLines.entrySet()) {
-          // determine file name and create file
-          String project = file.getName().substring(file.getName().indexOf(".") + 1, file.getName().lastIndexOf("."));
+          String project;
+          // in pre-processed ICGC files, this is incorrect, get the project from the file itself
+          if (header.contains("icgc_project_id")){
+              List<String[]> value = donorCollection.getValue().entrySet().iterator().next().getValue();
+              project = value.get(0)[header.indexOf("icgc_project_id")];
+          } else{
+              // in the static dump files
+              // determine file name and create file
+              project = file.getName().substring(file.getName().indexOf(".") + 1, file.getName().lastIndexOf("."));
+          }
+          
           String filename = project + "." + donorCollection.getKey() + ".vcf";
           File outputFile = new File(createTempDir, filename);
           System.out.println("   output VCF: " + outputFile.getAbsolutePath());
@@ -109,6 +131,7 @@ public class ICGCImporter {
           FileUtils.writeStringToFile(outputFile, "##" + SOFeatureImporter.PRAGMA_QE_TAG_FORMAT + "=project=" + project + "\n", true);
           FileUtils.writeStringToFile(outputFile, "##" + SOFeatureImporter.PRAGMA_QE_TAG_FORMAT + "=donor=" + donorCollection.getKey() + "\n", true);
           FileUtils.writeStringToFile(outputFile, "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\n", true);
+          SortedSet<String> outputLines = new TreeSet<String>();
           for (Entry<String, List<String[]>> mutationCollection : donorCollection.getValue().entrySet()) {
             String id = mutationCollection.getKey();
             String chromosome = mutationCollection.getValue().get(0)[header.indexOf("chromosome")];
@@ -134,7 +157,14 @@ public class ICGCImporter {
               // TODO: here we would normally pull out stuff from each line for tags, not sure which tags we want, leaving this blank for now
               // for example, consequence_type looks like it can be converted to SNPEFF_EFFECT, but how to we tie-break?
               //info.append("EnsemblGene=").append(line[header.indexOf("gene_affected")]).append(";");
-              if (line[header.indexOf("gene_affected")] != null && !"".equals(line[header.indexOf("gene_affected")])) { geneIds.put(line[header.indexOf("gene_affected")], "true"); }
+              try{
+              if (line[header.indexOf("gene_affected")] != null 
+                      && !"".equals(line[header.indexOf("gene_affected")])) {
+                  geneIds.put(line[header.indexOf("gene_affected")], "true"); 
+              } 
+              } catch(ArrayIndexOutOfBoundsException ex){
+                  /** ignore, pre-processed data can have blank values for gene_affected */
+              }
             }
             if (geneIds.keySet().size() > 0) {
               info.append("EnsemblGene=");
@@ -144,13 +174,14 @@ public class ICGCImporter {
                   first = false;
                   info.append(geneId);
                 } else {
-                  info.append("," + geneId);
+                  info.append(",").append(geneId);
                 }
               }
             }
             // write final line to file
-            FileUtils.writeStringToFile(outputFile, chromosome + "\t" + pos + "\t" + id + "\t" + ref + "\t" + alt + "\t" + qual + "\t" + filter + "\t" + info + "\n", true);
+            outputLines.add(chromosome + "\t" + pos + "\t" + id + "\t" + ref + "\t" + alt + "\t" + qual + "\t" + filter + "\t" + info);
           }
+          FileUtils.writeLines(outputFile, outputLines , true);
           resultFiles.put(donorCollection.getKey(), outputFile);
         }
 
