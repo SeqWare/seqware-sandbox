@@ -4,35 +4,34 @@
  */
 package org.apache.pig.backend.hadoop.hbase;
 
-import com.github.seqware.queryengine.impl.protobufIO.FeatureListIO;
+import com.github.seqware.queryengine.impl.ProtobufSerialization;
 import com.github.seqware.queryengine.model.Feature;
 import com.github.seqware.queryengine.model.Tag;
 import com.github.seqware.queryengine.model.impl.FeatureList;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import org.apache.pig.LoadCaster;
 import org.apache.pig.ResourceSchema;
-import org.apache.pig.backend.hadoop.hbase.HBaseBinaryConverter;
-import org.apache.pig.data.DataBag;
-import org.apache.pig.data.Tuple;
-import org.joda.time.DateTime;
 
 /**
  *
  * @author dyuen
  */
-public class QEBinaryConverter implements LoadCaster {
+public class QEBinaryConverter extends HBaseBinaryConverter {
     
     public QEBinaryConverter(){
         
     }
     
-    private FeatureListIO io = new FeatureListIO();
+    private ProtobufSerialization deserializer = new ProtobufSerialization();
     
     @Override
     public Map<String, Object> bytesToMap(byte[] b) throws IOException {
-        FeatureList fList = io.byteArr2m(b);
+        System.out.println("Called custom converter with " + b.toString());
+        if (b.length == 0){
+            return new HashMap<String, Object>();
+        }
+        FeatureList fList = deserializer.deserialize(b, FeatureList.class);
         // convert each into a map and dump into a map
         Map<String, Object> result = new HashMap<String, Object>();
         int count = 0;
@@ -53,54 +52,9 @@ public class QEBinaryConverter implements LoadCaster {
         return result;
         
     }
-
-    @Override
-    public Boolean bytesToBoolean(byte[] b) throws IOException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Long bytesToLong(byte[] b) throws IOException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Float bytesToFloat(byte[] b) throws IOException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Double bytesToDouble(byte[] b) throws IOException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public DateTime bytesToDateTime(byte[] b) throws IOException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Integer bytesToInteger(byte[] b) throws IOException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public String bytesToCharArray(byte[] b) throws IOException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
+    
+       @Override
     public Map<String, Object> bytesToMap(byte[] b, ResourceSchema.ResourceFieldSchema fieldSchema) throws IOException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Tuple bytesToTuple(byte[] b, ResourceSchema.ResourceFieldSchema fieldSchema) throws IOException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public DataBag bytesToBag(byte[] b, ResourceSchema.ResourceFieldSchema fieldSchema) throws IOException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return bytesToMap(b);
     }
 }
