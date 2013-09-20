@@ -36,7 +36,7 @@ public class ICGCImporter {
   
   //String URL = "https://portal.dcc.icgc.org/api/download/info/prod-06e-32-22";
   public static String URL = "https://portal.dcc.icgc.org/api/download/info/release_14";
-
+  
   public static void main(String[] args) {
     List<File> unzippedFiles = null;
     if (args.length > 1){
@@ -46,7 +46,6 @@ public class ICGCImporter {
         unzippedFiles = new ArrayList<File>();
         unzippedFiles.addAll(listFiles);
     } else{
-      
         System.out.println("Downloading files");
         List<File> downloadICGCFiles = downloadICGCFiles();
         System.out.println("Files downloaded to: " + downloadICGCFiles.get(0).getParent());
@@ -103,6 +102,15 @@ public class ICGCImporter {
           String[] columns = line.split("\t");
           String icgc_donor_id = columns[header.indexOf("icgc_donor_id")];
           String icgc_mutation_id = columns[header.indexOf("icgc_mutation_id")];
+          
+          String mutation = columns[header.indexOf("mutation")];
+          // for September 20, 2013: a problem with the pre-ETL data arises when the mutation column is too large, skip these for now
+          // but get rid of this afterwards when the data is fixed
+          if (mutation.length() > 400){
+              System.out.println("Skipped mutation with length > 400 in donor" + icgc_donor_id);
+              System.out.println("Skipped line was " + line);
+          }
+          
           if (!mappedLines.containsKey(icgc_donor_id)) {
             mappedLines.put(icgc_donor_id, new HashMap<String, List<String[]>>());
           }
@@ -137,7 +145,7 @@ public class ICGCImporter {
             String chromosome = mutationCollection.getValue().get(0)[header.indexOf("chromosome")];
             String pos = mutationCollection.getValue().get(0)[header.indexOf("chromosome_start")];
             // TODO: fix this mismatch between data formats, icgc data format allows a null reference_genome_allele while VCF requires the allele to be one of A,C,G,T,N    
-            String[] mutation = mutationCollection.getValue().get(0)[header.indexOf("mutation")].split(">");
+            String[] mutation = mutationCollection.getValue().get(0)[header.indexOf("mutation")].split(">");          
             // TODO: this silly check is because simple_somatic_mutation.LICA-FR.tsv has values of TCATTAAATCTTTAG [... truncated]
             String ref = mutation.length > 0 ? mutation[0] : ".";
             String alt = mutation.length > 1 ? mutation[1] : ".";
