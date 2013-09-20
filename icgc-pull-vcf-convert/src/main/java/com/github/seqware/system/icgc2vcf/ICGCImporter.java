@@ -109,6 +109,7 @@ public class ICGCImporter {
           if (mutation.length() > 400){
               System.out.println("Skipped mutation with length > 400 in donor" + icgc_donor_id);
               System.out.println("Skipped line was " + line);
+              continue;
           }
           
           if (!mappedLines.containsKey(icgc_donor_id)) {
