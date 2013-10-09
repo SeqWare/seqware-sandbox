@@ -1,6 +1,6 @@
 ## Dependencies
 
-Build and configure the SeqWare Query Engine using the feature/qe_develop branch
+Build and configure the SeqWare Query Engine using the develop branch in the https://github.com/SeqWare/queryengine repo
 Make sure you setup your .seqware/settings
 Test reference creation and VCF importing using the commands from that project's README before attempting to use this utility. 
 
