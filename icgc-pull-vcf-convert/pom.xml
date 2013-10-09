@@ -49,8 +49,8 @@
             <type>jar</type>
         </dependency>
         <dependency>
-            <groupId>com.github.seqware</groupId>
-            <artifactId>seqware-queryengine</artifactId>
+            <groupId>io.seqware</groupId>
+            <artifactId>seqware-queryengine-backend</artifactId>
             <version>1.0.5-SNAPSHOT</version>
             <type>jar</type>
         </dependency>

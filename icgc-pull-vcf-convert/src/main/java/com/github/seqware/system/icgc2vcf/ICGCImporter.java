@@ -35,7 +35,7 @@ import org.apache.commons.io.FileUtils;
 public class ICGCImporter {
   
   //String URL = "https://portal.dcc.icgc.org/api/download/info/prod-06e-32-22";
-  public static String URL = "https://portal.dcc.icgc.org/api/download/info/release_14";
+  public static String URL = "http://dcc.icgc.org/api/download/info/release_14";
   
   public static void main(String[] args) {
     List<File> unzippedFiles = null;
@@ -212,7 +212,7 @@ public class ICGCImporter {
   }
 
   public static File downloadFile(String url, File file) throws IOException {
-    URL actualURL = new URL("https://portal.dcc.icgc.org/api/download?fn=" + url);
+    URL actualURL = new URL("http://dcc.icgc.org/api/download?fn=" + url);
     FileUtils.copyURLToFile(actualURL, file);
     return file;
   }
@@ -227,12 +227,12 @@ public class ICGCImporter {
 
       Line[] projectLines = gson.fromJson(line, Line[].class);
       for (Line projLine : projectLines) {
-        String somatic_mutations = downloadIndex("https://portal.dcc.icgc.org/api/download/info" + projLine.name);
+        String somatic_mutations = downloadIndex("http://dcc.icgc.org/api/download/info" + projLine.name);
         Gson pgson = new Gson();
         Line[] fileLines = pgson.fromJson(somatic_mutations, Line[].class);
         for (Line fileLine : fileLines) {
           if (fileLine.name.contains("simple_somatic_mutation")) {
-            String url2 = "https://portal.dcc.icgc.org/api/download?fn=" + fileLine.name;
+            String url2 = "http://dcc.icgc.org/api/download?fn=" + fileLine.name;
             System.out.println("  downloading " + url2);
             File file = new File(createTempDir, fileLine.name.substring(fileLine.name.lastIndexOf("/")));
             resultFiles.add(ICGCImporter.downloadFile(fileLine.name, file));
