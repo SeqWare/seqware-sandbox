@@ -16,6 +16,12 @@
 
     <dependencies>
         <dependency>
+            <groupId>postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>9.1-901.jdbc4</version>
+            <scope>compile</scope>
+        </dependency> 
+        <dependency>
             <groupId>org.eclipse.persistence</groupId>
             <artifactId>eclipselink</artifactId>
             <version>2.3.2</version>
@@ -37,7 +43,6 @@
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-json</artifactId>
             <version>1.11.1</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.sun.jersey.contribs</groupId>
@@ -103,7 +108,6 @@
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-core</artifactId>
             <version>1.11.1</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>javax</groupId>
@@ -111,15 +115,28 @@
             <version>6.0</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>2.3</version>
+        </dependency>
         
     </dependencies>
 
     <build>
         <plugins>
-            <plugin> 
-                <groupId>org.apache.maven.plugins</groupId> 
-                <artifactId>maven-dependency-plugin</artifactId> 
-            </plugin> 
+            <plugin>
+                <groupId>org.glassfish.embedded</groupId>
+                <artifactId>maven-embedded-glassfish-plugin</artifactId>
+                <version>3.1.2.2</version>
+                <configuration>
+                    <contextRoot>seqware-webservice</contextRoot>
+                    <name>seqware-webservice</name>
+                    <port>8080</port>
+                    <dbVendorName>postgresql</dbVendorName>
+                    <libraries>${project.build.directory}/lib/postgresql-9.1-901.jdbc4.jar</libraries>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -145,6 +162,19 @@
                 <artifactId>maven-dependency-plugin</artifactId>
                 <version>2.1</version>
                 <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                            <overWriteReleases>false</overWriteReleases>
+                            <overWriteSnapshots>false</overWriteSnapshots>
+                            <overWriteIfNewer>true</overWriteIfNewer>
+                        </configuration>
+                    </execution>
                     <execution>
                         <phase>validate</phase>
                         <goals>
