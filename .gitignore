@@ -19,3 +19,8 @@
 /seqware-webservice-client-prototype-2/HTML5Application1/nbproject/private/
 /seqware-webservice/target/
 /seqware-qe-testing/target/
+/icgc-pull-vcf-convert/target/
+# Eclipse files
+.classpath
+.project
+.settings
