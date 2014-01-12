@@ -25,6 +25,26 @@ You will then run the tests and generate a report with:
 
 First, setup whatever you will need for your particular backend.  Next, implement the test interface (BackendTestInterface).  Finally, hook in your test into the main class TestBackends.  Document how you setup your particular backend in the source of your test implementation, there's a method to display this info.
 
+Look at the source code for BackendTestInterface for information on what you need to implement.
+
+You can put a small paragraph below to document the work you've done along with the comments in your code.
+
+## Test Data
+
+There will be several test datasets in TSV, BAM, and VCF formats in the future.  But for now you can find the first test data file in: 
+
+    src/main/resources/testdata/test1_small.tsv
+
+The format of this file is very simple (showing space before and after \t below just for easier viewing, don't include space):
+
+    chr \t start \t stop \t reference \t variant \t semicolon-delimited key values like "ke1y=value1;key2=value2" \n
+
+It should be pretty similar to VCF files, keep in mind the first base on a chromosome is at position 1 not 0 like some other files. The UCSC browser is 1-based too, so you can use this verify sample files.
+
+## Backends
+
+TODO: Please document the backends that we're testing here.
+
 ## Next Steps
 
 * implement several of the backends

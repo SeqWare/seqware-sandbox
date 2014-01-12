@@ -2,8 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package io.seqware.queryengine.sandbox.testing;
+package io.seqware.queryengine.sandbox.testing.impl;
 
+import io.seqware.queryengine.sandbox.testing.BackendTestInterface;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ import org.apache.hadoop.hbase.util.Bytes;
  *
  * @author boconnor
  */
-public class HBaseBackendTest implements BackendTest {
+public class HBaseBackendTest implements BackendTestInterface {
   
   private Configuration config;
   private HBaseAdmin admin;
@@ -109,7 +110,7 @@ public class HBaseBackendTest implements BackendTest {
     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 
-  public static void main(String[] args) {
+  /* public static void main(String[] args) {
     try {
       if (args.length > 0) {
         HBaseBackendTest test = new HBaseBackendTest();
@@ -122,5 +123,5 @@ public class HBaseBackendTest implements BackendTest {
       Logger.getLogger(HBaseBackendTest.class.getName()).log(Level.SEVERE, null, ex);
     }
     
-  }
+  }*/
 }

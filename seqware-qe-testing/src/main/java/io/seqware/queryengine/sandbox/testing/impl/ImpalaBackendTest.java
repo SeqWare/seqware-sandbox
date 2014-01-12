@@ -2,8 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package io.seqware.queryengine.sandbox.testing;
+package io.seqware.queryengine.sandbox.testing.impl;
 
+import io.seqware.queryengine.sandbox.testing.BackendTestInterface;
 import java.util.ArrayList;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -15,7 +16,7 @@ import java.sql.Statement;
  *
  * @author boconnor
  */
-public class SamtoolsBackendTest implements BackendTest {
+public class ImpalaBackendTest implements BackendTestInterface {
 
    /*
    * Not supported 
@@ -53,7 +54,7 @@ public class SamtoolsBackendTest implements BackendTest {
 
         private static final String JDBC_DRIVER_NAME = "org.apache.hive.jdbc.HiveDriver";
 
-        public static void main(String[] args) {
+        /* public static void main(String[] args) {
 
                 System.out.println("\n=============================================");
                 System.out.println("Cloudera Impala JDBC Example");
@@ -95,6 +96,6 @@ public class SamtoolsBackendTest implements BackendTest {
                                 // swallow
                         }
                 }
-        }
+        }*/
   
 }
