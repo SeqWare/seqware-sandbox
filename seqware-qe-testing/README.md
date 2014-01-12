@@ -45,8 +45,11 @@ It should be pretty similar to VCF files, keep in mind the first base on a chrom
 
 TODO: Please document the backends that we're testing here.
 
-## Next Steps
+## Next Steps/TODO
 
 * implement several of the backends
 * implement a report generation tool to make HTML/PNG outputs that can be shared
 * ultimately we will use this to decide what technologies we will move forward with for the main SeqWare Query Engine project.
+* need to write a JSON parser so each backend doesn't need to re-write this
+* need to define the way to encode key/values on VCF/TSV/BAM inputs... for featureSets, features, ReadSets, reads
+* need to define what exactly the Plugins are
