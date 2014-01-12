@@ -25,8 +25,9 @@ You will then run the tests and generate a report with:
 
 First, setup whatever you will need for your particular backend.  Next, implement the test interface (BackendTestInterface).  Finally, hook in your test into the main class TestBackends.  Document how you setup your particular backend in the source of your test implementation, there's a method to display this info.
 
-## Next Steps
+## Next Steps/TODO
 
 * implement several of the backends
 * implement a report generation tool to make HTML/PNG outputs that can be shared
 * ultimately we will use this to decide what technologies we will move forward with for the main SeqWare Query Engine project.
+* need to write a JSON parser so each backend doesn't need to re-write this
