@@ -31,3 +31,4 @@ First, setup whatever you will need for your particular backend.  Next, implemen
 * implement a report generation tool to make HTML/PNG outputs that can be shared
 * ultimately we will use this to decide what technologies we will move forward with for the main SeqWare Query Engine project.
 * need to write a JSON parser so each backend doesn't need to re-write this
+* need to define the way to encode key/values on VCF/TSV/BAM inputs... for featureSets, features, ReadSets, reads
