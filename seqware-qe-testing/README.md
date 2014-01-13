@@ -53,3 +53,5 @@ TODO: Please document the backends that we're testing here.
 * need to write a JSON parser so each backend doesn't need to re-write this
 * need to define the way to encode key/values on VCF/TSV/BAM inputs... for featureSets, features, ReadSets, reads
 * need to define what exactly the Plugins are
+
+LEFT OFF WITH: need to finalize plugin interface and copy FeatureSet, Feature, ReadSet, and Read objects into this repo, then hand off to others for comments/questions
