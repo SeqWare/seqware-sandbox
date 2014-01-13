@@ -51,7 +51,7 @@ public interface BackendTestInterface {
    * Put the docs (as an HTML fragment) in the key-value in ReturnValue
    * with the key-value "docs=content".
    */
-  public ReturnValue getDocs();
+  public ReturnValue getIntrocutionDocs();
     
   /**
    * This method is called at the beginning of the test process.  It's where you
@@ -70,7 +70,7 @@ public interface BackendTestInterface {
   
   /**
    * Point to an input variant file, return the ID to access that data again in subsequent tests
-   * with kv of "featureSetId=<string>" in the ReturnValue object.
+   * The key of "featureSetId" and the value being the featureSetId in the ReturnValue object.
    * 
    * The file type is specified with the extension of the file param:
    * 
@@ -79,7 +79,8 @@ public interface BackendTestInterface {
    *   <li>*.tsv is assumed to be a TSV (tab separated value) file</li>
    * </ul>
    * 
-   * TODO: we only currently support TSV files
+   * TODO: we only currently support TSV files, look at GATK or another tools
+   * to read the VCF file.
    * 
    * ReturnValue state should be BACKEND_FILE_IMPORT_NOT_SUPPORTED if the file
    * passed in is not supported.
@@ -91,7 +92,7 @@ public interface BackendTestInterface {
   
   /**
    * Point to an input read file, return the ID to access that data again in subsequent tests
-   * with kv of "readSetId=<string>" in the ReturnValue object.
+   * The key of "readSetId" and the value being the readSetID in the ReturnValue object.
    * 
    * The file type is specified with the extension of the file param:
    * 
@@ -154,12 +155,11 @@ public interface BackendTestInterface {
    * 
    * In the JSON doc above the "read_sets" and "reads" filters are ignored.
    * 
-   * The ReturnValue contains a key called "features" and the value is a list of featureIds that matches
-   * the search.
+   * The ReturnValue contains a key called "queryResultFile" and the value is 
+   * a file path string that points to a file that contains the search results
+   * in TSV format.
    * 
-   * @param featureSetId
-   * @param start
-   * @param stop
+   * @param queryJSON
    * @return 
    */
   public ReturnValue getFeatures(String queryJSON);
@@ -208,12 +208,11 @@ public interface BackendTestInterface {
    * 
    * In the JSON doc above the "feature_sets" and "features" filters are ignored.
    * 
-   * The ReturnValue contains a key called "reads" and the value is a list of readIds that matches
-   * the search.
+   * The ReturnValue contains a key called "queryResultFile" and the value is 
+   * a file path string that points to a file that contains the search results
+   * in TSV format.
    * 
-   * @param readSetId
-   * @param start
-   * @param stop
+   * @param queryJSON
    * @return 
    */
   public ReturnValue getReads(String queryJSON);
@@ -232,11 +231,36 @@ public interface BackendTestInterface {
    * 
    * TODO: we need to define this better.  What exactly are the plugins?
    * 
-   * The ReturnValue 
+   * The ReturnValue value HashMap should have a key called "pluginResultFile"
+   * with a value that points to a file that contains the results of this
+   * plugin.
    * 
-   * @param mrPluginClassName
+   * @param pluginClassName
    * @return 
    */
   public ReturnValue runPlugin(String queryJSON, String pluginClassName);
   
+  /**
+   * This is a simple method that is called just before the backend is torn down.
+   * It lets you provide any HTML doc text that you want to and this is added
+   * to the end of the HTML report.  Ideas for what this might include:
+   * <ul>
+   *   <li>any testing summary that you want to provide</li>
+   *   <li>information showing system resources used</li>
+   *   <li>information any information about manual cleanup that needs to be done</li>
+   * </ul>
+   * 
+   * Put the docs (as an HTML fragment) in the key-value in ReturnValue
+   * with the key "docs".
+   */
+  public ReturnValue getConclusionDocs();
+  
+  /**
+   * Cleans up the backend. Delete any files, databases, etc.  You get the same
+   * settings as passed in to the setupBackend method.
+   * 
+   * @param settings
+   * @return 
+   */
+  public ReturnValue teardownBackend(HashMap<String, String> settings);
 }
