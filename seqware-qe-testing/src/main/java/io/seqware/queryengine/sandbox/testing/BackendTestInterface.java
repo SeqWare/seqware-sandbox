@@ -28,9 +28,11 @@
  */
 package io.seqware.queryengine.sandbox.testing;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.json.*;
 /**
  *
  * @author boconnor
@@ -121,34 +123,34 @@ public interface BackendTestInterface {
    * The query is defined in a JSON:
    * 
 {
-  “feature_sets”: {
+  ???feature_sets???: {
      	{
-        “key”: “value”,
-        “key2: “value2”
+        ???key???: ???value???,
+        ???key2: ???value2???
      }
    },
-   “features”: {
+   ???features???: {
 	{
-        “key”: “value”,
-        “key2: “value2”
+        ???key???: ???value???,
+        ???key2: ???value2???
      }
    },
-   “read_sets”: {
+   ???read_sets???: {
 	{
-        “key”: “value”,
-        “key2: “value2”
+        ???key???: ???value???,
+        ???key2: ???value2???
      }
    },
-   “reads”: {
+   ???reads???: {
 	{
-        “key”: “value”,
-        “key2: “value2”
+        ???key???: ???value???,
+        ???key2: ???value2???
      }
    },
-   “regions”: {
+   ???regions???: {
      [
-       “chr22”,
-       “chr20:1-63000000”
+       ???chr22???,
+       ???chr20:1-63000000???
      ]
    }
 }
@@ -161,8 +163,10 @@ public interface BackendTestInterface {
    * 
    * @param queryJSON
    * @return 
+ * @throws JSONException 
+ * @throws IOException 
    */
-  public ReturnValue getFeatures(String queryJSON);
+  public ReturnValue getFeatures(String queryJSON) throws JSONException, IOException;
   
   /**
    * This is the heart of the test process. This method allows searches for reads
@@ -174,34 +178,34 @@ public interface BackendTestInterface {
    * The query is defined in a JSON:
    * 
 {
-  “feature_sets”: {
+  ???feature_sets???: {
      	{
-        “key”: “value”,
-        “key2: “value2”
+        ???key???: ???value???,
+        ???key2: ???value2???
      }
    },
-   “features”: {
+   ???features???: {
 	{
-        “key”: “value”,
-        “key2: “value2”
+        ???key???: ???value???,
+        ???key2: ???value2???
      }
    },
-   “read_sets”: {
+   ???read_sets???: {
 	{
-        “key”: “value”,
-        “key2: “value2”
+        ???key???: ???value???,
+        ???key2: ???value2???
      }
    },
-   “reads”: {
+   ???reads???: {
 	{
-        “key”: “value”,
-        “key2: “value2”
+        ???key???: ???value???,
+        ???key2: ???value2???
      }
    },
-   “regions”: {
+   ???regions???: {
      [
-       “chr22”,
-       “chr20:1-63000000”
+       ???chr22???,
+       ???chr20:1-63000000???
      ]
    }
 }
