@@ -31,7 +31,6 @@ package io.seqware.queryengine.sandbox.testing.plugins;
 
 import java.util.Collection;
 import java.util.Map;
-import com.github.seqware.queryengine.model.*;
 
 /**
  *

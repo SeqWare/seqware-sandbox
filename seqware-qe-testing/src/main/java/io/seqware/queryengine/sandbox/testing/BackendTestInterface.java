@@ -36,6 +36,11 @@ import java.util.HashMap;
  * @author boconnor
  */
 public interface BackendTestInterface {
+  
+  /** 
+   * This just returns a string name to identify the backend 
+   */
+  public String getName();
     
   /**
    * This is a simple method that returns documentation about the particular backend.
