@@ -56,24 +56,32 @@ public class GATKBackendTest implements BackendTestInterface
 {
     public static void main( String[] args ) throws IOException, JSONException
     {
+    	long starttime = System.nanoTime();
         ReturnValue returned = new ReturnValue();
         GATKBackendTest testb = new GATKBackendTest();
         BufferedReader in;
         String line = new String();
         String temp = new String();
         
-        //Point to VCF file to be read
-        testb.loadFeatureSet("/Users/bso/gene4.vcf");        
+        //Point to local VCF file to be read
+        testb.loadFeatureSet("/Users/bso/gene6.vcf");   
 
-        //Point to JSON text file to be read
-        in = new BufferedReader(new FileReader("/Users/bso/queryJSON2.txt"));
+ 
+        //Point to local JSON text file to be read
+        in = new BufferedReader(new FileReader("/Users/bso/queryJSON3.txt"));
         while ((line = in.readLine()) != null){
         	temp = temp.concat(line);
         }
 		
+        //Point to Output file to be written to
+        Global.outputFilePath = "/Users/bso/output2.txt";
+        
 		//Obtain matched features
         returned = testb.getFeatures(temp);
-        
+        long endtime = System.nanoTime();
+
+        double seconds = (double)(endtime - starttime) / 1000000000.0;
+        System.out.println(seconds);
     }
 
 	@Override
@@ -121,12 +129,12 @@ public class GATKBackendTest implements BackendTestInterface
 		//Points to input VCF file to process
 		//Points to output filepath
 		File sortedVcfFile = new File(Global.HBaseStorage.get("gene").toString());
-		String filePath = new String("/Users/bso/output2.txt");
+		String filePath = Global.outputFilePath;
 		
 		//Initialize query stores to dump queries from input JSON
-		HashMap<String, String> fmapQuery = new HashMap<String,String>();
+		HashMap<String, String> FEATURE_MAP_QUERY = new HashMap<String,String>();
 		HashMap<String, String> fsmapQuery = new HashMap<String,String>();
-		HashMap<String, String> regmapQuery = new HashMap<String,String>();
+		HashMap<String, String> REGION_MAP_QUERY = new HashMap<String,String>();
 
 		//READ THE JSON INPUT FILE
 		/**	"OutKey":
@@ -149,7 +157,7 @@ public class GATKBackendTest implements BackendTestInterface
 					}
 					
 					if (OutKey.equals("features")){
-						fmapQuery.put(InKey.toString(), 
+						FEATURE_MAP_QUERY.put(InKey.toString(), 
 										jsonObInner.getString(InKey));
 					}
 				}
@@ -170,7 +178,7 @@ public class GATKBackendTest implements BackendTestInterface
 										region.indexOf("r")+1,
 										region.length());
 								
-								regmapQuery.put(chromosomeID.toString(), 
+								REGION_MAP_QUERY.put(chromosomeID.toString(), 
 												".");
 								
 							} else if (region.contains(":") == true){
@@ -184,15 +192,13 @@ public class GATKBackendTest implements BackendTestInterface
 										region.indexOf(":")+1,
 										region.length());
 								
-								regmapQuery.put(chromosomeID.toString(), 
+								REGION_MAP_QUERY.put(chromosomeID.toString(), 
 												range.toString());
 							}
 						}
 					}
 			}
 		}
-		
-		
 		
 		/**INITIALIZE READING OF VCF INPUT
 		 * 
@@ -209,74 +215,72 @@ public class GATKBackendTest implements BackendTestInterface
 		    VCFHeader header = (VCFHeader) reader.getHeader();
 		    
 		    //Initialize variables for query checking
-		    int Querysize; //Points needed for a variant Attribute (totaled through all features, and one from region) to be VALID
-		    int fieldCounter;
-		    int upperBound; //Region query
-		    int lowerBound;
-		    int variantChr;
+		    int FIELD_SIZE; //Points needed for a variant Attribute (totaled through all features, and one from region) to be VALID
+		    int FIELD_COUNTER;
+		    int CHROM_QUERY_UPPER_BOUND; //Region query
+		    int CHROM_QUERY_LOWER_BOUND;
+		    int VARIANT_CHROM_ID;
 		    List<Map> sorted = new ArrayList<Map>();
-		    String chrPairsTempasString = new String();
-		    String chrID = new String();
-		    String noMatch = new String();
+		    String VARIANT_CHROM_PAIR = new String();
+		    String CHROM_ID = new String();
+		    String VARIANT_ATTRIBUTE_NOT_MATCHED = new String();
 		    String temp= new String();
 
 		    //Determine if user has input a chromosome query
-		    if (regmapQuery.size() >= 1){
-		    	Querysize = fmapQuery.size() +1;
+		    if (REGION_MAP_QUERY.size() >= 1){
+		    	FIELD_SIZE = FEATURE_MAP_QUERY.size() +1;
 		    } else{
-		    	Querysize = fmapQuery.size();
+		    	FIELD_SIZE = FEATURE_MAP_QUERY.size();
 		    }
 		    
-		   
-		    for (VCFIDHeaderLine element : header.getIDHeaderLines()){
-		    	writer.println(element);
+		    for (VCFIDHeaderLine HeaderLineListElement : header.getIDHeaderLines()){
+		    	writer.println(HeaderLineListElement);
 		    }
-		    
 		    
 		    /**BEGIN LOOPING OF EVERY VARIANT LINE TO MATCH FOR QUERY RESULTS
 		     * 
 		     */
 			while (vcfIterator.hasNext()){ //loop through each VARIANT
-			    Iterator regmapIterator = regmapQuery
-		    							.entrySet()
-		    							.iterator();
+			    Iterator REGION_MAP_ITERATOR = REGION_MAP_QUERY
+			    		.entrySet()
+			    		.iterator();
 			    
-				Iterator fmapIterator = fmapQuery
-										.entrySet()
-										.iterator(); //iterate over fmapQuery
+				Iterator FEATURE_MAP_ITERATOR = FEATURE_MAP_QUERY
+						.entrySet()
+						.iterator(); 
 				
-				VariantContext variantContext = vcfIterator.next();
-				fieldCounter = 0; //Reset the field counter
-				
-				while(regmapIterator.hasNext()){//loop through each query in chromosomes
-					Map.Entry chrPairs = (Map.Entry)regmapIterator.next();
+				VariantContext VARIANT_CONTEXT = vcfIterator.next();
+				FIELD_COUNTER = 0; //Reset the field counter
+
+				while(REGION_MAP_ITERATOR.hasNext()){//loop through each query in chromosomes
+					Map.Entry CHROM_PAIR = (Map.Entry)REGION_MAP_ITERATOR.next();
 					
 					//GATHER FIRST POINT FROM MATCHING CHROMOSOME NUMBER AND RANGE IN QUERY
-					if (chrPairs.getKey().equals(variantContext.getChr())){ //check if query in chromosomes matches current chrID in variant
-						chrPairsTempasString = chrPairs
+					if (CHROM_PAIR.getKey().equals(VARIANT_CONTEXT.getChr())){ //check if query in chromosomes matches current CHROM_ID in variant
+						VARIANT_CHROM_PAIR = CHROM_PAIR
 								.getValue()
 								.toString();
 						
-						if (chrPairsTempasString.equals(".") == true){ //Checks if the current variant contains ALL POS
-							fieldCounter++;
-							chrID = chrPairs
+						if (VARIANT_CHROM_PAIR.equals(".") == true){ //Checks if the current variant contains ALL POS
+							FIELD_COUNTER++;
+							CHROM_ID = CHROM_PAIR
 									.getKey()
 									.toString();
 							
-						} else if (chrPairsTempasString.equals(".") == false) {
+						} else if (VARIANT_CHROM_PAIR.equals(".") == false) {
 								
-								lowerBound = Integer.parseInt(chrPairsTempasString.substring(
-										0,chrPairsTempasString.indexOf("-")));
+								CHROM_QUERY_LOWER_BOUND = Integer.parseInt(VARIANT_CHROM_PAIR.substring(
+										0,VARIANT_CHROM_PAIR.indexOf("-")));
 								
-								upperBound = Integer.parseInt(chrPairsTempasString.substring(
-										chrPairsTempasString.indexOf("-")+1, 
-										chrPairsTempasString.length()));
+								CHROM_QUERY_UPPER_BOUND = Integer.parseInt(VARIANT_CHROM_PAIR.substring(
+										VARIANT_CHROM_PAIR.indexOf("-")+1, 
+										VARIANT_CHROM_PAIR.length()));
 								
-								variantChr = variantContext.getStart();
+								VARIANT_CHROM_ID = VARIANT_CONTEXT.getStart();
 
-								if (variantChr >= lowerBound && variantChr <= upperBound){ //checks if current variant POS is within specified range
-									fieldCounter++;
-									chrID = chrPairs
+								if (VARIANT_CHROM_ID >= CHROM_QUERY_LOWER_BOUND && VARIANT_CHROM_ID <= CHROM_QUERY_UPPER_BOUND){ //checks if current variant POS is within specified range
+									FIELD_COUNTER++;
+									CHROM_ID = CHROM_PAIR
 											.getKey()
 											.toString();
 								}
@@ -284,20 +288,20 @@ public class GATKBackendTest implements BackendTestInterface
 					}
 					
 					//GATHER THE REST OF THE POINTS FROM MATCHING ALL THE FEATURES IN QUERY
-				    while (fmapIterator.hasNext()) { //loop through each query in features
-				        Map.Entry pairs = (Map.Entry)fmapIterator.next();
+				    while (FEATURE_MAP_ITERATOR.hasNext()) { //loop through each query in features
+				        Map.Entry pairs = (Map.Entry)FEATURE_MAP_ITERATOR.next();
 				        
-				        String variantAttribute = variantContext
+				        String VARIANT_ATTRIBUTE = VARIANT_CONTEXT
 				        		.getAttributeAsString(
 				        				pairs.getKey().toString(), 
-				        				noMatch);
+				        				VARIANT_ATTRIBUTE_NOT_MATCHED);
 				        
-				        String queryAttribute = pairs
+				        String QUERY_ATTRIBUTE = pairs
 				        		.getValue()
 				        		.toString();
 				        
-				        if (variantAttribute.equals(pairs.getValue().toString())){				        	
-				        	fieldCounter++; //Accumulate points
+				        if (VARIANT_ATTRIBUTE.equals(QUERY_ATTRIBUTE)){				        	
+				        	FIELD_COUNTER++; //Accumulate points
 				        }
 				    }
 				    
@@ -305,31 +309,31 @@ public class GATKBackendTest implements BackendTestInterface
 				    FINAL CHECK, ONLY VARIANTS THAT HAVE MATCHED ALL THE SEARCH CRITERA WILL RUN BELOW
 				    **/
 				    
-				    if (fieldCounter == Querysize){
-				    	Iterator attributeIter = variantContext
-				    							.getAttributes()
-				    							.entrySet()
-				    							.iterator();
+				    if (FIELD_COUNTER == FIELD_SIZE){
+				    	Iterator ATTRIBUTE_MAP_ITERATOR = VARIANT_CONTEXT
+				    			.getAttributes()
+				    			.entrySet()
+				    			.iterator();
 				    	
-				    	String attributeSorted = new String();
-				    	String attributeSortedHolder = new String();
+				    	String ATTRIBUTE_SORTED = new String();
+				    	String ATTRIBUTE_SORTEDHolder = new String();
 				    	
 				    	//Resort the info field from a map format to match VCF format
-				    	while(attributeIter.hasNext()){ 
-				    		Map.Entry pair = (Map.Entry)attributeIter.next();
+				    	while(ATTRIBUTE_MAP_ITERATOR.hasNext()){ 
+				    		Map.Entry pair = (Map.Entry)ATTRIBUTE_MAP_ITERATOR.next();
 				    		
-				    		attributeSortedHolder = pair.getKey().toString() + "=" + 
-				    								pair.getValue().toString() + ";";
+				    		ATTRIBUTE_SORTEDHolder = pair.getKey().toString() + "=" + 
+				    								 pair.getValue().toString() + ";";
 				    		
-				    		attributeSorted = attributeSorted + attributeSortedHolder;
+				    		ATTRIBUTE_SORTED = ATTRIBUTE_SORTED + ATTRIBUTE_SORTEDHolder;
 				    	}
 				    	
 				    	//Write variant to file
-				    	writer.println("chr" + chrID + "\t" +
-				    					variantContext.getEnd() + "\t" +
-				    					variantContext.getReference() + "\t" +
-				    					variantContext.getAltAlleleWithHighestAlleleCount() + "\t" +
-				    					attributeSorted.toString().substring(0, attributeSorted.length()-1)); //Remove last semicolon in attributeSorted
+				    	writer.println("chr" + CHROM_ID + "\t" +
+				    					VARIANT_CONTEXT.getEnd() + "\t" +
+				    					VARIANT_CONTEXT.getReference() + "\t" +
+				    					VARIANT_CONTEXT.getAltAlleleWithHighestAlleleCount() + "\t" +
+				    					ATTRIBUTE_SORTED.toString().substring(0, ATTRIBUTE_SORTED.length()-1)); //Remove last semicolon in ATTRIBUTE_SORTED
 				    }
 				}
 			}
@@ -339,9 +343,7 @@ public class GATKBackendTest implements BackendTestInterface
 		return finished;
 	}
 	
-	private FeatureReader<VariantContext> getFeatureReader(File sVcfFile, 
-															final VCFCodec vcfCodec, 
-															final boolean requireIndex) {
+	private FeatureReader<VariantContext> getFeatureReader(File sVcfFile, final VCFCodec vcfCodec, final boolean requireIndex) {
 		return AbstractFeatureReader.getFeatureReader(sVcfFile.getAbsolutePath(), vcfCodec, requireIndex);
 	}
 
