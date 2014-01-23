@@ -65,14 +65,13 @@ public class GATKBackendTest implements BackendTestInterface
         //Point to local VCF file to be read
         testb.loadFeatureSet("/Users/bso/gene6.vcf");   
 
- 
         //Point to local JSON text file to be read
         in = new BufferedReader(new FileReader("/Users/bso/queryJSON3.txt"));
         while ((line = in.readLine()) != null){
         	temp = temp.concat(line);
         }
 		
-        //Point to Output file to be written to
+        //Point to TSV output file to be written to
         Global.outputFilePath = "/Users/bso/output2.txt";
         
 		//Obtain matched features
@@ -98,6 +97,7 @@ public class GATKBackendTest implements BackendTestInterface
 			String KEY = "gene";
 			String VALUE = filePath;
 			Global.HBaseStorage.put(KEY, VALUE);
+			
 			//State of SUCCESS
 			state.setState(0);
 			return state;
@@ -217,9 +217,10 @@ public class GATKBackendTest implements BackendTestInterface
 		    int CHROM_QUERY_LOWER_BOUND;
 		    int VARIANT_CHROM_ID;
 		    List<Map> sorted = new ArrayList<Map>();
-		    String VARIANT_CHROM_PAIR = new String();
 		    String CHROM_ID = new String();
-		    String VARIANT_ATTRIBUTE_NOT_MATCHED = new String();
+		    String QUERY_ATTRIBUTE;
+		    String VARIANT_CHROM_PAIR;
+		    String VARIANT_ATTRIBUTE;
 		    String temp= new String();
 
 		    //Determine if user has input a chromosome query
@@ -251,6 +252,7 @@ public class GATKBackendTest implements BackendTestInterface
 		     * 
 		     */
 			while (vcfIterator.hasNext()){
+				
 				//Reset the field counter on next line
 				FIELD_COUNTER = 0; 
 				VariantContext VARIANT_CONTEXT = vcfIterator.next();
@@ -260,7 +262,7 @@ public class GATKBackendTest implements BackendTestInterface
 			    		.iterator();
 				Iterator FEATURE_MAP_ITERATOR = FEATURE_MAP_QUERY
 						.entrySet()
-						.iterator(); 
+						.iterator();
 
 				//Loop through each query in Chromosomes in VCF
 				while(REGION_MAP_ITERATOR.hasNext()){
@@ -303,13 +305,14 @@ public class GATKBackendTest implements BackendTestInterface
 					//GATHER THE REST OF THE POINTS FROM MATCHING ALL THE FEATURES IN QUERY
 				    while (FEATURE_MAP_ITERATOR.hasNext()) { //loop through each query in features
 				        Map.Entry pairs = (Map.Entry)FEATURE_MAP_ITERATOR.next();
-				        
-				        String VARIANT_ATTRIBUTE = VARIANT_CONTEXT
+					    String VARIANT_ATTRIBUTE_NOT_MATCHED = new String();
+					    
+				        VARIANT_ATTRIBUTE = VARIANT_CONTEXT
 				        		.getAttributeAsString(
 				        				pairs.getKey().toString(), 
 				        				VARIANT_ATTRIBUTE_NOT_MATCHED);
 				        
-				        String QUERY_ATTRIBUTE = pairs
+				        QUERY_ATTRIBUTE = pairs
 				        		.getValue()
 				        		.toString();
 				        
@@ -343,7 +346,7 @@ public class GATKBackendTest implements BackendTestInterface
 				    		ATTRIBUTE_SORTED = ATTRIBUTE_SORTED + ATTRIBUTE_SORTEDHolder;
 				    	}
 				    	
-				    	//Write variant to file
+				    	//Write variant to a TSV file
 				    	writer.println("chr" + CHROM_ID + "\t" +
 				    					VARIANT_CONTEXT.getEnd() + "\t" +
 				    					VARIANT_CONTEXT.getReference() + "\t" +
