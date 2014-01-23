@@ -92,16 +92,17 @@ public class GATKBackendTest implements BackendTestInterface
 	@Override
 	public ReturnValue loadFeatureSet(String filePath) {
 		ReturnValue state = new ReturnValue();
-		if (FilenameUtils.getExtension(filePath).equals("vcf")){ //Check if file ext is VCF.
+		
+		//Check if file ext is VCF.
+		if (FilenameUtils.getExtension(filePath).equals("vcf")){ 
 			String KEY = "gene";
 			String VALUE = filePath;
-
 			Global.HBaseStorage.put(KEY, VALUE);
 			//State of SUCCESS
 			state.setState(0);
 			return state;
-
 		} else {
+			
 			//State of NOT_SUPPORTED
 			state.setState(3);
 			return state;
@@ -115,6 +116,7 @@ public class GATKBackendTest implements BackendTestInterface
 
 	@Override
 	public ReturnValue getFeatures(String queryJSON) throws JSONException, IOException {
+		
 		//Read the input JSON file to seperate ArrayLists for parsing
 		ReturnValue finished = new ReturnValue();
 		JSONObject jsonObOuter = new JSONObject(queryJSON);
@@ -128,7 +130,7 @@ public class GATKBackendTest implements BackendTestInterface
 		
 		//Initialize query stores to dump queries from input JSON
 		HashMap<String, String> FEATURE_MAP_QUERY = new HashMap<String,String>();
-		HashMap<String, String> fsmapQuery = new HashMap<String,String>();
+		HashMap<String, String> FEATURE_SET_MAP_QUERY = new HashMap<String,String>();
 		HashMap<String, String> REGION_MAP_QUERY = new HashMap<String,String>();
 
 		//READ THE JSON INPUT FILE
@@ -147,7 +149,7 @@ public class GATKBackendTest implements BackendTestInterface
 					String InKey = InnerKeys.next();
 					
 					if (OutKey.equals("feature_sets")){
-						fsmapQuery.put(InKey.toString(), 
+						FEATURE_SET_MAP_QUERY.put(InKey.toString(), 
 										jsonObInner.getString(InKey));
 					}
 					
@@ -200,7 +202,6 @@ public class GATKBackendTest implements BackendTestInterface
 		 */
 		Iterator<VariantContext> vcfIterator;
 		{
-			//Initialize reader and writer
 		    PrintWriter writer = new PrintWriter(filePath, "UTF-8");
 		    final VCFCodec vcfCodec = new VCFCodec(); //declare codec
 		    final boolean requireIndex = false; //index not required
@@ -228,26 +229,41 @@ public class GATKBackendTest implements BackendTestInterface
 		    	FIELD_SIZE = FEATURE_MAP_QUERY.size();
 		    }
 		    
-		    for (VCFIDHeaderLine HeaderLineListElement : header.getIDHeaderLines()){
-		    	writer.println(HeaderLineListElement);
-		    }
-		    
-		    /**BEGIN LOOPING OF EVERY VARIANT LINE TO MATCH FOR QUERY RESULTS
+		    /**BEGIN LOOPING OF EVERY HEADER LINE TO MATCH FOR FEATURE_SET QUERY RESULTS
 		     * 
 		     */
-			while (vcfIterator.hasNext()){ //loop through each VARIANT
+		    for (VCFIDHeaderLine CURRENT_HEADER_LINE : header.getIDHeaderLines()){
+		    	Iterator FEATURE_SET_MAP_ITERATOR = FEATURE_SET_MAP_QUERY
+		    			.entrySet()
+		    			.iterator();
+		    	while (FEATURE_SET_MAP_ITERATOR.hasNext()){
+		    		Map.Entry pairs = (Map.Entry)FEATURE_SET_MAP_ITERATOR.next();
+		    		String HEADER_FEATURE_SET_VALUE = pairs
+		    				.getValue()
+		    				.toString();
+		    		if (HEADER_FEATURE_SET_VALUE.equals(CURRENT_HEADER_LINE.getID())){
+		    			writer.println(CURRENT_HEADER_LINE);
+		    		}
+		    	}
+		    }
+		    
+		    /**BEGIN LOOPING OF EVERY VARIANT LINE TO MATCH FOR CHROM_ID, (RANGE), FEATURE RESULTS
+		     * 
+		     */
+			while (vcfIterator.hasNext()){
+				//Reset the field counter on next line
+				FIELD_COUNTER = 0; 
+				VariantContext VARIANT_CONTEXT = vcfIterator.next();
+				
 			    Iterator REGION_MAP_ITERATOR = REGION_MAP_QUERY
 			    		.entrySet()
 			    		.iterator();
-			    
 				Iterator FEATURE_MAP_ITERATOR = FEATURE_MAP_QUERY
 						.entrySet()
 						.iterator(); 
-				
-				VariantContext VARIANT_CONTEXT = vcfIterator.next();
-				FIELD_COUNTER = 0; //Reset the field counter
 
-				while(REGION_MAP_ITERATOR.hasNext()){//loop through each query in chromosomes
+				//Loop through each query in Chromosomes in VCF
+				while(REGION_MAP_ITERATOR.hasNext()){
 					Map.Entry CHROM_PAIR = (Map.Entry)REGION_MAP_ITERATOR.next();
 					
 					//GATHER FIRST POINT FROM MATCHING CHROMOSOME NUMBER AND RANGE IN QUERY
@@ -256,7 +272,8 @@ public class GATKBackendTest implements BackendTestInterface
 								.getValue()
 								.toString();
 						
-						if (VARIANT_CHROM_PAIR.equals(".") == true){ //Checks if the current variant contains ALL POS
+						//Checks if the current variant contains ALL POS
+						if (VARIANT_CHROM_PAIR.equals(".") == true){ 
 							FIELD_COUNTER++;
 							CHROM_ID = CHROM_PAIR
 									.getKey()
@@ -273,7 +290,8 @@ public class GATKBackendTest implements BackendTestInterface
 								
 								VARIANT_CHROM_ID = VARIANT_CONTEXT.getStart();
 
-								if (VARIANT_CHROM_ID >= CHROM_QUERY_LOWER_BOUND && VARIANT_CHROM_ID <= CHROM_QUERY_UPPER_BOUND){ //checks if current variant POS is within specified range
+								//checks if current variant POS is within specified range
+								if (VARIANT_CHROM_ID >= CHROM_QUERY_LOWER_BOUND && VARIANT_CHROM_ID <= CHROM_QUERY_UPPER_BOUND){ 
 									FIELD_COUNTER++;
 									CHROM_ID = CHROM_PAIR
 											.getKey()
@@ -295,8 +313,10 @@ public class GATKBackendTest implements BackendTestInterface
 				        		.getValue()
 				        		.toString();
 				        
-				        if (VARIANT_ATTRIBUTE.equals(QUERY_ATTRIBUTE)){				        	
-				        	FIELD_COUNTER++; //Accumulate points
+				        if (VARIANT_ATTRIBUTE.equals(QUERY_ATTRIBUTE)){	
+				        	
+				        	//Accumulate points
+				        	FIELD_COUNTER++; 
 				        }
 				    }
 				    
