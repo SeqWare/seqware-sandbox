@@ -56,7 +56,6 @@ public class GATKBackendTest implements BackendTestInterface
 {
     public static void main( String[] args ) throws IOException, JSONException
     {
-    	long starttime = System.nanoTime();
         ReturnValue returned = new ReturnValue();
         GATKBackendTest testb = new GATKBackendTest();
         BufferedReader in;
@@ -78,10 +77,6 @@ public class GATKBackendTest implements BackendTestInterface
         
 		//Obtain matched features
         returned = testb.getFeatures(temp);
-        long endtime = System.nanoTime();
-
-        double seconds = (double)(endtime - starttime) / 1000000000.0;
-        System.out.println(seconds);
     }
 
 	@Override
