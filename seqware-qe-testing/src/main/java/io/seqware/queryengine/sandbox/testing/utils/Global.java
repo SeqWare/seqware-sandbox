@@ -1,4 +1,4 @@
-package io.seqware.queryengine.sandbox.testing;
+package io.seqware.queryengine.sandbox.testing.utils;
 import java.util.HashMap;
 
 
