@@ -79,12 +79,12 @@ public class GATKBackendTest implements BackendTestInterface
     }
 
 	@Override
-	public ReturnValue getIntrocutionDocs() {
+	public ReturnValue getIntroductionDocs() {
 		return null;
 	}
 
 	@Override
-	public ReturnValue setupBackend(HashMap<String, String> settings) {
+	public ReturnValue setupBackend(Map<String, String> settings) {
 		return null;
 	}
 
@@ -381,7 +381,12 @@ public class GATKBackendTest implements BackendTestInterface
 	}
 
 	@Override
-	public ReturnValue teardownBackend(HashMap<String, String> settings) {
+	public ReturnValue teardownBackend(Map<String, String> settings) {
 		return null;
 	}
+
+    @Override
+    public String getName() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }
