@@ -9,7 +9,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.junit.Test;
 import org.apache.commons.io.IOUtils;
+import org.junit.Assert;
 
 /**
  * TestBackends
@@ -42,12 +44,7 @@ import org.apache.commons.io.IOUtils;
  */
 public class TestBackends {
 
-    /**
-     * This tool assumes: "java TestBackends settings.ini"
-     *
-     * @param args
-     */
-    public static void main(String[] args) throws IOException {
+    private static void testBackend(boolean browseReport, String[] args) throws RuntimeException, IOException {
         PrintWriter output = null;
         File tempFile = null;
         try {
@@ -122,8 +119,27 @@ public class TestBackends {
             throw new RuntimeException(ex);
         }  finally {
             IOUtils.closeQuietly(output);
-            if (tempFile != null) Desktop.getDesktop().browse((tempFile.toURI()));
+            
+            if (tempFile != null && browseReport) Desktop.getDesktop().browse((tempFile.toURI()));
         }
+    }
+    
+    @Test
+    public void testADAMBackEnd(){
+        try{
+        testBackend(false, null);
+        } catch (Exception e){
+            Assert.assertTrue(false);
+        }
+    }
+
+    /**
+     * This tool assumes: "java TestBackends settings.ini"
+     *
+     * @param args
+     */
+    public static void main(String[] args) throws IOException {
+        testBackend(true, args);
     }
 
     private static void fillOutHeader(PrintWriter o) {
