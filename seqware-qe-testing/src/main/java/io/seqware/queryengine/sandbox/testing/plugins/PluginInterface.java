@@ -64,7 +64,8 @@ public interface PluginInterface {
      * @param output 
      */
     public void map(long position, Map<FeatureSet, Collection<Feature>> features, Map<String, String> output);
-
+    
+    
     /**
      * Used to process the results from the FeatureSet map.
      * 
