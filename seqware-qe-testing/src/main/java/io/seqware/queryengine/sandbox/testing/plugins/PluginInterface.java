@@ -34,4 +34,5 @@ package io.seqware.queryengine.sandbox.testing.plugins;
 public interface PluginInterface {
     
     
+    
 }

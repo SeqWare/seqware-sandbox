@@ -61,4 +61,8 @@ public class ReturnValue {
         return kv;
     }
     
+    public void storeKv(String key, String FeatureSetPath){
+    	kv.put(key, FeatureSetPath);
+    }
+    
 }
