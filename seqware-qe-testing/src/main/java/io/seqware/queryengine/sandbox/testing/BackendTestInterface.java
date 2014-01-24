@@ -29,8 +29,7 @@
 package io.seqware.queryengine.sandbox.testing;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Map;
 
 import org.json.*;
 /**
@@ -38,6 +37,12 @@ import org.json.*;
  * @author boconnor
  */
 public interface BackendTestInterface {
+    public static final String DOCS = "docs";
+  
+  /** 
+   * This just returns a string name to identify the backend 
+   */
+  public String getName();
     
   /**
    * This is a simple method that returns documentation about the particular backend.
@@ -53,7 +58,7 @@ public interface BackendTestInterface {
    * Put the docs (as an HTML fragment) in the key-value in ReturnValue
    * with the key-value "docs=content".
    */
-  public ReturnValue getIntrocutionDocs();
+  public ReturnValue getIntroductionDocs();
     
   /**
    * This method is called at the beginning of the test process.  It's where you
@@ -68,7 +73,7 @@ public interface BackendTestInterface {
    * 
    * If the setup for this backend test failed return BACKEND_SETUP_FAILURE
    */
-  public ReturnValue setupBackend(HashMap<String, String> settings);
+  public ReturnValue setupBackend(Map<String, String> settings);
   
   /**
    * Point to an input variant file, return the ID to access that data again in subsequent tests
@@ -231,13 +236,13 @@ public interface BackendTestInterface {
   */
   
   /**
-   * Run the specified plugin and return the result as a ReturnValue.
+   * Run the specified plug-in and return the result as a ReturnValue.
    * 
-   * TODO: we need to define this better.  What exactly are the plugins?
+   * TODO: we need to define this better.  What exactly are the plug-ins?
    * 
    * The ReturnValue value HashMap should have a key called "pluginResultFile"
    * with a value that points to a file that contains the results of this
-   * plugin.
+   * plug-in.
    * 
    * @param pluginClassName
    * @return 
@@ -266,5 +271,5 @@ public interface BackendTestInterface {
    * @param settings
    * @return 
    */
-  public ReturnValue teardownBackend(HashMap<String, String> settings);
+  public ReturnValue teardownBackend(Map<String, String> settings);
 }
