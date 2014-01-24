@@ -44,7 +44,7 @@ import org.junit.Assert;
  */
 public class TestBackends {
 
-    private static void testBackend(boolean browseReport, String[] args) throws RuntimeException, IOException {
+    private static void testBackend(BackendTestInterface backend, boolean browseReport, String[] args) throws RuntimeException, IOException {
         PrintWriter output = null;
         File tempFile = null;
         try {
@@ -65,7 +65,7 @@ public class TestBackends {
 
             // the test backends
             ArrayList<BackendTestInterface> backends = new ArrayList<BackendTestInterface>();
-            backends.add(new ADAMBackendTest());
+            backends.add(backend);
             tempFile = File.createTempFile("report", "html");
             // output file
             output = new PrintWriter(tempFile, "UTF-8");
@@ -127,7 +127,7 @@ public class TestBackends {
     @Test
     public void testADAMBackEnd(){
         try{
-        testBackend(false, null);
+        testBackend(new ADAMBackendTest(), false, null);
         } catch (Exception e){
             Assert.assertTrue(false);
         }
@@ -139,7 +139,7 @@ public class TestBackends {
      * @param args
      */
     public static void main(String[] args) throws IOException {
-        testBackend(true, args);
+        testBackend(new ADAMBackendTest(), true, args);
     }
 
     private static void fillOutHeader(PrintWriter o) {
