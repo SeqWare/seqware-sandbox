@@ -23,14 +23,9 @@
  * be difficult to make this output/input coupling robust and able to handle
  * more than what easily fits in memory.
  * 
- * LEFT OFF HERE: need to bring in FeatureSet, Feature, ReadSet, and Read into this project
- * 
  */
 
 package io.seqware.queryengine.sandbox.testing.plugins;
-
-import java.util.Collection;
-import java.util.Map;
 
 /**
  *
@@ -38,43 +33,5 @@ import java.util.Map;
  */
 public interface PluginInterface {
     
-    /**
-     * Allows you to say this plugin will process reads, if false then
-     * the calling storage backend can save time and not process reads.
-     * @return 
-     */
-    public boolean canProcessReads();
-    
-    /**
-     * Allows you to say this plugin will process variants, if false then
-     * the calling storage backend can save time and not process variants.
-     * @return 
-     */
-    public boolean canProcessVariants();
-    
-    /**
-     * This method gets called for each position in the genome.
-     * The underlying storage system will have to figure out how to make the 
-     * features map below which gives the plugin author a list of all the features 
-     * that overlap the current position of the genome, grouped by featureSets.
-     * 
-     * @param position
-     * @param features
-     * @param output 
-     */
-    public void map(long position, Map<FeatureSet, Collection<Feature>> features, Map<String, String> output);
-
-    /**
-     * Used to process the results from the FeatureSet map.
-     * 
-     * @param key
-     * @param values
-     * @param output 
-     */
-    public void featureReduce(String key, Iterable<String> values, Map<String, String> output);
-    
-    public void map(Map<ReadSet, Collection<Reads>> reads, long position, Map<String, String> output);
-
-    public void readReduce(String key, Iterable<String> values, Map<String, String> output);
     
 }

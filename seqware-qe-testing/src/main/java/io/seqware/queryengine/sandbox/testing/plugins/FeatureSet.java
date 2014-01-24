@@ -8,6 +8,6 @@ package io.seqware.queryengine.sandbox.testing.plugins;
  *
  * @author boconnor
  */
-class FeatureSet {
+public class FeatureSet {
   
 }

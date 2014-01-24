@@ -5,9 +5,10 @@
 package io.seqware.queryengine.sandbox.testing.plugins;
 
 /**
- *
+ * Stores information about particular reads. 
+ * 
  * @author boconnor
  */
-class Reads {
+public class Reads {
   
 }

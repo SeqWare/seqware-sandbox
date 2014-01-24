@@ -6,13 +6,7 @@ package io.seqware.queryengine.sandbox.testing.impl;
 
 import io.seqware.queryengine.sandbox.testing.BackendTestInterface;
 import io.seqware.queryengine.sandbox.testing.ReturnValue;
-import java.util.ArrayList;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -20,13 +14,14 @@ import java.util.HashMap;
  */
 public class ADAMBackendTest implements BackendTestInterface {
 
-  public ReturnValue getIntrocutionDocs() {
+  public ReturnValue getIntroductionDocs() {
     ReturnValue rt = new ReturnValue();
     rt.setState(ReturnValue.SUCCESS);
+    rt.getKv().put(DOCS, "<p>Introduction</p>");
     return(rt);
   }
 
-  public ReturnValue setupBackend(HashMap<String, String> settings) {
+  public ReturnValue setupBackend(Map<String, String> settings) {
     ReturnValue rt = new ReturnValue();
     rt.setState(ReturnValue.SUCCESS);
     return(rt);
@@ -65,10 +60,11 @@ public class ADAMBackendTest implements BackendTestInterface {
   public ReturnValue getConclusionDocs() {
     ReturnValue rt = new ReturnValue();
     rt.setState(ReturnValue.SUCCESS);
+    rt.getKv().put(DOCS, "<p>Conclusion</p>");
     return(rt);
   }
 
-  public ReturnValue teardownBackend(HashMap<String, String> settings) {
+  public ReturnValue teardownBackend(Map<String, String> settings) {
     ReturnValue rt = new ReturnValue();
     rt.setState(ReturnValue.SUCCESS);
     return(rt);
