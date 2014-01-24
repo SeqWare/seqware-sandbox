@@ -1,16 +1,12 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * This is just a placeholder for the ADAM backend that Brian will eventually
+ * implement using the ADAM API for storing/manipulating BAM/VCF files on HDFS
  */
 package io.seqware.queryengine.sandbox.testing.impl;
 
 import io.seqware.queryengine.sandbox.testing.BackendTestInterface;
-import java.util.ArrayList;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import io.seqware.queryengine.sandbox.testing.ReturnValue;
+import java.util.Map;
 
 /**
  *
@@ -18,26 +14,66 @@ import java.sql.Statement;
  */
 public class ADAMBackendTest implements BackendTestInterface {
 
-  /*
-   * Not supported 
-   */
-  public String loadFile(String file) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  public ReturnValue getIntroductionDocs() {
+    ReturnValue rt = new ReturnValue();
+    rt.setState(ReturnValue.SUCCESS);
+    rt.getKv().put(DOCS, "<p>Introduction</p>");
+    return(rt);
   }
 
-  public ArrayList<String> getRange(String featureSetName, String contig, int start, int stop) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  public ReturnValue setupBackend(Map<String, String> settings) {
+    ReturnValue rt = new ReturnValue();
+    rt.setState(ReturnValue.SUCCESS);
+    return(rt);
   }
 
-  public ArrayList<String> intersect(String featureSetName1, String featureSetName2) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  public ReturnValue loadFeatureSet(String filePath) {
+    ReturnValue rt = new ReturnValue();
+    rt.setState(ReturnValue.SUCCESS);
+    return(rt);
   }
-  
-  /*
-   * Not supported really
-   */
-  public ArrayList<String> mapReducePluginTest(String mrPluginClassName) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
+  public ReturnValue loadReadSet(String filePath) {
+    ReturnValue rt = new ReturnValue();
+    rt.setState(ReturnValue.SUCCESS);
+    return(rt);
   }
+
+  public ReturnValue getFeatures(String queryJSON) {
+    ReturnValue rt = new ReturnValue();
+    rt.setState(ReturnValue.SUCCESS);
+    return(rt);
+  }
+
+  public ReturnValue getReads(String queryJSON) {
+    ReturnValue rt = new ReturnValue();
+    rt.setState(ReturnValue.SUCCESS);
+    return(rt);
+  }
+
+  public ReturnValue runPlugin(String queryJSON, String pluginClassName) {
+    ReturnValue rt = new ReturnValue();
+    rt.setState(ReturnValue.SUCCESS);
+    return(rt);
+  }
+
+  public ReturnValue getConclusionDocs() {
+    ReturnValue rt = new ReturnValue();
+    rt.setState(ReturnValue.SUCCESS);
+    rt.getKv().put(DOCS, "<p>Conclusion</p>");
+    return(rt);
+  }
+
+  public ReturnValue teardownBackend(Map<String, String> settings) {
+    ReturnValue rt = new ReturnValue();
+    rt.setState(ReturnValue.SUCCESS);
+    return(rt);
+  }
+
+  public String getName() {
+    return("ADAMBackendTest");
+  }
+
+
   
 }
