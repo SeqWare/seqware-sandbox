@@ -21,6 +21,7 @@
 package io.seqware.queryengine.sandbox.testing;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -56,8 +57,12 @@ public class ReturnValue {
         this.state = state;
     }
 
-    public HashMap<String, String> getKv() {
+    public Map<String, String> getKv() {
         return kv;
+    }
+    
+    public void storeKv(String key, String FeatureSetPath){
+    	kv.put(key, FeatureSetPath);
     }
     
 }
