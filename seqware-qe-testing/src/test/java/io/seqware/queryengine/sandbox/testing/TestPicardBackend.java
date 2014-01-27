@@ -4,18 +4,21 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 
-import junit.framework.TestCase;
 import net.sf.samtools.SAMFileReader;
 
 import org.apache.commons.io.IOUtils;
+import org.junit.AfterClass;
 import org.junit.Test;
+import org.junit.Assert;
+import org.junit.BeforeClass;
 
-public class PicardBackendTestSuite extends TestCase {
-  PicardBackendTest pb;
-  String bamfile;
-  String jsonTxt;
+public class TestPicardBackend  {
+  static PicardBackendTest pb;
+  static String bamfile;
+  static String jsonTxt;
   
-  protected void setUp() throws Exception {
+  @BeforeClass
+  public static void setUp() throws Exception {
     pb = new PicardBackendTest();
     bamfile = "src/resources/testdata/HG00310.chrom20.ILLUMINA.bwa.FIN.low_coverage.20120522.bam";
     File jsonQuery = new File("src/resources/testdata/query.json");
@@ -23,7 +26,8 @@ public class PicardBackendTestSuite extends TestCase {
     jsonTxt = IOUtils.toString(is);
   }
   
-  protected void tearDown() throws Exception {
+  @AfterClass
+  public static void tearDown() throws Exception {
     pb = null;
     bamfile = null;
     jsonTxt = null;
@@ -31,15 +35,15 @@ public class PicardBackendTestSuite extends TestCase {
 
   @Test
   public void testGetIntroductionDocs() {
-    assertNull(pb.getHTMLReport());
+    Assert.assertNull(pb.getHTMLReport());
     pb.getIntroductionDocs();
-    assertNotNull(pb.getHTMLReport());
+    Assert.assertNotNull(pb.getHTMLReport());
   }
 
   @Test
   public void testLoadReadSet() {
     pb.loadReadSet(bamfile);
-    assertNotNull(pb.getFileReader());
+    Assert.assertNotNull(pb.getFileReader());
   }
   
   @Test
@@ -47,12 +51,12 @@ public class PicardBackendTestSuite extends TestCase {
     pb.getReads(jsonTxt);
     File actualFile = new File("output.bam");
     SAMFileReader actualBAM = new SAMFileReader(actualFile);
-    assertNotNull(actualBAM);
+    Assert.assertNotNull(actualBAM);
   }
   
   @Test
   public void testGetConclusionDocs() {
     pb.getConclusionDocs();
-    assertNotNull(pb.getHTMLReport());
+    Assert.assertNotNull(pb.getHTMLReport());
   }
 }

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.swing.JEditorPane;
@@ -31,6 +32,7 @@ public class PicardBackendTest implements BackendTestInterface {
 	public static SAMFileReader samReader; //Used to read the SAM/BAM file.
 	public static HTMLDocument htmlReport; // The HTML Report to be written 
 
+        @Override
 	public String getName(){
 	  return "PicardBackendTest";
 	}
@@ -45,6 +47,7 @@ public class PicardBackendTest implements BackendTestInterface {
 	/** getIntroductionDocs()
 	 *  Creates an HTMLDocument object to use as a log
 	 */
+        @Override
 	public ReturnValue getIntroductionDocs() {
 	  htmlReport = new HTMLDocument();
 	  JEditorPane p = new JEditorPane();
@@ -69,6 +72,7 @@ public class PicardBackendTest implements BackendTestInterface {
     return r;
 	}
 	
+        @Override
 	public ReturnValue loadFeatureSet(String filePath) { 
 		ReturnValue r = new ReturnValue(); 
 		r.setState(ReturnValue.NOT_SUPPORTED); 
@@ -81,6 +85,7 @@ public class PicardBackendTest implements BackendTestInterface {
 	 * @param filePath
 	 */
   // Places file into SAMFileReader attribute to prepare for queries
+        @Override
 	public ReturnValue loadReadSet(String filePath) {
 		ReturnValue rt = new ReturnValue();
 		
@@ -108,6 +113,7 @@ public class PicardBackendTest implements BackendTestInterface {
 		}
 	}
 	  	   
+        @Override
 	public ReturnValue getFeatures(String queryJSON) { 
 		ReturnValue rt = new ReturnValue(); 
 		rt.setState(ReturnValue.NOT_SUPPORTED); 
@@ -118,6 +124,7 @@ public class PicardBackendTest implements BackendTestInterface {
 	 * Queries the .sam/.bam file in question for results specified by the JSON query
 	 * @param queryJSON
 	 */
+        @Override
 	public ReturnValue getReads(String queryJSON) {
 	  ReturnValue rt = new ReturnValue();
 	  //First, parse the query for related fields
@@ -127,9 +134,9 @@ public class PicardBackendTest implements BackendTestInterface {
 	    JSONObject query = new JSONObject(queryJSON);
 
       JSONArray regionArray = new JSONArray(); 
-      HashMap<String, String> readSetMap = new HashMap<String, String>();
-      HashMap<String, String> readsQuery = new HashMap<String, String>();      
-      ArrayList<String> chQuery = new ArrayList<String>();
+      HashMap<String, String> readSetMap = new HashMap<>();
+      HashMap<String, String> readsQuery = new HashMap<>();      
+      ArrayList<String> chQuery = new ArrayList<>();
       
       while (OuterKeys.hasNext()) {
         String OutKey = OuterKeys.next();
@@ -317,6 +324,7 @@ public class PicardBackendTest implements BackendTestInterface {
 		return rt;  
 	}
 	  
+        @Override
 	public ReturnValue runPlugin(String queryJSON, String pluginClassName) {
 		ReturnValue rt = new ReturnValue(); 
 		rt.setState(ReturnValue.NOT_IMPLEMENTED); 
@@ -326,6 +334,7 @@ public class PicardBackendTest implements BackendTestInterface {
 	/** getConclusionDocs
 	 *  Writes htmlReport to file
 	 */
+        @Override
 	public ReturnValue getConclusionDocs() {
 	  ReturnValue rt = new ReturnValue(); 
 		// Write HTMLDocuments to file
@@ -365,4 +374,14 @@ public class PicardBackendTest implements BackendTestInterface {
 		rt.setState(ReturnValue.SUCCESS); 
 		return rt; 
 	}
+
+    @Override
+    public ReturnValue setupBackend(Map<String, String> settings) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public ReturnValue teardownBackend(Map<String, String> settings) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }
