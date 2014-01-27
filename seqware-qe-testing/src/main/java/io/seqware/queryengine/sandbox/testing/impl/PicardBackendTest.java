@@ -2,6 +2,7 @@ package io.seqware.queryengine.sandbox.testing;
 
 import java.io.File;
 import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -9,7 +10,10 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import javax.swing.JEditorPane;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.html.HTML;
 import javax.swing.text.html.HTMLDocument;
+import javax.swing.text.html.HTMLEditorKit;
 
 import net.sf.samtools.SAMFileHeader;
 import net.sf.samtools.SAMFileReader;
@@ -17,7 +21,6 @@ import net.sf.samtools.SAMFileWriter;
 import net.sf.samtools.SAMFileWriterFactory;
 import net.sf.samtools.SAMReadGroupRecord;
 import net.sf.samtools.SAMRecord;
-import net.sf.samtools.SAMRecordIterator;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -26,12 +29,22 @@ public class PicardBackendTest implements BackendTestInterface {
 	
  
 	public static SAMFileReader samReader; //Used to read the SAM/BAM file.
-	public static HTMLDocument htmlReport; // The HTML Report to be written -- don't need to worry about this too much
+	public static HTMLDocument htmlReport; // The HTML Report to be written 
 
 	public String getName(){
-	  return "Samtools Picard API";
+	  return "PicardBackendTest";
 	}
 	
+	public HTMLDocument getHTMLReport() {
+	  return htmlReport;
+	}
+	
+	public SAMFileReader getFileReader() {
+	  return samReader;
+	}
+	/** getIntroductionDocs()
+	 *  Creates an HTMLDocument object to use as a log
+	 */
 	public ReturnValue getIntroductionDocs() {
 	  htmlReport = new HTMLDocument();
 	  JEditorPane p = new JEditorPane();
@@ -47,53 +60,66 @@ public class PicardBackendTest implements BackendTestInterface {
         + "     </head>" 
         + "   <body>"
         + "     <h1>SeqWare Query Engine: PicardBackendTest</h1>"
-        + "     <div>" 
-        + "     </div>"
         + "   </body>"
         + "</html>"
      );
-	  htmlReport = (HTMLDocument) p.getDocument();
-		//Parse connectionSettings and output configuration to HTML Report
-	  
+	  htmlReport = (HTMLDocument) p.getDocument();	  
     ReturnValue r = new ReturnValue();
-    r.setState(2);
+    r.setState(ReturnValue.SUCCESS);
     return r;
 	}
 	
 	public ReturnValue loadFeatureSet(String filePath) { 
 		ReturnValue r = new ReturnValue(); 
-		r.setState(2); 
-		return r; 		/* NOT_IMPLEMENTED */ 
+		r.setState(ReturnValue.NOT_SUPPORTED); 
+		return r;  
   }
 
+	/** loadReadSet
+	 * Prepares to read a .sam/.bam file. Points reader to a filePath on disk.
+	 * 
+	 * @param filePath
+	 */
   // Places file into SAMFileReader attribute to prepare for queries
 	public ReturnValue loadReadSet(String filePath) {
-		// Check if file is SAM/BAM!
-		ReturnValue r = new ReturnValue();
+		ReturnValue rt = new ReturnValue();
+		
+    // Check if file is SAM/BAM!
 		if (filePath.endsWith(".sam") || filePath.endsWith(".bam")) {
 		  long elapsedTime = System.nanoTime();
-      // Convert Reads to JSON and insert to Backend db
+		  
+      // Point to file on disk
 			File samfile = new File(filePath);
 			samReader = new SAMFileReader(samfile);
 	    elapsedTime = (System.nanoTime() - elapsedTime) / 1000000;
-	    System.out.println("Loaded file in time: "+ elapsedTime + " milliseconds" );
 	    
-			r.setState(2); // NOT_IMPLEMENTED
-			return r; 
+	    // Write status to HTML Report
+	    try {
+  	    htmlReport.insertBeforeEnd(htmlReport.getElement(htmlReport.getDefaultRootElement(), StyleConstants.NameAttribute, HTML.Tag.BODY), "<div><h3>loadReadSet</h3><p>Loaded file in time: "+ elapsedTime + " milliseconds</p></div>");
+	    } catch (Exception ex) {
+	      rt.setState(ReturnValue.ERROR);
+	      return rt;
+	    }
+			rt.setState(ReturnValue.SUCCESS);
+			return rt; 
 		} else {
-			r.setState(6); // BACKEND_FILE_IMPORT_NOT_SUPPORTED
-			return r; 
+			rt.setState(ReturnValue.BACKEND_FILE_IMPORT_NOT_SUPPORTED);
+			return rt; 
 		}
 	}
 	  	   
 	public ReturnValue getFeatures(String queryJSON) { 
-		ReturnValue r = new ReturnValue(); 
-		r.setState(2); 
-		return r; /* NOT_IMPLEMENTED */  
+		ReturnValue rt = new ReturnValue(); 
+		rt.setState(ReturnValue.NOT_SUPPORTED); 
+		return rt;
 	}
 	  
-
+	/** getReads
+	 * Queries the .sam/.bam file in question for results specified by the JSON query
+	 * @param queryJSON
+	 */
 	public ReturnValue getReads(String queryJSON) {
+	  ReturnValue rt = new ReturnValue();
 	  //First, parse the query for related fields
 	  try {
 	    JSONObject jsonObOuter = new JSONObject(queryJSON);
@@ -130,11 +156,15 @@ public class PicardBackendTest implements BackendTestInterface {
           }
         } 
       }
-	    
+	   
+      // Obtain Sample ID
+      // Need to modify for more than one ID
 	    String querySampleIds = new String();
-      if (!readSetMap.get("sample").isEmpty()) {
-        querySampleIds = readSetMap.get("sample"); //Get Sample IDs, figure out how they are delimited
-        readSetMap.remove("sample");
+	    if (!readSetMap.isEmpty()) {
+        if (!readSetMap.get("sample").isEmpty()) {
+          querySampleIds = readSetMap.get("sample"); 
+          readSetMap.remove("sample");
+        }
       }
       
       //Single Read: SAMRecord
@@ -143,15 +173,19 @@ public class PicardBackendTest implements BackendTestInterface {
       //Tags: SAMRecord.getAttribute() - will receive tag for read - rmapQuery
       //Regions: query with SAMRecord alignment start/end - chQuery
       //Set Order: sample_id(tags(region(read_attributes())))
-      
-      // Display Query to user -- todo: place in HTML Report
-      System.out.println();
-      System.out.println("__Query__");
-      System.out.println("Sample IDs: " + querySampleIds);
-      System.out.println("Tags: " +  readSetMap.toString());
-      System.out.println("Read Attributes: " + readsQuery.toString());
-      System.out.println("Regions: " + chQuery);
-      System.out.println();
+	    // Working fields: Readset: Sample ID, Read: qname, flag, cigar
+	    
+      long elapsedTime = System.nanoTime();
+      try {
+        htmlReport.insertBeforeEnd(htmlReport.getElement(htmlReport.getDefaultRootElement(), StyleConstants.NameAttribute, HTML.Tag.BODY), "<div><h3>getReads</h3><h4>Query Details</h4><ul>"
+            + "<li>Sample IDs: " + querySampleIds + "</li>"
+            + "<li>Tags: " + readSetMap.toString() + "</li>"
+            + "<li>Read Attributes: " + readsQuery.toString() + "</li>"
+            + "<li>Regions " + chQuery + "</li></ul>");
+      } catch (Exception ex) {
+        rt.setState(ReturnValue.ERROR);
+        return rt;
+      }
       
       //Next, Query the BAM file for such entries
       SAMFileHeader bamHeader = samReader.getFileHeader();
@@ -161,7 +195,7 @@ public class PicardBackendTest implements BackendTestInterface {
       SAMFileWriterFactory samFactory = new SAMFileWriterFactory();
       SAMFileWriter bfw = samFactory.makeBAMWriter(bamHeader, true, output);
       
-      // First, query the header of .bam:
+      // Query for the Sample IDs
       if (!querySampleIds.isEmpty()) {
         boolean sampleMatch = false; 
         for (SAMReadGroupRecord rec: bamReadGroups) {          
@@ -169,18 +203,16 @@ public class PicardBackendTest implements BackendTestInterface {
             sampleMatch = true;
           }
         }         
-        // No Sample ID match
         if (!sampleMatch) {
-          System.out.println("No Results");
-          ReturnValue r = new ReturnValue();
-          r.setState(2);
-          return r;
+          htmlReport.insertBeforeEnd(htmlReport.getElement(htmlReport.getDefaultRootElement(), StyleConstants.NameAttribute, HTML.Tag.BODY), "<p>No Results.</p></div>");
+          rt.setState(ReturnValue.SUCCESS);
+          return rt;
         }
       }
       
-      // Oragnize and query read_set tags
-      // Not working, to fix..
-      /*if (!readSetMap.containsValue(null)) {
+      // Organize and query read_set tags
+      // Not completely working for all the tags (there's lots of them)
+      if (!readSetMap.isEmpty()) {
         boolean readSetMatch = false;
         System.out.println(readSetMap);
         
@@ -193,14 +225,15 @@ public class PicardBackendTest implements BackendTestInterface {
           }
         }
         if (!readSetMatch) {
-          System.out.println("No Results");
-          ReturnValue r = new ReturnValue();
-          r.setState(2);
-          return r;
+          htmlReport.insertBeforeEnd(htmlReport.getElement(htmlReport.getDefaultRootElement(), StyleConstants.NameAttribute, HTML.Tag.BODY), "<p>No Results.</p></div>");
+          rt.setState(ReturnValue.SUCCESS);
+          return rt;
         }
-      }*/
+      }
       
-      // Narrow down Regions
+      // Narrow down Regions -- currently not working, need to find out how to 
+      //   work with the API for this query
+      /*
       if (regionArray.length() !=0) {
         
         for (int i=0; i < regionArray.length(); i++) {
@@ -211,27 +244,51 @@ public class PicardBackendTest implements BackendTestInterface {
             int regionEnd = Integer.parseInt(region.substring(region.indexOf("-") + 1, region.length()));
             
             SAMRecordIterator iter = samReader.queryOverlapping(region, regionStart, regionEnd);
-            //todo:  Add SAMRecord to query pool..
-            System.out.println(iter.toString());
+            if (!iter.hasNext()) {
+              //if empty, return
+              htmlReport.insertBeforeEnd(htmlReport.getElement(htmlReport.getDefaultRootElement(), StyleConstants.NameAttribute, HTML.Tag.BODY), "<p>No Results.</p></div>");
+              rt.setState(ReturnValue.SUCCESS);
+              return rt;
+            }
+            System.out.println(iter.next().toString());
             iter.close();
           }
         }
       }
+      */
       
-      // Check Attributes
+      // Check Attributes -- a little redundant here..
+      //   to do: finish for the rest of the read attributes
       if (!readsQuery.isEmpty()) {
-        for (SAMRecord r: samReader) { 
-          for (Entry<String, String> e : readsQuery.entrySet()) {
-            if (e.getKey().equals("qname")) {
-              if (r.getReadName().equals(e.getValue()))
-                bfw.addAlignment(r);
-            }
-            //System.out.println(r.getAttributes().toString());
-            /*if (r.getAttribute(e.getKey()).equals(e.getValue())) {
-              bfw.addAlignment(r);
-              System.out.println(r.getReadName());
-            }*/
+        boolean qname = false;
+        boolean flag = false;
+        boolean cigar = false; 
+        
+        for (Entry<String, String> e : readsQuery.entrySet()) {
+          if (e.getKey().equals("qname")) 
+            qname = true;
+          
+          if (e.getKey().equals("cigar"))
+            cigar = true;
+          
+          if (e.getKey().equals("flag"))
+            flag = true;
+        }
+        
+        for (SAMRecord r: samReader) {
+          if (qname) {
+            if (!readsQuery.get("qname").equals(r.getReadName()))
+              continue;
+          } 
+          if (cigar) {
+            if (!readsQuery.get("cigar").equals(r.getCigarString()))
+              continue;
           }
+          if (flag) {
+            if (!readsQuery.get("flag").equals(r.getFlags()))
+              continue;
+          }
+          bfw.addAlignment(r);
         }
       } else {
         for (SAMRecord r: samReader) {
@@ -239,64 +296,73 @@ public class PicardBackendTest implements BackendTestInterface {
         }
       }
       
-      //Write a .bam file with result of query
+      // Finally, write a .bam file with result of query
+      // Also write to htmlReport
       bfw.close();
-      System.out.println("done");
-      
+      elapsedTime = (System.nanoTime() - elapsedTime) / 1000000;
+      System.out.println("Finished in " + elapsedTime + " milliseconds.");  
+      try {
+        htmlReport.insertBeforeEnd(htmlReport.getElement(htmlReport.getDefaultRootElement(), StyleConstants.NameAttribute, HTML.Tag.BODY), "<p>Finished in " + elapsedTime + " milliseconds.</p></div>");
+      } catch (Exception ex) {
+        rt.setState(ReturnValue.ERROR);
+        return rt;
+      }
 	  } catch (Exception ex) {
 	    System.out.println(ex.toString());
+	    rt.setState(ReturnValue.ERROR); 
+	    return rt; 
 	  }  
 	  
-		//Parse the query for instructions
-		ReturnValue r = new ReturnValue(); 
-		r.setState(2); 
-		return r; /* NOT_IMPLEMENTED */ 
+		rt.setState(ReturnValue.SUCCESS); 
+		return rt;  
 	}
 	  
 	public ReturnValue runPlugin(String queryJSON, String pluginClassName) {
-		//Parse the query for instructions
-		ReturnValue r = new ReturnValue(); 
-		r.setState(2); 
-		return r; /* NOT_IMPLEMENTED */ 
+		ReturnValue rt = new ReturnValue(); 
+		rt.setState(ReturnValue.NOT_IMPLEMENTED); 
+		return rt; 
 	}	  
 
+	/** getConclusionDocs
+	 *  Writes htmlReport to file
+	 */
 	public ReturnValue getConclusionDocs() {
+	  ReturnValue rt = new ReturnValue(); 
 		// Write HTMLDocuments to file
 	  try {
+	    HTMLEditorKit kit = new HTMLEditorKit();
+	    StringWriter writer = new StringWriter();
+	    kit.write(writer, htmlReport, 0, htmlReport.getLength());
+	    String s = writer.toString();
 	    PrintWriter out = new PrintWriter("htmlReport.html");
-      out.print(htmlReport.toString());
+      out.print(s);
       out.close();
-	  } catch (Exception ex) {
-	    ReturnValue r = new ReturnValue(); 
-	    r.setState(1); 
-	    return r; /* ERROR */ 
+	  } catch (Exception ex) { 
+	    rt.setState(ReturnValue.ERROR); 
+	    return rt; 
     } 
-	  
-		ReturnValue r = new ReturnValue(); 
-		r.setState(2); 
-		return r; /* NOT_IMPLEMENTED */ 
+	   
+		rt.setState(ReturnValue.NOT_IMPLEMENTED); 
+		return rt;
 	}
-	  
-	/* Setup and Teardown Methods */
+	 
 	public ReturnValue setupBackend(HashMap<String, String> settings) {
-    // todo: Setup Documentation
-	  // Nothing to do..
-		// 
-		ReturnValue r = new ReturnValue(); 
-		r.setState(2); 
-		return r; /* NOT_IMPLEMENTED */ 
+		ReturnValue rt = new ReturnValue(); 
+		rt.setState(ReturnValue.NOT_IMPLEMENTED); 
+		return rt; 
 	}
 
+	/** teardownBackend
+	 *  Cleans up any variables stored by object
+	 */
 	public ReturnValue teardownBackend(HashMap<String, String> settings) {
-		// Clean up, delete any files.
-		// Connect to DBs, Drop Tables
-	  
-	  // Drop temporary variables
+	  // Close fileReader and drop temporary variables
+	  samReader.close();
 	  htmlReport = null;
 	  samReader = null;
 		
-		ReturnValue r = new ReturnValue(); 
-		r.setState(2); 
-		return r; /* NOT_IMPLEMENTED */ 
+		ReturnValue rt = new ReturnValue(); 
+		rt.setState(ReturnValue.SUCCESS); 
+		return rt; 
 	}
 }
