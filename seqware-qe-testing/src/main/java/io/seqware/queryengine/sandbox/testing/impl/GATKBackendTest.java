@@ -1,8 +1,9 @@
 package io.seqware.queryengine.sandbox.testing.impl;
 
-import io.seqware.queryengine.sandbox.testing.utils.*;
 import io.seqware.queryengine.sandbox.testing.BackendTestInterface;
 import io.seqware.queryengine.sandbox.testing.ReturnValue;
+import io.seqware.queryengine.sandbox.testing.TestBackends;
+import io.seqware.queryengine.sandbox.testing.utils.*;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -35,6 +36,7 @@ import org.broadinstitute.variant.vcf.VCFIDHeaderLine;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Test;
 
 import lombok.Cleanup;
 import lombok.RequiredArgsConstructor;
@@ -54,30 +56,29 @@ import org.broad.tribble.FeatureReader;
  */
 public class GATKBackendTest implements BackendTestInterface
 {
-    public static void main( String[] args ) throws IOException, JSONException
-    {
-        ReturnValue returned = new ReturnValue();
-        GATKBackendTest testb = new GATKBackendTest();
-        BufferedReader in;
-        String line = new String();
-        String temp = new String();
-        
-        //Point to local VCF file to be read
-        testb.loadFeatureSet("/Users/bso/gene6.vcf");   
+    @Test
+    public void testGATK() throws IOException{
+    	 ReturnValue returned = new ReturnValue();
+         GATKBackendTest testb = new GATKBackendTest();
+         BufferedReader in;
+         String line = new String();
+         String temp = new String();
+         
+         //Point to local VCF file to be read
+         testb.loadFeatureSet("src/main/resources/exampleVCFinput.vcf");   
 
-        //Point to local JSON text file to be read
-        in = new BufferedReader(new FileReader("/Users/bso/queryJSON3.txt"));
-        while ((line = in.readLine()) != null){
-        	temp = temp.concat(line);
-        }
-		
-        //Point to TSV output file to be written to
-        Global.outputFilePath = "/Users/bso/output2.txt";
-        
-		//Obtain matched features
-        returned = testb.getFeatures(temp);
+         //Point to local JSON text file to be read
+         in = new BufferedReader(new FileReader("src/main/resources/exampleJSONQuery.txt"));
+         while ((line = in.readLine()) != null){
+         	temp = temp.concat(line);
+         }
+ 		
+         //Point to TSV output file to be written to
+         Global.outputFilePath = "/Users/bso/output2.txt";
+         
+ 		//Obtain matched features
+         returned = testb.getFeatures(temp);    	
     }
-
 	@Override
 	public ReturnValue getIntroductionDocs() {
 		return null;
@@ -140,7 +141,6 @@ public class GATKBackendTest implements BackendTestInterface
 		}*/
 		while (OutterKeys.hasNext()){
 			String OutKey = OutterKeys.next();
-			
 			if (jsonObOuter.get(OutKey) instanceof JSONObject){
 				JSONObject jsonObInner = jsonObOuter.getJSONObject(OutKey);
 				Iterator<String> InnerKeys = jsonObInner.keys();
