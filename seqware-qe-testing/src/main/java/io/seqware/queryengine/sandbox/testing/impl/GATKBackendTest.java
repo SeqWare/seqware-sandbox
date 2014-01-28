@@ -74,7 +74,7 @@ public class GATKBackendTest implements BackendTestInterface
          }
  		
          //Point to TSV output file to be written to
-         Global.outputFilePath = "/Users/output2.txt";
+         Global.outputFilePath = "/Users/bso/output2.txt";
          
  		//Obtain matched features
          returned = testb.getFeatures(temp);    	
