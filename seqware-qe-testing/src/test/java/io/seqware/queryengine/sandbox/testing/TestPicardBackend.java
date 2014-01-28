@@ -8,9 +8,9 @@ import net.sf.samtools.SAMFileReader;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.AfterClass;
-import org.junit.Test;
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Test;
 
 public class TestPicardBackend  {
   static PicardBackendTest pb;
@@ -20,8 +20,8 @@ public class TestPicardBackend  {
   @BeforeClass
   public static void setUp() throws Exception {
     pb = new PicardBackendTest();
-    bamfile = "src/resources/testdata/HG00310.chrom20.ILLUMINA.bwa.FIN.low_coverage.20120522.bam";
-    File jsonQuery = new File("src/resources/testdata/query.json");
+    bamfile = "src/main/resources/testdata/HG00310.chrom20.ILLUMINA.bwa.FIN.low_coverage.20120522.bam";
+    File jsonQuery = new File("src/main/resources/testdata/query.json");
     InputStream is = new FileInputStream(jsonQuery);
     jsonTxt = IOUtils.toString(is);
   }
