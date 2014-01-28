@@ -29,10 +29,10 @@ import org.json.JSONObject;
 public class PicardBackendTest implements BackendTestInterface {
 	
  
-	public static SAMFileReader samReader; //Used to read the SAM/BAM file.
+	public static SAMFileReader samReader; // Used to read the SAM/BAM file.
 	public static HTMLDocument htmlReport; // The HTML Report to be written 
 
-        @Override
+  @Override
 	public String getName(){
 	  return "PicardBackendTest";
 	}
@@ -47,7 +47,7 @@ public class PicardBackendTest implements BackendTestInterface {
 	/** getIntroductionDocs()
 	 *  Creates an HTMLDocument object to use as a log
 	 */
-        @Override
+  @Override
 	public ReturnValue getIntroductionDocs() {
 	  htmlReport = new HTMLDocument();
 	  JEditorPane p = new JEditorPane();
@@ -72,7 +72,7 @@ public class PicardBackendTest implements BackendTestInterface {
     return r;
 	}
 	
-        @Override
+  @Override
 	public ReturnValue loadFeatureSet(String filePath) { 
 		ReturnValue r = new ReturnValue(); 
 		r.setState(ReturnValue.NOT_SUPPORTED); 
@@ -85,7 +85,7 @@ public class PicardBackendTest implements BackendTestInterface {
 	 * @param filePath
 	 */
   // Places file into SAMFileReader attribute to prepare for queries
-        @Override
+  @Override
 	public ReturnValue loadReadSet(String filePath) {
 		ReturnValue rt = new ReturnValue();
 		
@@ -113,7 +113,7 @@ public class PicardBackendTest implements BackendTestInterface {
 		}
 	}
 	  	   
-        @Override
+  @Override
 	public ReturnValue getFeatures(String queryJSON) { 
 		ReturnValue rt = new ReturnValue(); 
 		rt.setState(ReturnValue.NOT_SUPPORTED); 
@@ -124,7 +124,7 @@ public class PicardBackendTest implements BackendTestInterface {
 	 * Queries the .sam/.bam file in question for results specified by the JSON query
 	 * @param queryJSON
 	 */
-        @Override
+  @Override
 	public ReturnValue getReads(String queryJSON) {
 	  ReturnValue rt = new ReturnValue();
 	  //First, parse the query for related fields
@@ -145,7 +145,7 @@ public class PicardBackendTest implements BackendTestInterface {
           Iterator<String> InnerKeys = jsonObInner.keys();
           while (InnerKeys.hasNext()) {
             String InKey = InnerKeys.next();
-            //Save values of 
+            //Save key-values of JSON query
             if (OutKey.equals("read_sets")) {
               readSetMap.put(InKey, jsonObInner.getString(InKey));
             }
@@ -200,7 +200,7 @@ public class PicardBackendTest implements BackendTestInterface {
 
       File output = new File("output.bam");
       SAMFileWriterFactory samFactory = new SAMFileWriterFactory();
-      SAMFileWriter bfw = samFactory.makeBAMWriter(bamHeader, true, output);
+      SAMFileWriter bfw = samFactory.makeSAMWriter(bamHeader, true, output);
       
       // Query for the Sample IDs
       if (!querySampleIds.isEmpty()) {
@@ -269,17 +269,30 @@ public class PicardBackendTest implements BackendTestInterface {
       if (!readsQuery.isEmpty()) {
         boolean qname = false;
         boolean flag = false;
-        boolean cigar = false; 
+        boolean rname = false;
+        boolean pos = false;
+        boolean mapq = false;
+        boolean cigar = false;
+        boolean rnext = false;
+        boolean pnext = false;
+        boolean tlen = false;
+        boolean seq = false;
+        boolean qual = false;
         
         for (Entry<String, String> e : readsQuery.entrySet()) {
-          if (e.getKey().equals("qname")) 
-            qname = true;
-          
-          if (e.getKey().equals("cigar"))
-            cigar = true;
-          
-          if (e.getKey().equals("flag"))
-            flag = true;
+          switch (e.getKey()) {
+            case "qname": qname = true; break;
+            case "flag": flag = true; break;
+            case "rname": rname = true; break;
+            case "pos": pos = true; break;
+            case "mapq": mapq = true; break;
+            case "cigar": cigar = true; break;
+            case "rnext": rnext = true; break;
+            case "pnext": pnext = true; break;
+            case "tlen": tlen = true; break;
+            case "seq": seq = true; break;
+            case "qual": qual = true; break;    
+          }
         }
         
         for (SAMRecord r: samReader) {
@@ -287,12 +300,32 @@ public class PicardBackendTest implements BackendTestInterface {
             if (!readsQuery.get("qname").equals(r.getReadName()))
               continue;
           } 
+          if (flag) {
+            if (!readsQuery.get("flag").equals(r.getFlags()))
+              continue;
+          }
+          if (rname) {
+            if (!readsQuery.get("rname").equals(r.getReferenceName()))
+              continue;
+          }
+          if (pos) {
+            if (!readsQuery.get("pos").equals(r.getAlignmentStart()))
+              continue;
+          }
+          if (mapq) {
+            if (!readsQuery.get("mapq").equals(r.getMappingQuality()))
+              continue; 
+          }
           if (cigar) {
             if (!readsQuery.get("cigar").equals(r.getCigarString()))
               continue;
           }
-          if (flag) {
-            if (!readsQuery.get("flag").equals(r.getFlags()))
+          if (seq) {
+            if (!readsQuery.get("seq").equals(r.getReadString()))
+              continue;
+          }
+          if (qual) {
+            if (!readsQuery.get("qual").equals(r.getBaseQualityString()))
               continue;
           }
           bfw.addAlignment(r);
@@ -324,7 +357,7 @@ public class PicardBackendTest implements BackendTestInterface {
 		return rt;  
 	}
 	  
-        @Override
+  @Override
 	public ReturnValue runPlugin(String queryJSON, String pluginClassName) {
 		ReturnValue rt = new ReturnValue(); 
 		rt.setState(ReturnValue.NOT_IMPLEMENTED); 
@@ -334,7 +367,7 @@ public class PicardBackendTest implements BackendTestInterface {
 	/** getConclusionDocs
 	 *  Writes htmlReport to file
 	 */
-        @Override
+  @Override
 	public ReturnValue getConclusionDocs() {
 	  ReturnValue rt = new ReturnValue(); 
 		// Write HTMLDocuments to file
@@ -351,7 +384,7 @@ public class PicardBackendTest implements BackendTestInterface {
 	    return rt; 
     } 
 	   
-		rt.setState(ReturnValue.NOT_IMPLEMENTED); 
+		rt.setState(ReturnValue.SUCCESS); 
 		return rt;
 	}
 	 
