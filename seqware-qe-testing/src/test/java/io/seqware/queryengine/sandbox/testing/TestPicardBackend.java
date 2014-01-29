@@ -1,8 +1,13 @@
 package io.seqware.queryengine.sandbox.testing;
 
+import io.seqware.queryengine.sandbox.testing.impl.PicardBackendTest;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+
+import javax.swing.JEditorPane;
+import javax.swing.text.html.HTMLDocument;
 
 import net.sf.samtools.SAMFileReader;
 
@@ -35,9 +40,30 @@ public class TestPicardBackend  {
 
   @Test
   public void testGetIntroductionDocs() {
-    Assert.assertNull(pb.getHTMLReport());
     pb.getIntroductionDocs();
-    Assert.assertNotNull(pb.getHTMLReport());
+    HTMLDocument expHtmlReport = new HTMLDocument();
+    JEditorPane p = new JEditorPane();
+    p.setContentType("text/html");
+    p.setText(""
+        + " <html>"
+        + "   <head>"
+        + "     <title>SeqWare Query Engine: PicardBackendTest</title>"
+        + "     <style type=\"text/css\">"
+        + "       body { background-color: #EEEEEE; }"
+        + "       h3  { color: red; }"
+        + "     </style>"
+        + "     </head>" 
+        + "   <body>"
+        + "     <h1>SeqWare Query Engine: PicardBackendTest</h1>"
+        + "   </body>"
+        + "</html>"
+     );
+    expHtmlReport = (HTMLDocument) p.getDocument();  
+    try {
+    Assert.assertEquals(pb.getHTMLReport().getText(0, pb.getHTMLReport().getLength()), expHtmlReport.getText(0, expHtmlReport.getLength()));
+    } catch (Exception ex) {
+      Assert.fail();
+    }
   }
 
   @Test
@@ -48,8 +74,10 @@ public class TestPicardBackend  {
   
   @Test
   public void testGetReads() {
+    pb.getIntroductionDocs();
+    pb.loadReadSet(bamfile);
     pb.getReads(jsonTxt);
-    File actualFile = new File("output.bam");
+    File actualFile = new File("testOutput.bam");
     SAMFileReader actualBAM = new SAMFileReader(actualFile);
     Assert.assertNotNull(actualBAM);
   }

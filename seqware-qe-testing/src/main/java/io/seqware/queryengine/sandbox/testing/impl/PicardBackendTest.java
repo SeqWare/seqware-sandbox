@@ -1,4 +1,7 @@
-package io.seqware.queryengine.sandbox.testing;
+package io.seqware.queryengine.sandbox.testing.impl;
+
+import io.seqware.queryengine.sandbox.testing.BackendTestInterface;
+import io.seqware.queryengine.sandbox.testing.ReturnValue;
 
 import java.io.File;
 import java.io.PrintWriter;
@@ -27,33 +30,33 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class PicardBackendTest implements BackendTestInterface {
-	
+  
  
-	public static SAMFileReader samReader; // Used to read the SAM/BAM file.
-	public static HTMLDocument htmlReport; // The HTML Report to be written 
+  public static SAMFileReader samReader; // Used to read the SAM/BAM file.
+  public static HTMLDocument htmlReport; // The HTML Report to be written 
 
   @Override
-	public String getName(){
-	  return "PicardBackendTest";
-	}
-	
-	public HTMLDocument getHTMLReport() {
-	  return htmlReport;
-	}
-	
-	public SAMFileReader getFileReader() {
-	  return samReader;
-	}
-	/** getIntroductionDocs()
-	 *  Creates an HTMLDocument object to use as a log
-	 */
+  public String getName(){
+    return "PicardBackendTest";
+  }
+  
+  public HTMLDocument getHTMLReport() {
+    return htmlReport;
+  }
+  
+  public SAMFileReader getFileReader() {
+    return samReader;
+  }
+  /** getIntroductionDocs()
+   *  Creates an HTMLDocument object to use as a log
+   */
   @Override
-	public ReturnValue getIntroductionDocs() {
-	  htmlReport = new HTMLDocument();
-	  JEditorPane p = new JEditorPane();
-	  p.setContentType("text/html");
-	  p.setText(""
-	      + " <html>"
+  public ReturnValue getIntroductionDocs() {
+    htmlReport = new HTMLDocument();
+    JEditorPane p = new JEditorPane();
+    p.setContentType("text/html");
+    p.setText(""
+        + " <html>"
         + "   <head>"
         + "     <title>SeqWare Query Engine: PicardBackendTest</title>"
         + "     <style type=\"text/css\">"
@@ -66,72 +69,71 @@ public class PicardBackendTest implements BackendTestInterface {
         + "   </body>"
         + "</html>"
      );
-	  htmlReport = (HTMLDocument) p.getDocument();	  
+    htmlReport = (HTMLDocument) p.getDocument();    
     ReturnValue r = new ReturnValue();
     r.setState(ReturnValue.SUCCESS);
     return r;
-	}
-	
+  }
+  
   @Override
-	public ReturnValue loadFeatureSet(String filePath) { 
-		ReturnValue r = new ReturnValue(); 
-		r.setState(ReturnValue.NOT_SUPPORTED); 
-		return r;  
+  public ReturnValue loadFeatureSet(String filePath) { 
+    ReturnValue r = new ReturnValue(); 
+    r.setState(ReturnValue.NOT_SUPPORTED); 
+    return r;  
   }
 
-	/** loadReadSet
-	 * Prepares to read a .sam/.bam file. Points reader to a filePath on disk.
-	 * 
-	 * @param filePath
-	 */
+  /** loadReadSet
+   * Prepares to read a .sam/.bam file. Points reader to a filePath on disk.
+   * 
+   * @param filePath
+   */
   // Places file into SAMFileReader attribute to prepare for queries
   @Override
-	public ReturnValue loadReadSet(String filePath) {
-		ReturnValue rt = new ReturnValue();
-		
+  public ReturnValue loadReadSet(String filePath) {
+    ReturnValue rt = new ReturnValue();
+    
     // Check if file is SAM/BAM!
-		if (filePath.endsWith(".sam") || filePath.endsWith(".bam")) {
-		  long elapsedTime = System.nanoTime();
-		  
+    if (filePath.endsWith(".sam") || filePath.endsWith(".bam")) {
+      long elapsedTime = System.nanoTime();
+      
       // Point to file on disk
-			File samfile = new File(filePath);
-			samReader = new SAMFileReader(samfile);
-	    elapsedTime = (System.nanoTime() - elapsedTime) / 1000000;
-	    
-	    // Write status to HTML Report
-	    try {
-  	    htmlReport.insertBeforeEnd(htmlReport.getElement(htmlReport.getDefaultRootElement(), StyleConstants.NameAttribute, HTML.Tag.BODY), "<div><h3>loadReadSet</h3><p>Loaded file in time: "+ elapsedTime + " milliseconds</p></div>");
-	    } catch (Exception ex) {
-	      rt.setState(ReturnValue.ERROR);
-	      return rt;
-	    }
-			rt.setState(ReturnValue.SUCCESS);
-			return rt; 
-		} else {
-			rt.setState(ReturnValue.BACKEND_FILE_IMPORT_NOT_SUPPORTED);
-			return rt; 
-		}
-	}
-	  	   
+      File samfile = new File(filePath);
+      samReader = new SAMFileReader(samfile);
+      elapsedTime = (System.nanoTime() - elapsedTime) / 1000000;
+      
+      // Write status to HTML Report
+      try {
+        htmlReport.insertBeforeEnd(htmlReport.getElement(htmlReport.getDefaultRootElement(), StyleConstants.NameAttribute, HTML.Tag.BODY), "<div><h3>loadReadSet</h3><p>Loaded file in time: "+ elapsedTime + " milliseconds</p></div>");
+      } catch (Exception ex) {
+        rt.setState(ReturnValue.ERROR);
+        return rt;
+      }
+      rt.setState(ReturnValue.SUCCESS);
+      return rt; 
+    } else {
+      rt.setState(ReturnValue.BACKEND_FILE_IMPORT_NOT_SUPPORTED);
+      return rt; 
+    }
+  }
+         
   @Override
-	public ReturnValue getFeatures(String queryJSON) { 
-		ReturnValue rt = new ReturnValue(); 
-		rt.setState(ReturnValue.NOT_SUPPORTED); 
-		return rt;
-	}
-	  
-	/** getReads
-	 * Queries the .sam/.bam file in question for results specified by the JSON query
-	 * @param queryJSON
-	 */
+  public ReturnValue getFeatures(String queryJSON) { 
+    ReturnValue rt = new ReturnValue(); 
+    rt.setState(ReturnValue.NOT_SUPPORTED); 
+    return rt;
+  }
+    
+  /** getReads
+   * Queries the .sam/.bam file in question for results specified by the JSON query
+   * @param queryJSON
+   */
   @Override
-	public ReturnValue getReads(String queryJSON) {
-	  ReturnValue rt = new ReturnValue();
-	  //First, parse the query for related fields
-	  try {
-	    JSONObject jsonObOuter = new JSONObject(queryJSON);
-	    Iterator<String> OuterKeys = jsonObOuter.keys();
-	    JSONObject query = new JSONObject(queryJSON);
+  public ReturnValue getReads(String queryJSON) {
+    ReturnValue rt = new ReturnValue();
+    //First, parse the query for related fields
+    try {
+      JSONObject query = new JSONObject(queryJSON);
+      Iterator<String> OuterKeys = query.keys();
 
       JSONArray regionArray = new JSONArray(); 
       HashMap<String, String> readSetMap = new HashMap<>();
@@ -163,11 +165,11 @@ public class PicardBackendTest implements BackendTestInterface {
           }
         } 
       }
-	   
+     
       // Obtain Sample ID
       // Need to modify for more than one ID
-	    String querySampleIds = new String();
-	    if (!readSetMap.isEmpty()) {
+      String querySampleIds = new String();
+      if (!readSetMap.isEmpty()) {
         if (!readSetMap.get("sample").isEmpty()) {
           querySampleIds = readSetMap.get("sample"); 
           readSetMap.remove("sample");
@@ -180,8 +182,7 @@ public class PicardBackendTest implements BackendTestInterface {
       //Tags: SAMRecord.getAttribute() - will receive tag for read - rmapQuery
       //Regions: query with SAMRecord alignment start/end - chQuery
       //Set Order: sample_id(tags(region(read_attributes())))
-	    // Working fields: Readset: Sample ID, Read: qname, flag, cigar
-	    
+      // Working fields: Readset: Sample ID, Read: qname, flag, cigar
       long elapsedTime = System.nanoTime();
       try {
         htmlReport.insertBeforeEnd(htmlReport.getElement(htmlReport.getDefaultRootElement(), StyleConstants.NameAttribute, HTML.Tag.BODY), "<div><h3>getReads</h3><h4>Query Details</h4><ul>"
@@ -190,15 +191,14 @@ public class PicardBackendTest implements BackendTestInterface {
             + "<li>Read Attributes: " + readsQuery.toString() + "</li>"
             + "<li>Regions " + chQuery + "</li></ul>");
       } catch (Exception ex) {
-        rt.setState(ReturnValue.ERROR);
-        return rt;
+        // Keep going, should not depend on success of htmlReport
       }
-      
+
       //Next, Query the BAM file for such entries
       SAMFileHeader bamHeader = samReader.getFileHeader();
       List<SAMReadGroupRecord> bamReadGroups = bamHeader.getReadGroups();
 
-      File output = new File("output.bam");
+      File output = new File("testOutput.bam");
       SAMFileWriterFactory samFactory = new SAMFileWriterFactory();
       SAMFileWriter bfw = samFactory.makeSAMWriter(bamHeader, true, output);
       
@@ -221,7 +221,6 @@ public class PicardBackendTest implements BackendTestInterface {
       // Not completely working for all the tags (there's lots of them)
       if (!readSetMap.isEmpty()) {
         boolean readSetMatch = false;
-        System.out.println(readSetMap);
         
         //This part of query is only good for the header line: @HD SO and VN
         //todo: Needs to be fixed for the rest of the header
@@ -263,7 +262,7 @@ public class PicardBackendTest implements BackendTestInterface {
         }
       }
       */
-      
+
       // Check Attributes -- a little redundant here..
       //   to do: finish for the rest of the read attributes
       if (!readsQuery.isEmpty()) {
@@ -336,77 +335,77 @@ public class PicardBackendTest implements BackendTestInterface {
         }
       }
       
+      
       // Finally, write a .bam file with result of query
       // Also write to htmlReport
       bfw.close();
       elapsedTime = (System.nanoTime() - elapsedTime) / 1000000;
-      System.out.println("Finished in " + elapsedTime + " milliseconds.");  
       try {
         htmlReport.insertBeforeEnd(htmlReport.getElement(htmlReport.getDefaultRootElement(), StyleConstants.NameAttribute, HTML.Tag.BODY), "<p>Finished in " + elapsedTime + " milliseconds.</p></div>");
       } catch (Exception ex) {
         rt.setState(ReturnValue.ERROR);
         return rt;
       }
-	  } catch (Exception ex) {
-	    System.out.println(ex.toString());
-	    rt.setState(ReturnValue.ERROR); 
-	    return rt; 
-	  }  
-	  
-		rt.setState(ReturnValue.SUCCESS); 
-		return rt;  
-	}
-	  
+    } catch (Exception ex) {
+      System.out.println(ex.toString());
+      rt.setState(ReturnValue.ERROR); 
+      return rt; 
+    }  
+    
+    rt.setState(ReturnValue.SUCCESS); 
+    return rt;  
+  }
+    
   @Override
-	public ReturnValue runPlugin(String queryJSON, String pluginClassName) {
-		ReturnValue rt = new ReturnValue(); 
-		rt.setState(ReturnValue.NOT_IMPLEMENTED); 
-		return rt; 
-	}	  
+  public ReturnValue runPlugin(String queryJSON, String pluginClassName) {
+    ReturnValue rt = new ReturnValue(); 
+    rt.setState(ReturnValue.NOT_IMPLEMENTED); 
+    return rt; 
+  }   
 
-	/** getConclusionDocs
-	 *  Writes htmlReport to file
-	 */
+  /** getConclusionDocs
+   *  Writes htmlReport to file
+   */
   @Override
-	public ReturnValue getConclusionDocs() {
-	  ReturnValue rt = new ReturnValue(); 
-		// Write HTMLDocuments to file
-	  try {
-	    HTMLEditorKit kit = new HTMLEditorKit();
-	    StringWriter writer = new StringWriter();
-	    kit.write(writer, htmlReport, 0, htmlReport.getLength());
-	    String s = writer.toString();
-	    PrintWriter out = new PrintWriter("htmlReport.html");
+  public ReturnValue getConclusionDocs() {
+    ReturnValue rt = new ReturnValue(); 
+    // Write HTMLDocuments to file
+    try {
+      HTMLEditorKit kit = new HTMLEditorKit();
+      StringWriter writer = new StringWriter();
+      kit.write(writer, htmlReport, 0, htmlReport.getLength());
+      String s = writer.toString();
+      PrintWriter out = new PrintWriter("htmlReport.html");
       out.print(s);
       out.close();
-	  } catch (Exception ex) { 
-	    rt.setState(ReturnValue.ERROR); 
-	    return rt; 
+    } catch (Exception ex) { 
+      rt.setState(ReturnValue.ERROR); 
+      return rt; 
     } 
-	   
-		rt.setState(ReturnValue.SUCCESS); 
-		return rt;
-	}
-	 
-	public ReturnValue setupBackend(HashMap<String, String> settings) {
-		ReturnValue rt = new ReturnValue(); 
-		rt.setState(ReturnValue.NOT_IMPLEMENTED); 
-		return rt; 
-	}
+     
+    rt.setState(ReturnValue.SUCCESS); 
+    return rt;
+  }
+   
+  public ReturnValue setupBackend(HashMap<String, String> settings) {
+    ReturnValue rt = new ReturnValue(); 
+    rt.setState(ReturnValue.NOT_IMPLEMENTED); 
+    return rt; 
+  }
 
-	/** teardownBackend
-	 *  Cleans up any variables stored by object
-	 */
-	public ReturnValue teardownBackend(HashMap<String, String> settings) {
-	  // Close fileReader and drop temporary variables
-	  samReader.close();
-	  htmlReport = null;
-	  samReader = null;
-		
-		ReturnValue rt = new ReturnValue(); 
-		rt.setState(ReturnValue.SUCCESS); 
-		return rt; 
-	}
+  /** teardownBackend
+   *  Cleans up any variables stored by object
+   */
+  public ReturnValue teardownBackend(HashMap<String, String> settings) {
+    // Close fileReader and drop temporary variables
+    samReader.close();
+    htmlReport = null;
+    samReader = null;
+    
+    ReturnValue rt = new ReturnValue(); 
+    rt.setState(ReturnValue.SUCCESS); 
+    return rt; 
+  }
 
     @Override
     public ReturnValue setupBackend(Map<String, String> settings) {
