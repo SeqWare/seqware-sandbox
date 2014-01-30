@@ -5,10 +5,15 @@ import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
@@ -35,8 +40,8 @@ import org.junit.Assert;
  *
  * TODO: write plugins or make spec
  *
- * Data set 1: 
- * 
+ * Data set 1:
+ *
  * 6: teardown the backend
  *
  *
@@ -52,19 +57,27 @@ public class TestBackends {
             // data to download
             // use the same donor order in each array so BAM and VCF can be matched up
             // assumes there is a bam index named *.bam.bai
-            String[] bams = new String[]{"ftp://ftp-trace.ncbi.nih.gov/1000genomes/ftp/data/NA12156/cg_data/NA12156_lcl_SRR801819.mapped.COMPLETE_GENOMICS.CGworkflow2_2_evidenceOnly.CEU.high_coverage.20130401.bam"};
+            String[] bams = new String[]{
+                "ftp://ftp-trace.ncbi.nih.gov/1000genomes/ftp/data/NA12156/cg_data/NA12156_lcl_SRR801819.mapped.COMPLETE_GENOMICS.CGworkflow2_2_evidenceOnly.CEU.high_coverage.20130401.bam",
+                "ftp://ftp-trace.ncbi.nih.gov/1000genomes/ftp/data/NA12155/cg_data/NA12155_lcl_SRR801818.mapped.COMPLETE_GENOMICS.CGworkflow2_2_evidenceOnly.CEU.high_coverage.20130401.bam",
+                "ftp://ftp-trace.ncbi.nih.gov/1000genomes/ftp/data/NA07029/cg_data/NA07029_lcl_SRR800229.mapped.COMPLETE_GENOMICS.CGworkflow2_2_evidenceOnly.CEU.high_coverage.20130401.bam"
+            };
             // assumes there is a vcf index named *.vcf.gz.tbi
-            String[] vcfs = new String[]{"ftp://ftp-trace.ncbi.nih.gov/1000genomes/ftp/data/NA12156/cg_data/NA12156_lcl_SRR801819.wgs.COMPLETE_GENOMICS.20121201.snps_indels_svs_meis.high_coverage.genotypes.vcf.gz"};
+            String[] vcfs = new String[]{
+                "ftp://ftp-trace.ncbi.nih.gov/1000genomes/ftp/data/NA12156/cg_data/NA12156_lcl_SRR801819.wgs.COMPLETE_GENOMICS.20121201.snps_indels_svs_meis.high_coverage.genotypes.vcf.gz",
+                "ftp://ftp-trace.ncbi.nih.gov/1000genomes/ftp/data/NA12155/cg_data/NA12155_lcl_SRR801818.wgs.COMPLETE_GENOMICS.20121201.snps_indels_svs_meis.high_coverage.genotypes.vcf.gz",
+                "ftp://ftp-trace.ncbi.nih.gov/1000genomes/ftp/data/NA07029/cg_data/NA07029_lcl_SRR800229.wgs.COMPLETE_GENOMICS.20121201.snps_indels_svs_meis.high_coverage.genotypes.vcf.gz"
+            };
             // now download
-            String[] localBams = download(bams, "bai");
-            String[] localVCFs = download(vcfs, "tbi");
+            List<File> localBams = download(bams, ".bai");
+            List<File> localVCFs = download(vcfs, ".tbi");
 
 
             // read the settings file which is an INI
             HashMap<String, String> settings = (args != null && args.length > 0 ? readSettingsFile(args[0]) : null);
 
             // the test backends
-            ArrayList<BackendTestInterface> backends = new ArrayList<BackendTestInterface>();
+            ArrayList<BackendTestInterface> backends = new ArrayList<>();
             backends.add(backend);
             tempFile = File.createTempFile("report", "html");
             // output file
@@ -83,15 +96,15 @@ public class TestBackends {
                 check(b.setupBackend(settings));
 
                 // iterate over the featureSets
-                ArrayList<String> featureSets = new ArrayList<String>();
-                for (String vcfPath : localVCFs) {
-                    featureSets.add(check(b.loadFeatureSet(vcfPath)).getKv().get("featureSetId"));
+                ArrayList<String> featureSets = new ArrayList<>();
+                for (File vcfPath : localVCFs) {
+                    featureSets.add(check(b.loadFeatureSet(vcfPath.getAbsolutePath())).getKv().get("featureSetId"));
                 }
 
                 // iterate over the readSets
-                ArrayList<String> readSets = new ArrayList<String>();
-                for (String bamPath : localBams) {
-                    readSets.add(check(b.loadReadSet(bamPath)).getKv().get("readSetId"));
+                ArrayList<String> readSets = new ArrayList<>();
+                for (File bamPath : localBams) {
+                    readSets.add(check(b.loadReadSet(bamPath.getAbsolutePath())).getKv().get("readSetId"));
                 }
 
                 // query the features
@@ -117,18 +130,31 @@ public class TestBackends {
         } catch (Exception ex) {
             Logger.getLogger(TestBackends.class.getName()).log(Level.SEVERE, null, ex);
             throw new RuntimeException(ex);
-        }  finally {
+        } finally {
             IOUtils.closeQuietly(output);
-            
-            if (tempFile != null && browseReport) Desktop.getDesktop().browse((tempFile.toURI()));
+
+            if (tempFile != null && browseReport) {
+                Desktop.getDesktop().browse((tempFile.toURI()));
+            }
         }
     }
-    
+
+    private static void downloadFile(String file, File downloadDir, List<File> filesToReturn) throws IOException, MalformedURLException, URISyntaxException {
+        URL newURL = new URL(file);
+        String name = newURL.toString().substring(newURL.toString().lastIndexOf("/"));
+        File targetFile = new File(downloadDir, name);
+        if (!targetFile.exists()){
+            System.out.println("Downloading " + newURL.getFile() + " to " + targetFile.getAbsolutePath());
+        }
+        FileUtils.copyURLToFile(newURL, targetFile);
+        filesToReturn.add(targetFile);
+    }
+
     @Test
-    public void testADAMBackEnd(){
-        try{
-        testBackend(new ADAMBackendTest(), false, null);
-        } catch (Exception e){
+    public void testADAMBackEnd() {
+        try {
+            testBackend(new ADAMBackendTest(), false, null);
+        } catch (RuntimeException | IOException e) {
             Assert.assertTrue(false);
         }
     }
@@ -184,7 +210,7 @@ public class TestBackends {
      */
     private static HashMap<String, String> readSettingsFile(String iniFile) {
         // need to parse the ini file passed in
-        return (new HashMap<String, String>());
+        return (new HashMap<>());
     }
 
     /**
@@ -205,9 +231,23 @@ public class TestBackends {
      * @param bams
      * @return
      */
-    private static String[] download(String[] files, String indexExtension) {
+    private static List<File> download(String[] files, String indexExtension) {
         // need to download the files (and indexes) to a local directory then
         // populate a return String[] with thier local paths
-        return (files);
+        List<File> filesToReturn = new ArrayList<>();
+        // always use the same directory so we do not re-download on repeated runs
+        File downloadDir = new File("download_data");
+        for (String file : files) {
+            try {
+                downloadFile(file, downloadDir, filesToReturn);
+                downloadFile(file + indexExtension, downloadDir, filesToReturn);
+                // repeat download but with indexExtension
+            } catch (MalformedURLException|URISyntaxException ex) {
+                throw new RuntimeException(ex);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        }
+        return filesToReturn;
     }
 }
