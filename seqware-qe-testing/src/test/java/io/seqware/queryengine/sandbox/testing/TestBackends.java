@@ -1,6 +1,13 @@
 package io.seqware.queryengine.sandbox.testing;
 
 import io.seqware.queryengine.sandbox.testing.impl.ADAMBackendTest;
+import io.seqware.queryengine.sandbox.testing.impl.NoOpBackendTest;
+import io.seqware.queryengine.sandbox.testing.plugins.Feature;
+import io.seqware.queryengine.sandbox.testing.plugins.FeaturePluginInterface;
+import io.seqware.queryengine.sandbox.testing.plugins.FeatureSet;
+import io.seqware.queryengine.sandbox.testing.plugins.ReadPluginInterface;
+import io.seqware.queryengine.sandbox.testing.plugins.ReadSet;
+import io.seqware.queryengine.sandbox.testing.plugins.Reads;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
@@ -9,13 +16,16 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import org.apache.commons.io.IOUtils;
+import org.json.JSONException;
 import org.junit.Assert;
 
 /**
@@ -90,6 +100,7 @@ public class TestBackends {
                 output.write("<h1>" + b.getName() + "</h1>");
 
                 // get some initial docs 
+                Assert.assertTrue("introduction documents not generated", b.getIntroductionDocs().getKv().containsKey(BackendTestInterface.DOCS));
                 output.write(b.getIntroductionDocs().getKv().get(BackendTestInterface.DOCS));
 
                 // setup the backend
@@ -98,13 +109,19 @@ public class TestBackends {
                 // iterate over the featureSets
                 ArrayList<String> featureSets = new ArrayList<>();
                 for (File vcfPath : localVCFs) {
-                    featureSets.add(check(b.loadFeatureSet(vcfPath.getAbsolutePath())).getKv().get("featureSetId"));
+                    ReturnValue loadFeatureSet = b.loadFeatureSet(vcfPath.getAbsolutePath());
+                    Assert.assertTrue("feature set id not returned", loadFeatureSet.getKv().containsKey(BackendTestInterface.FEATURE_SET_ID));
+                    check(loadFeatureSet);
+                    featureSets.add(loadFeatureSet.getKv().get(BackendTestInterface.FEATURE_SET_ID));
                 }
 
                 // iterate over the readSets
                 ArrayList<String> readSets = new ArrayList<>();
                 for (File bamPath : localBams) {
-                    readSets.add(check(b.loadReadSet(bamPath.getAbsolutePath())).getKv().get("readSetId"));
+                    ReturnValue loadReadSet = b.loadReadSet(bamPath.getAbsolutePath());
+                    Assert.assertTrue("read set id not returned", loadReadSet.getKv().containsKey(BackendTestInterface.READ_SET_ID));
+                    check(loadReadSet);
+                    readSets.add(loadReadSet.getKv().get(BackendTestInterface.READ_SET_ID));
                 }
 
                 // query the features
@@ -112,17 +129,28 @@ public class TestBackends {
 
                 // query the reads
                 output.write(testReadSets(readSets, b));
-
                 // TODO: run the plugins
                 // need to iterate over the available plugins
+                // TODO: we need to define a way to enumerate plugins, @ServiceInterface?
+                
+                // run the plugin with a blank query, meaning no pre-filtering of reads
+                ReturnValue runReadPlugin = b.runPlugin("", SimpleFeaturesCountPlugin.class);
+                simpleFileCheck(runReadPlugin, BackendTestInterface.PLUGIN_RESULT_FILE);
+                // do some tests on the content of the plugin results, in this case a count of reads
+                
+                // run the plugin with a blank query, meaning no pre-filtering of features
+                ReturnValue runFeaturePlugin = b.runPlugin("", SimpleFeaturesCountPlugin.class);
+                simpleFileCheck(runFeaturePlugin, BackendTestInterface.PLUGIN_RESULT_FILE);
+                // do some tests on the content of the plugin results, in this case a count of reads
+                
                 // and then call b.runPlugin();
-
                 // final docs
-                output.write(b.getConclusionDocs().getKv().get(BackendTestInterface.DOCS));
+                ReturnValue conclusionDocs = b.getConclusionDocs();
+                Assert.assertTrue("conclusion docs not generated", conclusionDocs.getKv().containsKey(BackendTestInterface.DOCS));
+                output.write(conclusionDocs.getKv().get(BackendTestInterface.DOCS));
 
                 // teardown
                 check(b.teardownBackend(settings));
-
             }
 
             fillOutFooter(output);
@@ -145,15 +173,21 @@ public class TestBackends {
         File targetFile = new File(downloadDir, name);
         if (!targetFile.exists()){
             System.out.println("Downloading " + newURL.getFile() + " to " + targetFile.getAbsolutePath());
-        }
-        FileUtils.copyURLToFile(newURL, targetFile);
+            FileUtils.copyURLToFile(newURL, targetFile);
+        }     
         filesToReturn.add(targetFile);
     }
 
+    private static void simpleFileCheck(ReturnValue features, String returnKey) {
+        String resultFile = features.getKv().get(returnKey);
+        Assert.assertTrue("plugin results do not contain an expected result file", resultFile != null);
+        Assert.assertTrue("result file does not exist", (new File(resultFile).exists()));
+    }
+    
     @Test
-    public void testADAMBackEnd() {
+    public void testNoOpBackEnd() {
         try {
-            testBackend(new ADAMBackendTest(), false, null);
+            testBackend(new NoOpBackendTest(), false, null);
         } catch (RuntimeException | IOException e) {
             Assert.assertTrue(false);
         }
@@ -187,7 +221,17 @@ public class TestBackends {
      * @return
      */
     private static String testFeatureSets(ArrayList<String> featureSets, BackendTestInterface b) {
-        return ("<p>FEATURESET TESTING TO BE IMPLEMENTED!</p>");
+        try {
+            // blank query should return all features from all feature sets
+            ReturnValue features = b.getFeatures("");
+            simpleFileCheck(features, BackendTestInterface.QUERY_RESULT_FILE);
+            // query should return all features from chromosome 22 across all feature sets
+            features = b.getFeatures("{\"regions\":{[\"chr22\"]}}");
+            simpleFileCheck(features, BackendTestInterface.QUERY_RESULT_FILE);           
+        } catch (JSONException|IOException ex) {
+            throw new RuntimeException(ex);
+        } 
+        return ("<p>Featureset query testing completed</p>");
     }
 
     /**
@@ -200,7 +244,13 @@ public class TestBackends {
      * @return
      */
     private static String testReadSets(ArrayList<String> readSets, BackendTestInterface b) {
-        return ("<p>READSET TESTING TO BE IMPLEMENTED!</p>");
+          // blank query should return all features from all read sets
+        ReturnValue features = b.getReads("");
+        simpleFileCheck(features, BackendTestInterface.QUERY_RESULT_FILE);
+        // query should return all features from chromosome 22 across all read sets
+        features = b.getReads("{\"regions\":{[\"chr22\"]}}");
+        simpleFileCheck(features, BackendTestInterface.QUERY_RESULT_FILE);
+        return ("<p>Readset query testing completed</p>");
     }
 
     /**
@@ -221,6 +271,7 @@ public class TestBackends {
     private static ReturnValue check(ReturnValue rv) {
         if (rv.getState() != ReturnValue.SUCCESS) {
             System.err.println("BOOM! Something bad happened! Error value: " + rv.getState());
+            throw new RuntimeException(String.valueOf(rv.getState()));
         }
         return (rv);
     }
@@ -250,4 +301,34 @@ public class TestBackends {
         }
         return filesToReturn;
     }
+    
+    public class SimpleReadsCountPlugin extends AbstractPlugin<Reads, ReadSet> implements ReadPluginInterface{
+    }
+    
+    public class SimpleFeaturesCountPlugin extends AbstractPlugin<Feature, FeatureSet> implements FeaturePluginInterface{
+    }
+    
+    public abstract class AbstractPlugin <UNIT, SET>{
+        public final String count = "COUNT";
+        
+        public void map(long position, Map<SET, Collection<UNIT>> reads, Map<String, String> output) {
+            if (!output.containsKey(count)){
+                output.put(count, String.valueOf(0));
+            }
+            for(Collection<UNIT> readCollection  :reads.values()){
+                Integer currentCount = Integer.valueOf(output.get(count));
+                int nextCount = currentCount += readCollection.size();
+                output.put(count, String.valueOf(nextCount));
+            }
+        }
+
+        public void reduce(String key, Iterable<String> values, Map<String, String> output) {
+                Integer currentCount = Integer.valueOf(output.get(count));
+                for(String value : values){
+                    currentCount = currentCount += 1;
+                }
+                output.put(count, String.valueOf(currentCount));
+        }
+    }
+    
 }

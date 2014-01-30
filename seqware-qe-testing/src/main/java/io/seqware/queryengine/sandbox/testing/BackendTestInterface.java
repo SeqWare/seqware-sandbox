@@ -38,6 +38,10 @@ import org.json.*;
  */
 public interface BackendTestInterface {
     public static final String DOCS = "docs";
+    public static final String FEATURE_SET_ID = "featureSetId";
+    public static final String READ_SET_ID = "readSetId";
+    public static final String PLUGIN_RESULT_FILE = "pluginResultFile";
+    public static final String QUERY_RESULT_FILE = "queryResultFile";
   
   /** 
    * This just returns a string name to identify the backend 
@@ -247,7 +251,7 @@ public interface BackendTestInterface {
    * @param pluginClassName
    * @return 
    */
-  public ReturnValue runPlugin(String queryJSON, String pluginClassName);
+  public ReturnValue runPlugin(String queryJSON, Class pluginClass);
   
   /**
    * This is a simple method that is called just before the backend is torn down.

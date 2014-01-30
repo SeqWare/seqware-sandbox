@@ -329,7 +329,7 @@ public class GATKBackendTest implements BackendTestInterface
 	}
 
 	@Override
-	public ReturnValue runPlugin(String queryJSON, String pluginClassName) {
+	public ReturnValue runPlugin(String queryJSON, Class pluginClass) {
 		return null;
 	}
 
