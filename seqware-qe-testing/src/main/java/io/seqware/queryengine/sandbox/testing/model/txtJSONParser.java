@@ -1,5 +1,8 @@
 package io.seqware.queryengine.sandbox.testing.model;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -83,6 +86,8 @@ public class txtJSONParser {
 		}
 	}
 
+	public txtJSONParser(){};
+	
 	public HashMap<String, String> getFEATURE_MAP_QUERY(){
 		return FEATURE_MAP_QUERY;
 	}
@@ -93,5 +98,16 @@ public class txtJSONParser {
 	
 	public HashMap<String, String> getREGION_MAP_QUERY(){
 		return REGION_MAP_QUERY;
+	}
+
+	public String getJSONText(String filePath) throws IOException{
+		BufferedReader in;
+        String line;
+        String temp;
+        in = new BufferedReader(new FileReader(filePath));
+        while ((line = in.readLine()) != null){
+        	temp = temp.concat(line);
+        }
+        return temp;
 	}
 }
