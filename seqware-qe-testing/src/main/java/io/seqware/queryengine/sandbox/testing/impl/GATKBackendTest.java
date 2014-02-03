@@ -24,7 +24,6 @@ import org.broadinstitute.variant.vcf.VCFIDHeaderLine;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import org.broad.tribble.AbstractFeatureReader;
 import org.broad.tribble.FeatureReader;
 
@@ -122,7 +121,7 @@ public class GATKBackendTest implements BackendTestInterface
 		    String temp= new String();
 
 		    //Determine if user has input a chromosome query
-		    if (REGION_MAP_QUERY.size() >= 1){
+		    if (REGION_MAP_QUERY.containsKey(".") == false){ // if query does not contain ALL chromosome 
 		    	FIELD_SIZE = FEATURE_MAP_QUERY.size() +1;
 		    } else{
 		    	FIELD_SIZE = FEATURE_MAP_QUERY.size();
@@ -198,6 +197,9 @@ public class GATKBackendTest implements BackendTestInterface
 											.toString();
 								}
 						}
+					} else if (CHROM_PAIR.getKey().toString().equals(".")){
+						CHROM_ID = VARIANT_CONTEXT.getChr().toString();
+						System.out.println(CHROM_ID);
 					}
 					
 					//GATHER THE REST OF THE POINTS FROM MATCHING ALL THE FEATURES IN QUERY

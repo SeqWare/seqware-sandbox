@@ -50,35 +50,38 @@ public class txtJSONParser {
 				JSONArray jsonArInner = jsonObOuter.getJSONArray(OutKey);
 					if(OutKey.equals("regions")){
 						regionArray = jsonObOuter.getJSONArray(OutKey);
-						
-						for (int i=0; i< regionArray.length(); i++){
-							String region = regionArray
-											.get(i)
-											.toString();
-							
-							if (region.contains(":") == false){
+						if (regionArray.length() == 0){
+							REGION_MAP_QUERY.put(".", "any");
+						} else {
+							for (int i=0; i< regionArray.length(); i++){
+								String region = regionArray
+												.get(i)
+												.toString();
 								
-								//i.e. selects "22" from "chr22"
-								String chromosomeID = region.substring(
-										region.indexOf("r")+1,
-										region.length());
-								
-								REGION_MAP_QUERY.put(chromosomeID.toString(), 
-												".");
-								
-							} else if (region.contains(":") == true){
-								
-								//i.e. selects "22" from "chr22:1-99999"
-								String chromosomeID = region.substring(
-										region.indexOf("r")+1,
-										region.indexOf(":"));
-								
-								String range = region.substring(
-										region.indexOf(":")+1,
-										region.length());
-								
-								REGION_MAP_QUERY.put(chromosomeID.toString(), 
-												range.toString());
+								if (region.contains(":") == false){
+									
+									//i.e. selects "22" from "chr22"
+									String chromosomeID = region.substring(
+											region.indexOf("r")+1,
+											region.length());
+									
+									REGION_MAP_QUERY.put(chromosomeID.toString(), 
+													".");
+									
+								} else if (region.contains(":") == true){
+									
+									//i.e. selects "22" from "chr22:1-99999"
+									String chromosomeID = region.substring(
+											region.indexOf("r")+1,
+											region.indexOf(":"));
+									
+									String range = region.substring(
+											region.indexOf(":")+1,
+											region.length());
+									
+									REGION_MAP_QUERY.put(chromosomeID.toString(), 
+													range.toString());
+								}
 							}
 						}
 					}
