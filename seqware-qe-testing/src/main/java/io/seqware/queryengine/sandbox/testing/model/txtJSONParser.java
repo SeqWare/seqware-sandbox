@@ -103,7 +103,7 @@ public class txtJSONParser {
 	public String getJSONText(String filePath) throws IOException{
 		BufferedReader in;
         String line;
-        String temp;
+        String temp = new String();
         in = new BufferedReader(new FileReader(filePath));
         while ((line = in.readLine()) != null){
         	temp = temp.concat(line);
