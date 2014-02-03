@@ -12,11 +12,17 @@ public class CompleteInfoTree {
 		completetype = new HashMap<String,Map<String,ArrayList<Map<String,Object>>>>();
 	}
 	
-	public Map<String,ArrayList<Map<String,Object>>> getFirstMap(String key){
-		return completetype.get(key);
+	public Map<String,ArrayList<Map<String,Object>>> getFirstMap(String FeatureSetID){
+		return completetype.get(FeatureSetID);
 	}
 	
-	public Set<String> getKeySet(){
+	public ArrayList<Map<String,Object>> getInfoSet(String FeatureSetID){
+		Map<String,ArrayList<Map<String,Object>>> temp = 
+				completetype.get(key);
+		return temp.get(key)
+	}
+	
+	public Set<String> getFeatureSet(){
 		return completetype.keySet();
 	}
 	
