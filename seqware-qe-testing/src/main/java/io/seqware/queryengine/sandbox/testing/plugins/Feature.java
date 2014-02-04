@@ -4,27 +4,30 @@
  */
 package io.seqware.queryengine.sandbox.testing.plugins;
 
-import io.seqware.queryengine.sandbox.testing.ReturnValue;
 import io.seqware.queryengine.sandbox.testing.model.*;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import org.broad.tribble.AbstractFeatureReader;
 import org.broad.tribble.FeatureReader;
 import org.broadinstitute.variant.variantcontext.VariantContext;
 import org.broadinstitute.variant.vcf.VCFCodec;
 import org.broadinstitute.variant.vcf.VCFHeader;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.google.common.base.Splitter;
 
 /**
  *
@@ -32,13 +35,34 @@ import org.json.JSONObject;
  */
 
 public class Feature{
+	Map<String,String> Feature;
+	
+	public Feature(){
+		
+	}
+	
+	public Feature(String line){
+		String currentToken;
+		StringTokenizer st = new StringTokenizer(line,"\t");
+		while (st.hasMoreTokens()){
+			currentToken = st.nextToken();
+			if (currentToken.contains(";")){
+				Feature = splitToMap(currentToken);
+			}
+		}
+	}
+	
+	public Collection<String> values(){
+		return Feature.values();
+	}
+	
+	public Collection<String> keySet(){
+		return Feature.keySet();
+	}
 	
 	//Apply Filter, write to new temporary files
 	public void readVCFinfo(String inputFile, String queryJSON, String outputFile, String filename) throws JSONException, IOException {
-		
-		//Read the input JSON file to seperate ArrayLists for parsing
-		JSONObject jsonObOuter = new JSONObject(queryJSON);
-		
+				
 		//Points to input VCF file to process
 		//Points to output filepath
 		File sortedVcfFile = new File(inputFile);
@@ -52,7 +76,6 @@ public class Feature{
 		
 		//Initialize query stores to dump queries from input JSON
 		HashMap<String, String> FEATURE_MAP_QUERY = JParse.getFEATURE_MAP_QUERY();
-		HashMap<String, String> FEATURE_SET_MAP_QUERY = JParse.getFEATURE_SET_MAP_QUERY();
 		HashMap<String, String> REGION_MAP_QUERY = JParse.getREGION_MAP_QUERY();
 		
 		/**INITIALIZE READING OF VCF INPUT
@@ -134,18 +157,20 @@ public class Feature{
 									VARIANT_CHROM_ID = VARIANT_CONTEXT.getStart();
 	
 									//checks if current variant POS is within specified range
-									if (VARIANT_CHROM_ID >= CHROM_QUERY_LOWER_BOUND && VARIANT_CHROM_ID <= CHROM_QUERY_UPPER_BOUND){ 
+									if (VARIANT_CHROM_ID >= CHROM_QUERY_LOWER_BOUND && 
+											VARIANT_CHROM_ID <= CHROM_QUERY_UPPER_BOUND){ 
 										FIELD_COUNTER++;
 										CHROM_ID = CHROM_PAIR
 												.getKey()
 												.toString();
 									}
 							}
-						} else if (CHROM_PAIR.getKey().toString().equals(".")){
+						} else if (CHROM_PAIR.getKey()
+							.toString()
+							.equals(".")){
 							CHROM_ID = VARIANT_CONTEXT
 									.getChr()
 									.toString();
-							System.out.println(CHROM_ID);
 						}
 					
 					
@@ -199,7 +224,7 @@ public class Feature{
 				    					VARIANT_CONTEXT.getEnd() + "\t" +
 				    					VARIANT_CONTEXT.getReference() + "\t" +
 				    					VARIANT_CONTEXT.getAltAlleleWithHighestAlleleCount() + "\t" +
-				    					VARIANT_CONTEXT.getAttributes()); //Remove last semicolon in ATTRIBUTE_SORTED
+				    					ATTRIBUTE_SORTED.toString().substring(0, ATTRIBUTE_SORTED.length()-1)); //Remove last semicolon in ATTRIBUTE_SORTED
 				    	
 				    }
 				}
@@ -210,6 +235,10 @@ public class Feature{
 	
 	private FeatureReader<VariantContext> getFeatureReader(File sVcfFile, final VCFCodec vcfCodec, final boolean requireIndex) {
 		return AbstractFeatureReader.getFeatureReader(sVcfFile.getAbsolutePath(), vcfCodec, requireIndex);
+	}
+	
+	private Map<String,String> splitToMap(String in){
+		return Splitter.onPattern(";").withKeyValueSeparator("=").split(in);
 	}
 	
 }
