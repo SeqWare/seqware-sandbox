@@ -6,10 +6,12 @@ package io.seqware.queryengine.sandbox.testing;
 
 import io.seqware.queryengine.sandbox.testing.impl.GATKBackendTest;
 import io.seqware.queryengine.sandbox.testing.utils.Global;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+
 import org.json.JSONException;
 import org.junit.Test;
 
