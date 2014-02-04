@@ -30,9 +30,9 @@ import edu.berkeley.cs.amplab.adam.models.SequenceDictionary;
  * @author boconnor
  */
 public class ADAMBackendTest implements BackendTestInterface {
-  public static Path output = new Path("output/"); 
+  public static Path output = new Path("testOutput.adam"); 
   public static SAMFileReader samReader;
-  public ArrayList<ADAMRecord> adamList;
+  public static ArrayList<ADAMRecord> adamList;
 
   @Override
   public ReturnValue getIntroductionDocs() {
@@ -72,11 +72,10 @@ public class ADAMBackendTest implements BackendTestInterface {
         File bamFile = new File(filePath);
         samReader = new SAMFileReader(bamFile, null, true);
         
-        ArrayList<ADAMRecord> adams = new ArrayList<ADAMRecord>();
+        adamList = new ArrayList<ADAMRecord>();
         for (SAMRecord r: samReader) {
-          adams.add(sr.convert(r, SequenceDictionary.fromSAMReader(samReader), RecordGroupDictionary.fromSAMReader(samReader)));
+          adamList.add(sr.convert(r, SequenceDictionary.fromSAMReader(samReader), RecordGroupDictionary.fromSAMReader(samReader)));
         }
-        //System.out.println(adams.toString());
       } else {
         System.out.println("Read file is not a .bam/.sam file.");
       }
@@ -98,7 +97,7 @@ public class ADAMBackendTest implements BackendTestInterface {
   @Override
   public ReturnValue getReads(String queryJSON)  {
     ReturnValue rt = new ReturnValue();
-    if (adamList.isEmpty()) {
+    if (null == adamList) {
       rt.setState(ReturnValue.ERROR);
       return rt;
     }
@@ -112,6 +111,8 @@ public class ADAMBackendTest implements BackendTestInterface {
     }
     catch (Exception ex) {
       System.out.println(ex.getMessage());
+      rt.setState(ReturnValue.ERROR);
+      return rt;
     }
     
     rt.setState(ReturnValue.SUCCESS);
