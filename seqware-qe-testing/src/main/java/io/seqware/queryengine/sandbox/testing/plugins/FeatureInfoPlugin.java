@@ -43,7 +43,7 @@ public class FeatureInfoPlugin implements FeaturePluginInterface{
 		Iterator<VariantContext> vcfIter = inputVCF.getVCFIterator();
 		String position;
 
-		FeatureInfoPlugin  
+		 
 		
 		while(vcfIter.hasNext()){
 			VariantContext variant = vcfIter.next();
