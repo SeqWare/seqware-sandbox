@@ -5,9 +5,6 @@
 package io.seqware.queryengine.sandbox.testing.plugins;
 
 import java.io.File;
-import java.util.ArrayList;
-
-import org.apache.commons.io.FilenameUtils;
 
 /**
  *

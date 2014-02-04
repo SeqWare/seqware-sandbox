@@ -25,8 +25,6 @@ import org.broadinstitute.variant.variantcontext.VariantContext;
 import org.broadinstitute.variant.vcf.VCFCodec;
 import org.broadinstitute.variant.vcf.VCFHeader;
 import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.google.common.base.Splitter;
 
 /**
@@ -89,7 +87,6 @@ public class Feature{
 		    BufferedReader vcfReader = new BufferedReader(new FileReader(sortedVcfFile));
 		    FeatureReader<VariantContext> reader = getFeatureReader(sortedVcfFile, vcfCodec, requireIndex);
 		    vcfIterator = reader.iterator();
-		    VCFHeader header = (VCFHeader) reader.getHeader();
 		    
 		    //Initialize variables for query checking
 		    int FIELD_SIZE; //Points needed for a variant Attribute (totaled through all features, and one from region) to be VALID
@@ -102,7 +99,6 @@ public class Feature{
 		    String QUERY_ATTRIBUTE;
 		    String VARIANT_CHROM_PAIR;
 		    String VARIANT_ATTRIBUTE;
-		    String temp= new String();
 
 		    //Determine if user has input a chromosome query
 		    if (REGION_MAP_QUERY.containsKey(".") == false){ // if query does not contain ALL chromosome 
