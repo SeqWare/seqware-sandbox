@@ -16,6 +16,7 @@ public class TestADAMBackend {
   public static void setUp() {
     ab = new ADAMBackendTest();
     bamfile = "src/main/resources/testdata/HG00310.chrom20.ILLUMINA.bwa.FIN.low_coverage.20120522.bam";
+    vcffile = "src/test/resources/testdata/exampleVCFinput.vcf";
     jsonTxt = null;
   }
 
@@ -26,13 +27,14 @@ public class TestADAMBackend {
   } 
   
   @Test
-  public void testLoadReadSet() {
-    ab.loadReadSet(bamfile);
-  }
-  
-  @Test
   public void testGetReads() {
     ab.loadReadSet(bamfile);
     ab.getReads(jsonTxt);
   } 
+  
+  @Test
+  public void testGetFeatures() {
+    ab.loadFeatureSet(vcffile);
+    ab.getFeatures(jsonTxt);
+  }
 }
