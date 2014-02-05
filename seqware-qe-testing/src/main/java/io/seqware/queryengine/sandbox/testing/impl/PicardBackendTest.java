@@ -357,7 +357,7 @@ public class PicardBackendTest implements BackendTestInterface {
   }
     
   @Override
-  public ReturnValue runPlugin(String queryJSON, String pluginClassName) {
+  public ReturnValue runPlugin(String queryJSON, Class pluginClass) {
     ReturnValue rt = new ReturnValue(); 
     rt.setState(ReturnValue.NOT_IMPLEMENTED); 
     return rt; 
