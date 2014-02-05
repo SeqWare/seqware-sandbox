@@ -58,6 +58,10 @@ public class Feature{
 		return Feature.keySet();
 	}
 	
+	public Map<String,String> getMap(){
+		return Feature;
+	}
+	
 	//Apply Filter, write to new temporary files
 	public void readVCFinfo(String inputFile, String queryJSON, String outputFile, String filename) throws JSONException, IOException {
 				
