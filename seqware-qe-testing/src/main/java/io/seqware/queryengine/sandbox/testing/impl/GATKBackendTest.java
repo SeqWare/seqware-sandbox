@@ -3,6 +3,7 @@ package io.seqware.queryengine.sandbox.testing.impl;
 import io.seqware.queryengine.sandbox.testing.BackendTestInterface;
 import io.seqware.queryengine.sandbox.testing.ReturnValue;
 import io.seqware.queryengine.sandbox.testing.utils.*;
+import io.seqware.queryengine.sandbox.testing.model.txtJSONParser;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -23,7 +24,6 @@ import org.broadinstitute.variant.vcf.VCFIDHeaderLine;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import org.broad.tribble.AbstractFeatureReader;
 import org.broad.tribble.FeatureReader;
 
@@ -87,73 +87,12 @@ public class GATKBackendTest implements BackendTestInterface
 		File sortedVcfFile = new File(Global.HBaseStorage.get("gene").toString());
 		String filePath = Global.outputFilePath;
 		
+		txtJSONParser JParse = new txtJSONParser(queryJSON);
+		
 		//Initialize query stores to dump queries from input JSON
-		HashMap<String, String> FEATURE_MAP_QUERY = new HashMap<String,String>();
-		HashMap<String, String> FEATURE_SET_MAP_QUERY = new HashMap<String,String>();
-		HashMap<String, String> REGION_MAP_QUERY = new HashMap<String,String>();
-
-		//READ THE JSON INPUT FILE
-		/**	"OutKey":
-		{
-			"InKey": "jsonObInner.get(InKey)"
-		}*/
-		while (OutterKeys.hasNext()){
-			String OutKey = OutterKeys.next();
-			if (jsonObOuter.get(OutKey) instanceof JSONObject){
-				JSONObject jsonObInner = jsonObOuter.getJSONObject(OutKey);
-				Iterator<String> InnerKeys = jsonObInner.keys();
-				
-				while (InnerKeys.hasNext()){
-					String InKey = InnerKeys.next();
-					
-					if (OutKey.equals("feature_sets")){
-						FEATURE_SET_MAP_QUERY.put(InKey.toString(), 
-										jsonObInner.getString(InKey));
-					}
-					
-					if (OutKey.equals("features")){
-						FEATURE_MAP_QUERY.put(InKey.toString(), 
-										jsonObInner.getString(InKey));
-					}
-				}
-			} else if (jsonObOuter.get(OutKey) instanceof JSONArray){
-				JSONArray jsonArInner = jsonObOuter.getJSONArray(OutKey);
-					if(OutKey.equals("regions")){
-						regionArray = jsonObOuter.getJSONArray(OutKey);
-						
-						for (int i=0; i< regionArray.length(); i++){
-							String region = regionArray
-											.get(i)
-											.toString();
-							
-							if (region.contains(":") == false){
-								
-								//i.e. selects "22" from "chr22"
-								String chromosomeID = region.substring(
-										region.indexOf("r")+1,
-										region.length());
-								
-								REGION_MAP_QUERY.put(chromosomeID.toString(), 
-												".");
-								
-							} else if (region.contains(":") == true){
-								
-								//i.e. selects "22" from "chr22:1-99999"
-								String chromosomeID = region.substring(
-										region.indexOf("r")+1,
-										region.indexOf(":"));
-								
-								String range = region.substring(
-										region.indexOf(":")+1,
-										region.length());
-								
-								REGION_MAP_QUERY.put(chromosomeID.toString(), 
-												range.toString());
-							}
-						}
-					}
-			}
-		}
+		HashMap<String, String> FEATURE_MAP_QUERY = JParse.getFEATURE_MAP_QUERY();
+		HashMap<String, String> FEATURE_SET_MAP_QUERY = JParse.getFEATURE_SET_MAP_QUERY();
+		HashMap<String, String> REGION_MAP_QUERY = JParse.getREGION_MAP_QUERY();
 		
 		/**INITIALIZE READING OF VCF INPUT
 		 * 
@@ -182,7 +121,7 @@ public class GATKBackendTest implements BackendTestInterface
 		    String temp= new String();
 
 		    //Determine if user has input a chromosome query
-		    if (REGION_MAP_QUERY.size() >= 1){
+		    if (REGION_MAP_QUERY.containsKey(".") == false){ // if query does not contain ALL chromosome 
 		    	FIELD_SIZE = FEATURE_MAP_QUERY.size() +1;
 		    } else{
 		    	FIELD_SIZE = FEATURE_MAP_QUERY.size();
@@ -258,6 +197,9 @@ public class GATKBackendTest implements BackendTestInterface
 											.toString();
 								}
 						}
+					} else if (CHROM_PAIR.getKey().toString().equals(".")){
+						CHROM_ID = VARIANT_CONTEXT.getChr().toString();
+						System.out.println(CHROM_ID);
 					}
 					
 					//GATHER THE REST OF THE POINTS FROM MATCHING ALL THE FEATURES IN QUERY
