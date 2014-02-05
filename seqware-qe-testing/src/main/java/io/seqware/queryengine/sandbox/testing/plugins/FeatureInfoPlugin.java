@@ -48,13 +48,7 @@ public class FeatureInfoPlugin implements FeaturePluginInterface{
 		while(vcfIter.hasNext()){
 			VariantContext variant = vcfIter.next();
 			position = Integer.toString(variant.getStart());
-			
-			Iterator it = variant.getAttributes().entrySet().iterator();
-			
-			while( it.hasNext()){
-				Map.Entry pair = (Map.Entry)it.next();
-				System.out.println(pair.getValue().toString());
-			}
+
 
 		}
 		
@@ -105,7 +99,6 @@ public class FeatureInfoPlugin implements FeaturePluginInterface{
 		
 		String line;
 		for (File child : filedir.listFiles()){
-			System.out.println(child.getAbsolutePath());
 			String AbsolutePath = child.getAbsolutePath();
 			if (FilenameUtils.getExtension(AbsolutePath).equals("txt")){
 				FeatureSet featureset = 
