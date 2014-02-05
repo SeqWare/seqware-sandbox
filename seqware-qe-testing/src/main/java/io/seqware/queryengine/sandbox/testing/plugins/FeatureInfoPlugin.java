@@ -33,9 +33,9 @@ public class FeatureInfoPlugin implements FeaturePluginInterface{
 			Map<String, String> output) {
 	}
 	
-	public Map<String,String> applyMap(String filepath, Map<FeatureSet, Collection<Feature>> features) throws IOException{
+	public Map<String,String> applyMap(String InputFilePath, Map<FeatureSet, Collection<Feature>> features) throws IOException{
 		VCFReader inputVCF = 
-				new VCFReader(filepath);
+				new VCFReader(InputFilePath);
 			
 			Map<String,String> output = 
 				new HashMap<String,String>();
@@ -49,6 +49,13 @@ public class FeatureInfoPlugin implements FeaturePluginInterface{
 			VariantContext variant = vcfIter.next();
 			position = Integer.toString(variant.getStart());
 			
+			Iterator it = variant.getAttributes().entrySet().iterator();
+			
+			while( it.hasNext()){
+				Map.Entry pair = (Map.Entry)it.next();
+				System.out.println(pair.getValue().toString());
+			}
+
 		}
 		
 		
@@ -98,21 +105,23 @@ public class FeatureInfoPlugin implements FeaturePluginInterface{
 		
 		String line;
 		for (File child : filedir.listFiles()){
-			
-			FeatureSet featureset = 
-					new FeatureSet(child);
-		
-			BufferedReader in = 
-					new BufferedReader(
-							new FileReader(child.getAbsolutePath()));
-			
-			while((line = in.readLine()) != null){
-				Feature feature = 
-						new Feature(line);
-				Features.add(feature);
+			System.out.println(child.getAbsolutePath());
+			String AbsolutePath = child.getAbsolutePath();
+			if (FilenameUtils.getExtension(AbsolutePath).equals("txt")){
+				FeatureSet featureset = 
+						new FeatureSet(child);
+				
+				BufferedReader in = 
+						new BufferedReader(
+								new FileReader(AbsolutePath));
+				
+				while((line = in.readLine()) != null){
+					Feature feature = 
+							new Feature(line);
+						Features.add(feature);
+				}
+				MapInput.put(featureset, Features);	
 			}
-			
-			MapInput.put(featureset, Features);
 		}
 		return MapInput;
 	}
