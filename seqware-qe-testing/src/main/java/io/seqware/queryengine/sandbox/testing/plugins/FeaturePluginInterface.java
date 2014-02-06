@@ -23,7 +23,7 @@ public interface FeaturePluginInterface extends PluginInterface {
      * @param features
      * @param output
      */
-    public void map(long position, Feature inputFeatures, Map<FeatureSet, Collection<Feature>> features, Map<String, String> output);
+    public void map(long position, Map<FeatureSet, Collection<Feature>> features, Map<String, String> output);
 
     /**
      * Used to process the results from the FeatureSet map.
