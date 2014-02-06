@@ -1,6 +1,7 @@
 package io.seqware.queryengine.sandbox.testing;
 
 import io.seqware.queryengine.sandbox.testing.impl.GATKBackendTest;
+import io.seqware.queryengine.sandbox.testing.impl.GATK_Picard_BackendTest;
 import io.seqware.queryengine.sandbox.testing.impl.PicardBackendTest;
 import io.seqware.queryengine.sandbox.testing.utils.Global;
 
@@ -25,7 +26,7 @@ import org.junit.Test;
 
 public class GATK_Picard_Test {
     @Test
-    public void testGATK() throws IOException, JSONException{
+    public void testAll() throws IOException, JSONException{
     	 ReturnValue returned = new ReturnValue();
          
 
@@ -36,35 +37,27 @@ public class GATK_Picard_Test {
          Global.outputFilePath = File.createTempFile("output", "txt").getAbsolutePath();
          
  		//Obtain matched features
-         returned = gb.getFeatures(jsonTxt2);    	
+         returned = gb.getFeatures(jsonTxt);    	
     }
 
-    static PicardBackendTest pb;
+    static GATK_Picard_BackendTest pb;
     static String bamfile;
     static String jsonTxt;
     
-    static GATKBackendTest gb; 
+    static GATK_Picard_BackendTest gb; 
     static String vcffile;
     static String jsonTxt2 = new String(); //Need to combine these JSON's after
     
     @BeforeClass
     public static void setUp() throws Exception {
-      pb = new PicardBackendTest();
-      bamfile = "src/main/resources/testdata/HG00310.chrom20.ILLUMINA.bwa.FIN.low_coverage.20120522.bam";
       File jsonQuery = new File("src/main/resources/testdata/query.json");
-      InputStream is = new FileInputStream(jsonQuery);
-      jsonTxt = IOUtils.toString(is);
+	  InputStream is = new FileInputStream(jsonQuery);
+	  jsonTxt = IOUtils.toString(is);
+	    
+      pb = new GATK_Picard_BackendTest();
+      bamfile = "src/main/resources/testdata/HG00310.chrom20.ILLUMINA.bwa.FIN.low_coverage.20120522.bam";
       
-      
-      BufferedReader in;
-      //Point to local JSON text file to be read
-      String line = new String();
-      in = new BufferedReader(new FileReader("src/main/resources/testdata/exampleJSONQuery.txt"));
-      while ((line = in.readLine()) != null){
-      	jsonTxt2 = jsonTxt2.concat(line);
-      }
-      
-      gb = new GATKBackendTest();
+      gb = new GATK_Picard_BackendTest();
       vcffile = "src/main/resources/testdata/exampleVCFinput.vcf";
     }
     
@@ -84,14 +77,14 @@ public class GATK_Picard_Test {
       p.setText(""
           + " <html>"
           + "   <head>"
-          + "     <title>SeqWare Query Engine: PicardBackendTest</title>"
+          + "     <title>SeqWare Query Engine: GATK_Picard_BackendTest</title>"
           + "     <style type=\"text/css\">"
           + "       body { background-color: #EEEEEE; }"
           + "       h3  { color: red; }"
           + "     </style>"
           + "     </head>" 
           + "   <body>"
-          + "     <h1>SeqWare Query Engine: PicardBackendTest</h1>"
+          + "     <h1>SeqWare Query Engine: GATK_Picard_BackendTest</h1>"
           + "   </body>"
           + "</html>"
        );
