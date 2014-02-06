@@ -28,8 +28,7 @@ public class GATK_Picard_Test {
     public void testGATK() throws IOException, JSONException{
     	 ReturnValue returned = new ReturnValue();
          
-         
-         
+
          //Point to local VCF file to be read
          gb.loadFeatureSet(vcffile);  
  		
@@ -46,7 +45,7 @@ public class GATK_Picard_Test {
     
     static GATKBackendTest gb; 
     static String vcffile;
-    static String jsonTxt2; //Need to combine these JSON's after
+    static String jsonTxt2 = new String(); //Need to combine these JSON's after
     
     @BeforeClass
     public static void setUp() throws Exception {
@@ -60,14 +59,13 @@ public class GATK_Picard_Test {
       BufferedReader in;
       //Point to local JSON text file to be read
       String line = new String();
-      in = new BufferedReader(new FileReader("src/test/resources/exampleJSONQuery.txt"));
+      in = new BufferedReader(new FileReader("src/main/resources/testdata/exampleJSONQuery.txt"));
       while ((line = in.readLine()) != null){
       	jsonTxt2 = jsonTxt2.concat(line);
       }
       
       gb = new GATKBackendTest();
-      vcffile = "src/test/resources/exampleVCFinput.vcf";
-      jsonTxt2 = "src/test/resources/exampleJSONQuery.txt";
+      vcffile = "src/main/resources/testdata/exampleVCFinput.vcf";
     }
     
     @AfterClass
