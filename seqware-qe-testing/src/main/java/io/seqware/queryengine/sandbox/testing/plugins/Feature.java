@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 import org.broad.tribble.AbstractFeatureReader;
@@ -25,6 +26,9 @@ import org.broadinstitute.variant.variantcontext.VariantContext;
 import org.broadinstitute.variant.vcf.VCFCodec;
 import org.broadinstitute.variant.vcf.VCFHeader;
 import org.json.JSONException;
+
+import scala.actors.threadpool.Arrays;
+
 import com.google.common.base.Splitter;
 
 /**
@@ -95,6 +99,7 @@ public class Feature{
 		    //Initialize variables for query checking
 		    int FIELD_SIZE; //Points needed for a variant Attribute (totaled through all features, and one from region) to be VALID
 		    int FIELD_COUNTER;
+		    int miniFieldCounter;
 		    int CHROM_QUERY_UPPER_BOUND; //Region query
 		    int CHROM_QUERY_LOWER_BOUND;
 		    int VARIANT_CHROM_ID;
@@ -103,7 +108,16 @@ public class Feature{
 		    String QUERY_ATTRIBUTE;
 		    String VARIANT_CHROM_PAIR;
 		    String VARIANT_ATTRIBUTE;
-
+		    String temp;
+		    
+		    Set<String> filterSet;
+		    List<String> filterSetQuery;
+		    
+		    Set<String> infoKeySet;
+		    Set<String> infoKeySetQuery;
+		    
+		    Map<String, String> infoMapQuery;
+		   
 		    //Determine if user has input a chromosome query
 		    if (REGION_MAP_QUERY.containsKey(".") == false){ // if query does not contain ALL chromosome 
 		    	FIELD_SIZE = FEATURE_MAP_QUERY.size() +1;
@@ -119,8 +133,9 @@ public class Feature{
 				
 				//Reset the field counter on next line
 				FIELD_COUNTER = 0; 
+				miniFieldCounter = 0;
 				VariantContext VARIANT_CONTEXT = vcfIterator.next();
-	
+				
 			    Iterator REGION_MAP_ITERATOR = REGION_MAP_QUERY
 			    		.entrySet()
 			    		.iterator();
@@ -130,69 +145,131 @@ public class Feature{
 
 				//Loop through each query in Chromosomes in VCF
 				while(REGION_MAP_ITERATOR.hasNext()){
-						Map.Entry CHROM_PAIR = (Map.Entry)REGION_MAP_ITERATOR.next();
-
-						//GATHER FIRST POINT FROM MATCHING CHROMOSOME NUMBER AND RANGE IN QUERY
-						if (CHROM_PAIR.getKey().equals(VARIANT_CONTEXT.getChr())){ //check if query in chromosomes matches current CHROM_ID in variant
-							VARIANT_CHROM_PAIR = CHROM_PAIR
-									.getValue()
+					Map.Entry CHROM_PAIR = (Map.Entry)REGION_MAP_ITERATOR.next();
+					//GATHER FIRST POINT FROM MATCHING CHROMOSOME NUMBER AND RANGE IN QUERY
+					if (CHROM_PAIR.getKey().equals(VARIANT_CONTEXT.getChr())){ //check if query in chromosomes matches current CHROM_ID in variant
+						VARIANT_CHROM_PAIR = CHROM_PAIR
+								.getValue()
+								.toString();
+						
+						//Checks if the current variant contains ALL POS
+						if (VARIANT_CHROM_PAIR.equals(".") == true){ 
+							FIELD_COUNTER++;
+							CHROM_ID = CHROM_PAIR
+									.getKey()
 									.toString();
 							
-							//Checks if the current variant contains ALL POS
-							if (VARIANT_CHROM_PAIR.equals(".") == true){ 
-								FIELD_COUNTER++;
-								CHROM_ID = CHROM_PAIR
-										.getKey()
-										.toString();
+						} else if (VARIANT_CHROM_PAIR.equals(".") == false) {
 								
-							} else if (VARIANT_CHROM_PAIR.equals(".") == false) {
-									
-									CHROM_QUERY_LOWER_BOUND = Integer.parseInt(VARIANT_CHROM_PAIR.substring(
-											0,VARIANT_CHROM_PAIR.indexOf("-")));
-									
-									CHROM_QUERY_UPPER_BOUND = Integer.parseInt(VARIANT_CHROM_PAIR.substring(
-											VARIANT_CHROM_PAIR.indexOf("-")+1, 
-											VARIANT_CHROM_PAIR.length()));
-									
-									VARIANT_CHROM_ID = VARIANT_CONTEXT.getStart();
-	
-									//checks if current variant POS is within specified range
-									if (VARIANT_CHROM_ID >= CHROM_QUERY_LOWER_BOUND && 
-											VARIANT_CHROM_ID <= CHROM_QUERY_UPPER_BOUND){ 
-										FIELD_COUNTER++;
-										CHROM_ID = CHROM_PAIR
-												.getKey()
-												.toString();
-									}
-							}
-						} else if (CHROM_PAIR.getKey()
-							.toString()
-							.equals(".")){
-							CHROM_ID = VARIANT_CONTEXT
-									.getChr()
-									.toString();
+								CHROM_QUERY_LOWER_BOUND = Integer.parseInt(VARIANT_CHROM_PAIR.substring(
+										0,VARIANT_CHROM_PAIR.indexOf("-")));
+								
+								CHROM_QUERY_UPPER_BOUND = Integer.parseInt(VARIANT_CHROM_PAIR.substring(
+										VARIANT_CHROM_PAIR.indexOf("-")+1, 
+										VARIANT_CHROM_PAIR.length()));
+								
+								VARIANT_CHROM_ID = VARIANT_CONTEXT.getStart();
+
+								//checks if current variant POS is within specified range
+								if (VARIANT_CHROM_ID >= CHROM_QUERY_LOWER_BOUND && VARIANT_CHROM_ID <= CHROM_QUERY_UPPER_BOUND){ 
+									FIELD_COUNTER++;
+									CHROM_ID = CHROM_PAIR
+											.getKey()
+											.toString();
+								}
 						}
-					
-					
+					} else if (CHROM_PAIR.getKey().toString().equals(".")){
+						CHROM_ID = VARIANT_CONTEXT.getChr().toString();
+					}
 					
 					//GATHER THE REST OF THE POINTS FROM MATCHING ALL THE FEATURES IN QUERY
 				    while (FEATURE_MAP_ITERATOR.hasNext()) { //loop through each query in features
 				        Map.Entry pairs = (Map.Entry)FEATURE_MAP_ITERATOR.next();
-					    String VARIANT_ATTRIBUTE_NOT_MATCHED = new String();
-					    
-				        VARIANT_ATTRIBUTE = VARIANT_CONTEXT
-				        		.getAttributeAsString(
-				        				pairs.getKey().toString(), 
-				        				VARIANT_ATTRIBUTE_NOT_MATCHED);
-				        
-				        QUERY_ATTRIBUTE = pairs
-				        		.getValue()
+				        String colname = pairs
+				        		.getKey()
 				        		.toString();
 				        
-				        if (VARIANT_ATTRIBUTE.equals(QUERY_ATTRIBUTE)){	
+				        
+			        	QUERY_ATTRIBUTE = pairs
+			        			.getValue()
+			        			.toString();
+				        if(colname.equals("INFO")){
 				        	
-				        	//Accumulate points
-				        	FIELD_COUNTER++; 
+						    infoMapQuery = Splitter.on(",").withKeyValueSeparator("=").split(
+						    		QUERY_ATTRIBUTE);
+						    
+						    infoKeySet = VARIANT_CONTEXT
+						    		.getAttributes()
+						    		.keySet();
+
+						    infoKeySetQuery = infoMapQuery.keySet();
+						    
+						    temp = VARIANT_CONTEXT
+						    		.getAttributes()
+						    		.values().toString();
+
+						    
+						    Map<String,Object> infoMap = VARIANT_CONTEXT.getAttributes();
+						    
+						    for (String variantKey : infoMap.keySet()){
+						    	for (String queryKey : infoKeySetQuery){
+						    		if (infoMap.get(variantKey).toString().equals(infoMapQuery.get(queryKey))){
+						    			miniFieldCounter++;
+						    		}
+						    	}
+						    }
+						    
+					        if (infoKeySet.containsAll(infoKeySetQuery) &&
+					        		miniFieldCounter == infoMapQuery.size()){	
+					        	//Accumulate points
+					        	FIELD_COUNTER++; 
+					        }
+					        
+					      //add point if QUAL matches
+				        } else if (colname.equals("QUAL")){
+				        	VARIANT_ATTRIBUTE = String.valueOf(VARIANT_CONTEXT
+				        			.getPhredScaledQual()); 
+				        	
+				        	VARIANT_ATTRIBUTE = VARIANT_ATTRIBUTE //Truncate String converted double.
+				        			.substring(0, VARIANT_ATTRIBUTE.indexOf("."));
+
+					        if (VARIANT_ATTRIBUTE.equals(QUERY_ATTRIBUTE)){	
+					        	
+					        	//Accumulate points
+					        	FIELD_COUNTER++; 
+					        }
+					        
+					        //add point if ID matches
+				        } else if (colname.equals("ID")){
+				        	VARIANT_ATTRIBUTE = VARIANT_CONTEXT
+				        			.getID().toString();
+				        	
+					        if (VARIANT_ATTRIBUTE.equals(QUERY_ATTRIBUTE)){	
+					        	
+					        	//Accumulate points
+					        	FIELD_COUNTER++;
+					        }
+				        } else if (colname.equals("FILTER")){
+				        	filterSet = VARIANT_CONTEXT.getFilters();
+				        	
+				        	if ((filterSet.size() == 0) //check for no filters applied
+				        			&& (QUERY_ATTRIBUTE.toLowerCase().equals("false"))){
+				        		FIELD_COUNTER++;
+				        	} else if (filterSet.size() != 0){ //filters were applied, add them
+				        		
+				        		filterSetQuery = Splitter.onPattern(",").splitToList(QUERY_ATTRIBUTE);
+				        		if (filterSetQuery.containsAll(filterSet) 
+				        				&& filterSet.containsAll(filterSetQuery)){
+				        			FIELD_COUNTER++;
+				        			
+				        		}
+				        	}
+				        } else if (colname.equals("ALT")){
+				        	VARIANT_ATTRIBUTE = VARIANT_CONTEXT.getAltAlleleWithHighestAlleleCount().toString();
+				        	
+				        	if (VARIANT_ATTRIBUTE.equals(QUERY_ATTRIBUTE)){
+				        		FIELD_COUNTER++;
+				        	}
 				        }
 				    }
 				    
@@ -218,16 +295,23 @@ public class Feature{
 				    		
 				    		ATTRIBUTE_SORTED = ATTRIBUTE_SORTED + ATTRIBUTE_SORTEDHolder;
 				    	}
-				    	
+			        	String PhredScore = String.valueOf(VARIANT_CONTEXT
+			        			.getPhredScaledQual()); 
+			        	
+			        	PhredScore = PhredScore //Truncate String converted double.
+			        			.substring(0, PhredScore.indexOf("."));
+			        	
 				    	//Write variant to a TSV file
 				    	writer.println("chr" + CHROM_ID + "\t" +
 				    					VARIANT_CONTEXT.getEnd() + "\t" +
+				    					VARIANT_CONTEXT.getID() + "\t" +
 				    					VARIANT_CONTEXT.getReference() + "\t" +
 				    					VARIANT_CONTEXT.getAltAlleleWithHighestAlleleCount() + "\t" +
+				    					PhredScore + "\t" +
 				    					ATTRIBUTE_SORTED.toString().substring(0, ATTRIBUTE_SORTED.length()-1)); //Remove last semicolon in ATTRIBUTE_SORTED
-				    	
 				    }
 				}
+
 			}
 			writer.close();
 		}	

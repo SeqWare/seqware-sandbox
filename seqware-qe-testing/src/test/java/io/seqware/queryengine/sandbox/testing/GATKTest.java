@@ -35,7 +35,7 @@ public class GATKTest {
          }
  		
          //Point to TSV output file to be written to
-         Global.outputFilePath = File.createTempFile("output", "txt").getAbsolutePath();
+         Global.outputFilePath = "/Users/bso/output.txt";
          
  		//Obtain matched features
          returned = testb.getFeatures(temp);    	

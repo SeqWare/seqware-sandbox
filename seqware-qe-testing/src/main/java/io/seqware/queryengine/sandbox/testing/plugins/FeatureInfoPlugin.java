@@ -26,15 +26,15 @@ public class FeatureInfoPlugin implements FeaturePluginInterface{
 	public void map(long position,
 			Map<FeatureSet, Collection<Feature>> features,
 			Map<String, String> output) {
-		Collection<String> inputFeatureKeySet = inputFeature.keySet();
-		ArrayList<Feature>  
-		
-		for (FeatureSet thisFeatureSet :features.keySet()){
-			
-			for (String featureKey : inputFeatureKeySet){
-				
-			}
-		}
+//		Collection<String> inputFeatureKeySet = inputFeature.keySet();
+////		ArrayList<Feature>  
+//		
+//		for (FeatureSet thisFeatureSet :features.keySet()){
+//			
+//			for (String featureKey : inputFeatureKeySet){
+//				
+//			}
+//		}
 	}
 	
 	@Override
@@ -57,7 +57,7 @@ public class FeatureInfoPlugin implements FeaturePluginInterface{
 		while(vcfIter.hasNext()){
 			VariantContext variant = vcfIter.next();
 			position = Integer.toString(variant.getStart());
-			variant.
+//			variant.
 			Iterator it = variant.getAttributes().entrySet().iterator();
 			
 			while( it.hasNext()){

@@ -6,8 +6,9 @@
     },
    "features": 
     {
-      "VT":"SNP",
-      "AC":"2"
+      "INFO":"VT=SNP,AC=1",
+      "QUAL":"100",
+      "FILTER" : "q10,s50,q12"
     },
    "read_sets": 
     {
