@@ -8,10 +8,7 @@ import io.seqware.queryengine.sandbox.testing.BackendTestInterface;
 import io.seqware.queryengine.sandbox.testing.ReturnValue;
 
 import java.io.File;
-<<<<<<< HEAD
 import java.io.IOException;
-=======
->>>>>>> origin/feature/ADAMBackend
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -26,12 +23,9 @@ import org.broad.tribble.AbstractFeatureReader;
 import org.broad.tribble.FeatureReader;
 import org.broadinstitute.variant.variantcontext.VariantContext;
 import org.broadinstitute.variant.vcf.VCFCodec;
-<<<<<<< HEAD
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-=======
->>>>>>> origin/feature/ADAMBackend
 
 import parquet.avro.AvroParquetWriter;
 import scala.collection.JavaConverters;
@@ -71,24 +65,6 @@ public class ADAMBackendTest implements BackendTestInterface {
 
   @Override
   public ReturnValue loadFeatureSet(String filePath) {
-    if (!filePath.endsWith("vcf")) {
-      System.out.println("Read file is not a .vcf file");
-    }
-    try {
-      VariantContextConverter vcc = new VariantContextConverter();
-      VCFCodec vcfCodec = new VCFCodec();
-      FeatureReader<VariantContext> reader = AbstractFeatureReader.getFeatureReader(filePath, vcfCodec, false);
-      Iterator<VariantContext> iter = reader.iterator();
-      adamVariantList = new ArrayList<List<ADAMVariant>>();
-      
-      while (iter.hasNext()) {
-        VariantContext vc = iter.next();
-        adamVariantList.add((List<ADAMVariant>) JavaConverters.bufferAsJavaListConverter(vcc.convertVariants(vc).toBuffer()));        
-      }
-    } catch (Exception ex) {
-      System.out.println("Error" + ex.getMessage());
-    }
-    
     ReturnValue rt = new ReturnValue();
     if (!filePath.endsWith("vcf")) {
       System.out.println("Read file is not a .vcf file");
@@ -122,15 +98,10 @@ public class ADAMBackendTest implements BackendTestInterface {
         SAMRecordConverter sr = new SAMRecordConverter();
         File bamFile = new File(filePath);
         samReader = new SAMFileReader(bamFile, null, true);
-<<<<<<< HEAD
         adamList = new ArrayList<ADAMRecord>();
         //JavaSparkContext sc = new JavaSparkContext("local", "ADAM", "$SPARK_HOME", new String[]{"seqware-qe-testing-1.0.jar"}); 
         //AdamContext ac = new AdamContext(sc);
         
-=======
-        
-        adamList = new ArrayList<ADAMRecord>();
->>>>>>> origin/feature/ADAMBackend
         for (SAMRecord r: samReader) {
           adamList.add(sr.convert(r, SequenceDictionary.fromSAMReader(samReader), RecordGroupDictionary.fromSAMReader(samReader)));
         }
@@ -226,10 +197,7 @@ public class ADAMBackendTest implements BackendTestInterface {
       rt.setState(ReturnValue.ERROR);
       return rt;
     }
-<<<<<<< HEAD
     // Try writing to a parquet file
-=======
->>>>>>> origin/feature/ADAMBackend
     try {
       AvroParquetWriter<ADAMVariant> parquetWriter = new AvroParquetWriter<ADAMVariant>(output, ADAMVariant.SCHEMA$);
       for (List<ADAMVariant> l: adamVariantList) {
@@ -250,7 +218,6 @@ public class ADAMBackendTest implements BackendTestInterface {
   @Override
   public ReturnValue getReads(String queryJSON)  {
     ReturnValue rt = new ReturnValue();
-<<<<<<< HEAD
     
     try {
       JSONObject query = new JSONObject(queryJSON);
@@ -292,14 +259,6 @@ public class ADAMBackendTest implements BackendTestInterface {
         return rt;
       }
       // Try writing to a parquet file
-=======
-    if (null == adamList) {
-      rt.setState(ReturnValue.ERROR);
-      return rt;
-    }
-    
-    try {
->>>>>>> origin/feature/ADAMBackend
       AvroParquetWriter<ADAMRecord> parquetWriter = new AvroParquetWriter<ADAMRecord>(output, ADAMRecord.SCHEMA$);
       for (ADAMRecord a: adamList) {
         parquetWriter.write(a);
