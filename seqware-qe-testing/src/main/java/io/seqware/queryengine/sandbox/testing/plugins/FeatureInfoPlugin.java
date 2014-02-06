@@ -24,8 +24,18 @@ public class FeatureInfoPlugin implements FeaturePluginInterface{
 	//These will take the featuresInfoTree of VCF data from different files and perform mapreduce
 	@Override
 	public void map(long position,
+			Feature inputFeature,
 			Map<FeatureSet, Collection<Feature>> features,
 			Map<String, String> output) {
+		Collection<String> inputFeatureKeySet = inputFeature.keySet();
+		ArrayList<Feature>  
+		
+		for (FeatureSet thisFeatureSet :features.keySet()){
+			
+			for (String featureKey : inputFeatureKeySet){
+				
+			}
+		}
 	}
 	
 	@Override
@@ -48,7 +58,13 @@ public class FeatureInfoPlugin implements FeaturePluginInterface{
 		while(vcfIter.hasNext()){
 			VariantContext variant = vcfIter.next();
 			position = Integer.toString(variant.getStart());
-
+			variant.
+			Iterator it = variant.getAttributes().entrySet().iterator();
+			
+			while( it.hasNext()){
+				Map.Entry pair = (Map.Entry)it.next();
+				System.out.println(pair.getValue().toString());
+			}
 
 		}
 		
