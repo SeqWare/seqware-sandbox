@@ -16,7 +16,11 @@ public class TestADAMBackend {
   public static void setUp() {
     ab = new ADAMBackendTest();
     bamfile = "src/main/resources/testdata/HG00310.chrom20.ILLUMINA.bwa.FIN.low_coverage.20120522.bam";
+<<<<<<< HEAD
     vcffile = "src/main/resources/testdata/exampleVCFinput.vcf";
+=======
+    vcffile = "src/test/resources/testdata/exampleVCFinput.vcf";
+>>>>>>> origin/feature/ADAMBackend
     jsonTxt = null;
   }
 
