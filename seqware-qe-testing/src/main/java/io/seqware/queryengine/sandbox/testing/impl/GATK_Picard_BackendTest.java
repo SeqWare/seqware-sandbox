@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.swing.JEditorPane;
+import javax.swing.text.BadLocationException;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.html.HTML;
 import javax.swing.text.html.HTMLDocument;
@@ -99,7 +100,17 @@ public class GATK_Picard_BackendTest implements BackendTestInterface {
 			String KEY = "gene";
 			String VALUE = filePath;
 			Global.HBaseStorage.put(KEY, VALUE);
+		    long elapsedTime = System.nanoTime();
+			elapsedTime = (System.nanoTime() - elapsedTime) / 1000000;
 			
+	        try {
+				htmlReport.insertBeforeEnd(htmlReport.getElement(htmlReport.getDefaultRootElement(), StyleConstants.NameAttribute, HTML.Tag.BODY), "<div><h3>loadFeatureSet</h3><p>Loaded file in time: "+ elapsedTime + " milliseconds</p></div>");
+			} catch (BadLocationException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
 			//State of SUCCESS
 			state.setState(ReturnValue.SUCCESS);
 			return state;
@@ -333,6 +344,13 @@ public class GATK_Picard_BackendTest implements BackendTestInterface {
 			}
 			writer.close();
 		}	
+		long elapsedTime = System.nanoTime();
+
+		try {
+			htmlReport.insertBeforeEnd(htmlReport.getElement(htmlReport.getDefaultRootElement(), StyleConstants.NameAttribute, HTML.Tag.BODY), "<p>Finished in " + elapsedTime + " milliseconds.</p></div>");
+		} catch (BadLocationException e) {
+			e.printStackTrace();
+		}
 		finished.storeKv("queryFeatureResultFile", filePath);
 		return finished; 
   }

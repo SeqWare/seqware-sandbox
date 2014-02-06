@@ -115,6 +115,7 @@ public class GATK_Picard_Test {
     @Test
     public void testGetConclusionDocs() {
       pb.getConclusionDocs();
+
       Assert.assertNotNull(pb.getHTMLReport());
     }
     
