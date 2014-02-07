@@ -42,7 +42,8 @@ import scala.actors.threadpool.Arrays;
  */
 public class GATKBackendTest implements BackendTestInterface
 {
-    
+	static String FILTER_SORTED;
+	static Set<String> QUERY_KEYS;
 	@Override
 	public ReturnValue getIntroductionDocs() {
 		return null;
@@ -101,6 +102,7 @@ public class GATKBackendTest implements BackendTestInterface
 		HashMap<String, String> FEATURE_SET_MAP_QUERY = JParse.getFEATURE_SET_MAP_QUERY();
 		HashMap<String, String> REGION_MAP_QUERY = JParse.getREGION_MAP_QUERY();
 		
+		QUERY_KEYS = FEATURE_MAP_QUERY.keySet();
 		/**INITIALIZE READING OF VCF INPUT
 		 * 
 		 */
@@ -136,6 +138,7 @@ public class GATKBackendTest implements BackendTestInterface
 		    
 		    Map<String, String> infoMapQuery;
 		    
+		    
 		    //Determine if user has input a chromosome query
 		    if (REGION_MAP_QUERY.containsKey(".") == false){ // if query does not contain ALL chromosome 
 		    	FIELD_SIZE = FEATURE_MAP_QUERY.size() +1;
@@ -165,10 +168,11 @@ public class GATKBackendTest implements BackendTestInterface
 		     * 
 		     */
 			while (vcfIterator.hasNext()){
-				
+				FILTER_SORTED = "";
 				//Reset the field counter on next line
 				FIELD_COUNTER = 0; 
 				miniFieldCounter = 0;
+				
 				VariantContext VARIANT_CONTEXT = vcfIterator.next();
 				
 			    Iterator REGION_MAP_ITERATOR = REGION_MAP_QUERY
@@ -180,6 +184,7 @@ public class GATKBackendTest implements BackendTestInterface
 
 				//Loop through each query in Chromosomes in VCF
 				while(REGION_MAP_ITERATOR.hasNext()){
+					
 					Map.Entry CHROM_PAIR = (Map.Entry)REGION_MAP_ITERATOR.next();
 					//GATHER FIRST POINT FROM MATCHING CHROMOSOME NUMBER AND RANGE IN QUERY
 					if (CHROM_PAIR.getKey().equals(VARIANT_CONTEXT.getChr())){ //check if query in chromosomes matches current CHROM_ID in variant
@@ -287,10 +292,10 @@ public class GATKBackendTest implements BackendTestInterface
 					        }
 				        } else if (colname.equals("FILTER")){
 				        	filterSet = VARIANT_CONTEXT.getFilters();
-				        	
 				        	if ((filterSet.size() == 0) //check for no filters applied
 				        			&& (QUERY_ATTRIBUTE.toLowerCase().equals("false"))){
 				        		FIELD_COUNTER++;
+				        		FILTER_SORTED = "PASS";
 				        	} else if (filterSet.size() != 0){ //filters were applied, add them
 				        		
 				        		filterSetQuery = Splitter.onPattern(",").splitToList(QUERY_ATTRIBUTE);
@@ -319,9 +324,16 @@ public class GATKBackendTest implements BackendTestInterface
 				    			.entrySet()
 				    			.iterator();
 				    	
+				    	Iterator FILTER_ITERATOR = VARIANT_CONTEXT
+				    			.getFilters()
+				    			.iterator();
+				    	
 				    	String ATTRIBUTE_SORTED = new String();
 				    	String ATTRIBUTE_SORTEDHolder = new String();
 				    	
+				    	
+				    	String FILTER_SORTEDHolder = new String();
+				    	Set<String> FILTER_SORTEDSet;
 				    	//Resort the info field from a map format to match VCF format
 				    	while(ATTRIBUTE_MAP_ITERATOR.hasNext()){ 
 				    		Map.Entry pair = (Map.Entry)ATTRIBUTE_MAP_ITERATOR.next();
@@ -331,6 +343,30 @@ public class GATKBackendTest implements BackendTestInterface
 				    		
 				    		ATTRIBUTE_SORTED = ATTRIBUTE_SORTED + ATTRIBUTE_SORTEDHolder;
 				    	}
+				    	
+				    	//Resort the filter set from a set format to match VCF format
+				    	if (QUERY_KEYS.contains("FILTER")){ //This runs if there is FILTER in the query
+					    	while(FILTER_ITERATOR.hasNext()){
+					    		FILTER_SORTEDHolder = FILTER_ITERATOR.next().toString() + ";";
+					    		
+					    		FILTER_SORTED = FILTER_SORTED + FILTER_SORTEDHolder;
+					    	}
+					    	
+					    	FILTER_SORTED = FILTER_SORTED.substring(0, FILTER_SORTED.length()-1);
+				    	} else if (!QUERY_KEYS.contains("FILTER")){ //This runs if there is no FILTER in the query
+				    		FILTER_SORTEDSet = VARIANT_CONTEXT.getFilters();
+				    		if (FILTER_SORTEDSet.size() == 0){ //If there is no filter applied
+				    			FILTER_SORTED = "PASS";
+				    		} else if (FILTER_SORTEDSet.size() != 0){
+						    	while(FILTER_ITERATOR.hasNext()){ //If there are filter(s) in the query
+						    		FILTER_SORTEDHolder = FILTER_ITERATOR.next().toString() + ";";
+						    		
+						    		FILTER_SORTED = FILTER_SORTED + FILTER_SORTEDHolder;
+						    	}
+						    	FILTER_SORTED = FILTER_SORTED.toString().substring(0, FILTER_SORTED.length()-1);
+				    		}
+				    	}
+				    	
 			        	String PhredScore = String.valueOf(VARIANT_CONTEXT
 			        			.getPhredScaledQual()); 
 			        	
@@ -344,6 +380,7 @@ public class GATKBackendTest implements BackendTestInterface
 				    					VARIANT_CONTEXT.getReference() + "\t" +
 				    					VARIANT_CONTEXT.getAltAlleleWithHighestAlleleCount() + "\t" +
 				    					PhredScore + "\t" +
+				    					FILTER_SORTED + "\t" +
 				    					ATTRIBUTE_SORTED.toString().substring(0, ATTRIBUTE_SORTED.length()-1)); //Remove last semicolon in ATTRIBUTE_SORTED
 				    }
 				}
