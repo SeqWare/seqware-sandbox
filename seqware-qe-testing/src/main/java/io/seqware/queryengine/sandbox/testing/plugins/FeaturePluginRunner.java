@@ -39,7 +39,6 @@ public class FeaturePluginRunner {
 			
 			while( it.hasNext()){
 				Map.Entry pair = (Map.Entry)it.next();
-				System.out.println(pair.getValue().toString());
 			}
 
 		}
@@ -53,7 +52,7 @@ public class FeaturePluginRunner {
 		String InputFilePath;
 		File filedir = 
 				new File(Directory);
-		System.out.println(OutputFilePath);
+		
 		Feature FeatureID = 
 				new Feature();
 		
