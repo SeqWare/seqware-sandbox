@@ -1,12 +1,16 @@
 {
   "feature_sets": 
    	{
-      "vcf4chr10":"vcf4chr10"
+      "vcf4chr10":"vcf4chr10",
+      "vcf3chr9":"vcf3chr9",
+      "vcf2chr9":"vcf2chr9",
+      "vcf4chr5":"vcf4chr5"
     },
    "features": 
     {
       "QUAL":"100",
-      "INFO":"AC=1,VT=SNP"
+      "INFO":"AC=1,VT=SNP",
+      "ALT":"T"
     },
    "read_sets": 
     {
@@ -20,6 +24,8 @@
     },
    "regions":
      [
-
+        "chr5",
+        "chr9",
+        "chr10"
      ]
 }
