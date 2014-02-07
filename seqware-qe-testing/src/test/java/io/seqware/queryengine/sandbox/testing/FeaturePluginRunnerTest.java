@@ -12,7 +12,7 @@ import io.seqware.queryengine.sandbox.testing.plugins.*;
 
 public class FeaturePluginRunnerTest {
 	@Test
-	public void runPlugin() throws IOException{
+	public void runPlugin(/**There will be a json input here + the plugin authors plugin class**/) throws IOException{
 		FeaturePluginRunner runMe = new FeaturePluginRunner();
 		
 		File jsonQuery = new File("src/main/resources/testdata/query.json");
@@ -21,7 +21,7 @@ public class FeaturePluginRunnerTest {
 		
 		
 		runMe.getFilteredFiles("src/main/resources/PluginData/", jsonTxt, System.getProperty("user.home") + "/Filtered");
-		
+		//TODO: run map for every genome position
 	}
 	
 }
