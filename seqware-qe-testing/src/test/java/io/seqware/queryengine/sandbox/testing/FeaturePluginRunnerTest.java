@@ -6,13 +6,14 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.commons.io.IOUtils;
+import org.json.JSONException;
 import org.junit.Test;
 
 import io.seqware.queryengine.sandbox.testing.plugins.*;
 
 public class FeaturePluginRunnerTest {
 	@Test
-	public void runPlugin(/**There will be a json input here + the plugin authors plugin class**/) throws IOException{
+	public void runPlugin(/**There will be a json input here + the plugin authors plugin class**/) throws IOException, JSONException{
 		FeaturePluginRunner runMe = new FeaturePluginRunner();
 		
 		File jsonQuery = new File("src/main/resources/testdata/query.json");

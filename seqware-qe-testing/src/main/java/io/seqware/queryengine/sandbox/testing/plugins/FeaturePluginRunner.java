@@ -16,6 +16,7 @@ import java.util.Map;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.broadinstitute.variant.variantcontext.VariantContext;
+import org.json.JSONException;
 
 public class FeaturePluginRunner {
 	//TODO: 1. Filter files
@@ -49,7 +50,7 @@ public class FeaturePluginRunner {
 	}
 
 	//Apply filter as determined by the JSON query
-	public void getFilteredFiles(String Directory, String queryJSON, String OutputFilePath) throws IOException{
+	public void getFilteredFiles(String Directory, String queryJSON, String OutputFilePath) throws IOException, JSONException{
 		String InputFilePath;
 		File filedir = 
 				new File(Directory);
