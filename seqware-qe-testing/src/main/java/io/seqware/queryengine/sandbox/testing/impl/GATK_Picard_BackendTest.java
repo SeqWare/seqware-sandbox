@@ -331,14 +331,22 @@ public class GATK_Picard_BackendTest implements BackendTestInterface {
 				    								 pair.getValue().toString() + ";";
 				    		
 				    		ATTRIBUTE_SORTED = ATTRIBUTE_SORTED + ATTRIBUTE_SORTEDHolder;
-				    	}
+				    	} 
 				    	
+			        	String PhredScore = String.valueOf(VARIANT_CONTEXT
+			        			.getPhredScaledQual()); 
+
+			        	PhredScore = PhredScore //Truncate String converted double.
+			        			.substring(0, PhredScore.indexOf("."));
+			        	
 				    	//Write variant to a TSV file
 				    	writer.println("chr" + CHROM_ID + "\t" +
-				    					VARIANT_CONTEXT.getEnd() + "\t" +
-				    					VARIANT_CONTEXT.getReference() + "\t" +
-				    					VARIANT_CONTEXT.getAltAlleleWithHighestAlleleCount() + "\t" +
-				    					ATTRIBUTE_SORTED.toString().substring(0, ATTRIBUTE_SORTED.length()-1)); //Remove last semicolon in ATTRIBUTE_SORTED
+		    					VARIANT_CONTEXT.getEnd() + "\t" +
+		    					VARIANT_CONTEXT.getID() + "\t" +
+		    					VARIANT_CONTEXT.getReference() + "\t" +
+		    					VARIANT_CONTEXT.getAltAlleleWithHighestAlleleCount() + "\t" +
+		    					PhredScore + "\t" +
+		    					ATTRIBUTE_SORTED.toString().substring(0, ATTRIBUTE_SORTED.length()-1)); //Remove last semicolon in ATTRIBUTE_SORTED
 				    }
 				}
 			}
