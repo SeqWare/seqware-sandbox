@@ -53,8 +53,14 @@ public class FeaturePluginRunner {
 		String InputFilePath;
 		File filedir = 
 				new File(Directory);
+		System.out.println(OutputFilePath);
 		Feature FeatureID = 
 				new Feature();
+		
+		File makefile = new File(Directory);
+		if (!makefile.exists()){
+			boolean success = makefile.mkdirs();
+		}
 		
 		txtJSONParser JParse = new txtJSONParser(queryJSON);
 		HashMap<String, String> fsmapq = JParse.getFEATURE_SET_MAP_QUERY();

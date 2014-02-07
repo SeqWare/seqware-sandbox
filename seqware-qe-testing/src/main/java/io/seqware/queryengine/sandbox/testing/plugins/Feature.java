@@ -74,10 +74,7 @@ public class Feature{
 		//Points to input VCF file to process
 		//Points to output filepath
 		File sortedVcfFile = new File(inputFile);
-		File makefile = new File(outputFile);
-		if (!makefile.exists()){
-			boolean success = makefile.mkdirs();
-		}
+
 		File filePath = new File(outputFile+"/"+filename+".txt");
 		
 		txtJSONParser JParse = new txtJSONParser(queryJSON);

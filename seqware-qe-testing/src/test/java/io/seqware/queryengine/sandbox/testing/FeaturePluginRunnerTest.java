@@ -20,8 +20,8 @@ public class FeaturePluginRunnerTest {
 		String jsonTxt = IOUtils.toString(is);
 		
 		
-		runMe.getFilteredFiles("/src/test/resources/PluginData", jsonTxt, System.getProperty("user.home") + "Filtered");
-
+		runMe.getFilteredFiles("/src/main/resources/PluginData", jsonTxt, System.getProperty("user.home") + "/Filtered");
+		
 	}
 	
 }
