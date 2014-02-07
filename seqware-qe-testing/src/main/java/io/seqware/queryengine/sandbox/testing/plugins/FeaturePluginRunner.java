@@ -56,7 +56,7 @@ public class FeaturePluginRunner {
 		Feature FeatureID = 
 				new Feature();
 		
-		File makefile = new File(Directory);
+		File makefile = new File(OutputFilePath);
 		if (!makefile.exists()){
 			boolean success = makefile.mkdirs();
 		}
