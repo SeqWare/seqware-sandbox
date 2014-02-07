@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.broadinstitute.variant.variantcontext.VariantContext;
 
@@ -57,20 +58,22 @@ public class FeaturePluginRunner {
 				new Feature();
 		
 		File makefile = new File(OutputFilePath);
+		
 		if (!makefile.exists()){
 			boolean success = makefile.mkdirs();
+		} else if (makefile.exists()){
+			FileUtils.cleanDirectory(makefile);
 		}
 		
 		txtJSONParser JParse = new txtJSONParser(queryJSON);
 		HashMap<String, String> fsmapq = JParse.getFEATURE_SET_MAP_QUERY();
-		
+
 		//Generate Complete Map of FeatureSetId and INFO
 		for (File child : filedir.listFiles()){
 			InputFilePath = child.getAbsolutePath();
 			String filename = child
 					.getName()
 					.substring(0, child.getName().indexOf("."));
-
 			if (FilenameUtils.getExtension(InputFilePath).equals("vcf")
 					&& ((fsmapq.keySet().contains(filename)) || (fsmapq.size() ==0))){ 
 				//Write this to temp file output

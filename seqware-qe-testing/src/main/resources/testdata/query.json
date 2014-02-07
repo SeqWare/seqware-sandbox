@@ -1,7 +1,7 @@
 {
   "feature_sets": 
    	{
-
+      "vcf4chr10":"vcf4chr10"
     },
    "features": 
     {
