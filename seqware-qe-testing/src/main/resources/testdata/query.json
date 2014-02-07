@@ -6,6 +6,7 @@
    "features": 
     {
       "QUAL":"100",
+      "INFO":"AC=1,VT=SNP"
     },
    "read_sets": 
     {
