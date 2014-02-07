@@ -210,7 +210,6 @@ public class GATK_Picard_BackendTest implements BackendTestInterface {
 		    String QUERY_ATTRIBUTE;
 		    String VARIANT_CHROM_PAIR;
 		    String VARIANT_ATTRIBUTE;
-		    String temp;
 		    
 		    Set<String> filterSet;
 		    List<String> filterSetQuery;
@@ -326,9 +325,7 @@ public class GATK_Picard_BackendTest implements BackendTestInterface {
 
 						    infoKeySetQuery = infoMapQuery.keySet();
 						    
-						    temp = VARIANT_CONTEXT
-						    		.getAttributes()
-						    		.values().toString();
+
 
 						    
 						    Map<String,Object> infoMap = VARIANT_CONTEXT.getAttributes();
