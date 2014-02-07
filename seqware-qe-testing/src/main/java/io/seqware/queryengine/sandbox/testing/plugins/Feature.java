@@ -50,7 +50,7 @@ public class Feature{
 		StringTokenizer st = new StringTokenizer(line,"\t");
 		while (st.hasMoreTokens()){
 			currentToken = st.nextToken();
-			if (currentToken.contains(";")){
+			if (currentToken.contains(";") && currentToken.contains("=")){
 				Feature = splitToMap(currentToken);
 			}
 		}
