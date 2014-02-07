@@ -66,12 +66,11 @@ public class FeaturePluginRunner {
 		
 		//Generate Complete Map of FeatureSetId and INFO
 		for (File child : filedir.listFiles()){
-			
 			InputFilePath = child.getAbsolutePath();
 			String filename = child
 					.getName()
 					.substring(0, child.getName().indexOf("."));
-			
+
 			if (FilenameUtils.getExtension(InputFilePath).equals("vcf")
 					&& ((fsmapq.keySet().contains(filename)) || (fsmapq.size() ==0))){ 
 				//Write this to temp file output
