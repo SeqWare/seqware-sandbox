@@ -24,10 +24,7 @@ import org.broad.tribble.AbstractFeatureReader;
 import org.broad.tribble.FeatureReader;
 import org.broadinstitute.variant.variantcontext.VariantContext;
 import org.broadinstitute.variant.vcf.VCFCodec;
-import org.broadinstitute.variant.vcf.VCFHeader;
 import org.json.JSONException;
-
-import scala.actors.threadpool.Arrays;
 
 import com.google.common.base.Splitter;
 
