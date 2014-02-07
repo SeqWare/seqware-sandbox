@@ -220,6 +220,7 @@ public class GATKBackendTest implements BackendTestInterface
 						}
 					} else if (CHROM_PAIR.getKey().toString().equals(".")){
 						CHROM_ID = VARIANT_CONTEXT.getChr().toString();
+						System.out.println(CHROM_ID);
 					}
 					
 					//GATHER THE REST OF THE POINTS FROM MATCHING ALL THE FEATURES IN QUERY
@@ -402,7 +403,7 @@ public class GATKBackendTest implements BackendTestInterface
 	}
 
 	@Override
-	public ReturnValue runPlugin(String queryJSON, String pluginClassName) {
+	public ReturnValue runPlugin(String queryJSON, Class pluginClass) {
 		return null;
 	}
 

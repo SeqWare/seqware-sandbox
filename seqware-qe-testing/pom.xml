@@ -27,26 +27,23 @@
             <artifactId>commons-logging</artifactId>
             <version>1.0.4</version>
         </dependency>
-
 		<dependency>
 		    <groupId>com.google.guava</groupId>
 		    <artifactId>guava</artifactId>
 		    <version>16.0</version>
 		</dependency>
         <dependency>
-            <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
-            <version>20131018</version>
-        </dependency>
-
-
         <dependency> 
             <groupId>org.projectlombok</groupId> 
             <artifactId>lombok</artifactId> 
             <version>1.12.2</version>
         </dependency> 
 
-
+		<dependency>
+		    <groupId>com.google.guava</groupId>
+		    <artifactId>guava</artifactId>
+		    <version>16.0</version>
+		</dependency>
         <dependency>
             <groupId>org.apache.hive</groupId>
             <artifactId>hive-jdbc</artifactId>
@@ -112,6 +109,11 @@
             <version>1.0.6-SNAPSHOT</version>
             <type>jar</type>
         </dependency>
+    <dependency>
+      <groupId>org.json</groupId>
+      <artifactId>json</artifactId>
+      <version>20140107</version>
+    </dependency>
         <dependency>
             <groupId>GenomeAnalysisTK</groupId>
             <artifactId>GenomeAnalysisTK</artifactId>

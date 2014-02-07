@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class txtJSONParser {
@@ -16,7 +17,7 @@ public class txtJSONParser {
 	HashMap<String, String> FEATURE_SET_MAP_QUERY = new HashMap<String,String>();
 	HashMap<String, String> REGION_MAP_QUERY = new HashMap<String,String>();
 	
-	public txtJSONParser(String queryJSON){
+	public txtJSONParser(String queryJSON) throws JSONException{
 		
 		JSONObject jsonObOuter = new JSONObject(queryJSON);
 		JSONArray regionArray;

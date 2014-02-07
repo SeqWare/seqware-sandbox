@@ -6,10 +6,13 @@ package io.seqware.queryengine.sandbox.testing;
 
 import io.seqware.queryengine.sandbox.testing.impl.GATKBackendTest;
 import io.seqware.queryengine.sandbox.testing.utils.Global;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+
+import org.json.JSONException;
 import org.junit.Test;
 
 /**
@@ -18,7 +21,7 @@ import org.junit.Test;
  */
 public class GATKTest {
     @Test
-    public void testGATK() throws IOException{
+    public void testGATK() throws IOException, JSONException{
     	 ReturnValue returned = new ReturnValue();
          GATKBackendTest testb = new GATKBackendTest();
          BufferedReader in;
