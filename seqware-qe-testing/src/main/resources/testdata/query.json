@@ -1,0 +1,25 @@
+{
+  "feature_sets": 
+   	{
+        "RSQ": "RSQ",
+        "SVLEN": "SVLEN"
+    },
+   "features": 
+    {
+      "QUAL":"100",
+    },
+   "read_sets": 
+    {
+        "key": "value",
+        "key2": "value2"
+    },
+  "reads": 
+    {
+      "cigar": "76M",
+      "qname": "ERR018455.38578514"
+    },
+   "regions":
+     [
+
+     ]
+}
