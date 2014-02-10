@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -26,6 +27,8 @@ public class FeaturePluginRunnerTest {
 		ReturnValue rv = new ReturnValue();
 		VCFReader vcfReader;
 		Iterator<VariantContext> vIter;
+		Map<FeatureSet, Collection<Feature>> features;
+		Map<String,String> output = new HashMap<String,String>();
 		
 		//Move these to some external global variable later, will not be called in the runPlugin params
 		String outputDir = System.getProperty("user.home") + "/Filtered";
@@ -38,27 +41,20 @@ public class FeaturePluginRunnerTest {
 		/**Filtering commences**/
 		runMe.getFilteredFiles(inputDir, jsonTxt, outputDir);
 		
+		/**Create feature data set from filtered files**/
+		features = runMe.makeMapInput(outputDir);
+		
 		//TODO: run map method from pluginClass for every genome position in every filtered file
 		FeatureCountPlugin countInstance = new FeatureCountPlugin();
 		
-		
-		File filtered;
-		String InputFilePath;
-		filtered = new File(outputDir);
-		for (File child : filtered.listFiles()){
-			InputFilePath = child.getAbsolutePath();
-			String featureSetID = child
-					.getName()
-					.substring(0, child.getName().indexOf("."));
-			if (FilenameUtils.getExtension(InputFilePath).equals("vcf")){ 
-				vcfReader = new VCFReader(InputFilePath);
-				vIter = vcfReader.getVCFIterator();
-				while (vIter.hasNext()){
-					//Apply the plugin.
-				}
-				
-			}
+		String vcfFilePath = new String();
+		vcfReader = new VCFReader(vcfFilePath);
+		vIter = vcfReader.getVCFIterator();
+		while (vIter.hasNext()){
+			VariantContext vContext = vIter.next();
+			countInstance.map(vContext.getStart(), features, output); //Run plugin for every position.
 		}
+		
 		
 		rv.getKv().put("pluginResultFile", "resultFilePath");
 		return rv;
