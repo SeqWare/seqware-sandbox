@@ -34,11 +34,11 @@ import com.google.common.base.Splitter;
  */
 
 public class Feature{
-	Map<String,String> Feature;
+	ArrayList<String> Feature;
 	static String FILTER_SORTED;
-	static Set<String> QUERY_KEYS;	
+	static Set<String> QUERY_KEYS;
+	
 	public Feature(){
-
 		
 	}
 	
@@ -47,22 +47,50 @@ public class Feature{
 		StringTokenizer st = new StringTokenizer(line,"\t");
 		while (st.hasMoreTokens()){
 			currentToken = st.nextToken();
-			if (currentToken.contains(";") && currentToken.contains("=")){
-				Feature = splitToMap(currentToken);
-			}
+			Feature.add(currentToken);
 		}
 	}
 	
-	public Collection<String> values(){
-		return Feature.values();
+	public String getChr(){
+		return Feature.get(0);
 	}
 	
-	public Collection<String> keySet(){
-		return Feature.keySet();
+	public String getPos(){
+		return Feature.get(1);
 	}
 	
-	public Map<String,String> getMap(){
-		return Feature;
+	public String getID(){
+		return Feature.get(2);
+	}
+	
+	public String getRef(){
+		return Feature.get(3);
+	}
+	
+	public String getAlt(){
+		return Feature.get(4);
+	}
+	
+	public String getQual(){
+		return Feature.get(5);
+	}
+	
+	public String getFilter(){
+		return Feature.get(6);
+	}
+	
+	public Map<String,String> getInfo(){
+		String line = Feature.get(7);
+		String currentToken;
+		StringTokenizer st = new StringTokenizer(line,"\t");
+		Map<String,String> infoMap = new HashMap<String,String>();
+		while (st.hasMoreTokens()){
+			currentToken = st.nextToken();
+			if (currentToken.contains(";") && currentToken.contains("=")){
+				infoMap = splitToMap(currentToken);
+			}
+		}
+		return infoMap;
 	}
 	
 	//Apply Filter, write to new temporary files
