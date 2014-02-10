@@ -162,14 +162,10 @@ public class ADAMBackendTest implements BackendTestInterface {
       HashMap<String, String> readSetQuery = queryParser.getReadSetQuery();
       HashMap<String, String> regionsQuery = queryParser.getRegionsQuery();
       ReadSearch rs = new ReadSearch(readSetQuery, readsQuery, regionsQuery);
-    
-      if (null == adamList) {
-        rt.setState(ReturnValue.ERROR);
-        return rt;
-      }
+      List<ADAMRecord> searchedADAMList = rs.adamSearch(adamList);
       // Try writing to a parquet file
       AvroParquetWriter<ADAMRecord> parquetWriter = new AvroParquetWriter<ADAMRecord>(output, ADAMRecord.SCHEMA$);
-      for (ADAMRecord a: adamList) {
+      for (ADAMRecord a: searchedADAMList) {
         parquetWriter.write(a);
       }
       parquetWriter.close();
