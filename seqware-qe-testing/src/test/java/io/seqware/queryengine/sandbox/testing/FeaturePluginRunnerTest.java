@@ -53,6 +53,7 @@ public class FeaturePluginRunnerTest {
 		while (vIter.hasNext()){
 			VariantContext vContext = vIter.next();
 			countInstance.map(vContext.getStart(), features, output); //Run plugin for every position.
+			
 		}
 		
 		
@@ -66,8 +67,10 @@ public class FeaturePluginRunnerTest {
 		public void map(long position,
 				Map<FeatureSet, Collection<Feature>> features,
 				Map<String, String> output) {
-			
-			
+			Iterator<Feature> featureIter = features.get("vcf1chr5").iterator();
+			while (featureIter.hasNext()){
+				System.out.println();
+			}
 		}
 
 		@Override

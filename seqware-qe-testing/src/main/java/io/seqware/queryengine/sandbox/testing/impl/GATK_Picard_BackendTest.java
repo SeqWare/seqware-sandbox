@@ -96,15 +96,19 @@ public class GATK_Picard_BackendTest implements BackendTestInterface {
   
   @Override
   public ReturnValue loadFeatureSet(String filePath) { 
-	  ReturnValue state = new ReturnValue();
+	  ReturnValue rv = new ReturnValue();
 		
 		//Check if file ext is VCF.
-		if (FilenameUtils.getExtension(filePath).equals("vcf")){ 
-			String KEY = "gene";
+		if (FilenameUtils.getExtension(filePath).equals("vcf")){
+			String featureSetId = BackendTestInterface.FEATURE_SET_ID;
+			File vcfFile = 
+					new File(filePath);
 			String VALUE = filePath;
-			Global.HBaseStorage.put(KEY, VALUE);
+//			Global.HBaseStorage.put(KEY, VALUE);
 		    long elapsedTime = System.nanoTime();
 			elapsedTime = (System.nanoTime() - elapsedTime) / 1000000;
+			
+			
 			
 	        try {
 				htmlReport.insertBeforeEnd(htmlReport.getElement(htmlReport.getDefaultRootElement(), StyleConstants.NameAttribute, HTML.Tag.BODY), "<div><h3>loadFeatureSet</h3><p>Loaded file in time: "+ elapsedTime + " milliseconds</p></div>");
@@ -115,13 +119,14 @@ public class GATK_Picard_BackendTest implements BackendTestInterface {
 			}
 
 			//State of SUCCESS
-			state.setState(ReturnValue.SUCCESS);
-			return state;
+			rv.setState(ReturnValue.SUCCESS);
+			rv.getKv().put(featureSetId, VALUE);
+			return rv;
 		} else {
 			
 			//State of NOT_SUPPORTED
-			state.setState(ReturnValue.BACKEND_FILE_IMPORT_NOT_SUPPORTED);
-			return state;
+			rv.setState(ReturnValue.BACKEND_FILE_IMPORT_NOT_SUPPORTED);
+			return rv;
 		} 
   }
 
@@ -167,13 +172,14 @@ public class GATK_Picard_BackendTest implements BackendTestInterface {
   public ReturnValue getFeatures(String queryJSON) throws JSONException, IOException { 
 		
 		//Read the input JSON file to seperate ArrayLists for parsing
-		ReturnValue finished = new ReturnValue();
+		ReturnValue rv = new ReturnValue();
 		JSONObject jsonObOuter = new JSONObject(queryJSON);
 		JSONArray regionArray;
 		Iterator<String> OutterKeys = jsonObOuter.keys();
 		
 		//Points to input VCF file to process
 		//Points to output filepath
+		
 		File sortedVcfFile = new File(Global.HBaseStorage.get("gene").toString());
 		String filePath = Global.outputFilePath;
 		
@@ -473,8 +479,8 @@ public class GATK_Picard_BackendTest implements BackendTestInterface {
 		} catch (BadLocationException e) {
 			e.printStackTrace();
 		}
-		finished.storeKv("queryFeatureResultFile", filePath);
-		return finished; 
+		rv.getKv().put(BackendTestInterface.QUERY_RESULT_FILE, filePath);
+		return rv; 
   }
     
   /** getReads

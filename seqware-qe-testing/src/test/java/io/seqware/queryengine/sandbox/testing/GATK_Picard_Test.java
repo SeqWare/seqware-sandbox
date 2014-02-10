@@ -1,6 +1,5 @@
 package io.seqware.queryengine.sandbox.testing;
 
-import io.seqware.queryengine.sandbox.testing.impl.GATKBackendTest;
 import io.seqware.queryengine.sandbox.testing.impl.GATK_Picard_BackendTest;
 import io.seqware.queryengine.sandbox.testing.impl.PicardBackendTest;
 import io.seqware.queryengine.sandbox.testing.utils.Global;
@@ -27,17 +26,17 @@ import org.junit.Test;
 public class GATK_Picard_Test {
     @Test
     public void testAll() throws IOException, JSONException{
-    	 ReturnValue returned = new ReturnValue();
+    	 ReturnValue rv = new ReturnValue();
          
 
          //Point to local VCF file to be read
-         gb.loadFeatureSet(vcffile);  
- 		
+         rv = gb.loadFeatureSet(vcffile);  
+ 		 
          //Point to TSV output file to be written to
          Global.outputFilePath = File.createTempFile("output", "txt").getAbsolutePath();
          
  		//Obtain matched features
-         returned = gb.getFeatures(jsonTxt);    	
+         rv = gb.getFeatures(jsonTxt);    	
     }
 
     static GATK_Picard_BackendTest pb;

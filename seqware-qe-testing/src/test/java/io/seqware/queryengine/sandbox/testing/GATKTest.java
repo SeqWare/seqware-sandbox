@@ -20,7 +20,7 @@ import org.junit.Test;
  * @author dyuen
  */
 public class GATKTest {
-    @Test
+    
     public void testGATK() throws IOException, JSONException{
     	 ReturnValue returned = new ReturnValue();
          GATKBackendTest testb = new GATKBackendTest();
