@@ -56,7 +56,7 @@ public class GATK_Picard_BackendTest implements BackendTestInterface {
   
   @Override
   public String getName(){
-    return "PicardBackendTest";
+    return "GATK and Picard BackendTest";
   }
   
   public HTMLDocument getHTMLReport() {
@@ -191,9 +191,8 @@ public class GATK_Picard_BackendTest implements BackendTestInterface {
 		HashMap<String, String> regionMapQuery = JParse.getregionMapQuery();
 		
 		QUERY_KEYS = featureMapQuery.keySet();
-		/**INITIALIZE READING OF VCF INPUT
-		 * 
-		 */
+		
+		/**INITIALIZE READING OF VCF INPUT**/ 
 		Iterator<VariantContext> vcfIterator;
 		{
 		    PrintWriter writer = 
@@ -224,12 +223,13 @@ public class GATK_Picard_BackendTest implements BackendTestInterface {
 		    String variantChromPair;
 		    String variantAttribute;
 		    
+		    //Used to help sort the Filter column during reading the VCF
 		    Set<String> filterSet;
 		    List<String> filterSetQuery;
 		    
+		    //Used to help sort the Filter column during reading the VCF
 		    Set<String> infoKeySet;
 		    Set<String> infoKeySetQuery;
-		    
 		    Map<String, String> infoMapQuery;
 
 		    //Determine if user has input a chromosome query
@@ -239,9 +239,7 @@ public class GATK_Picard_BackendTest implements BackendTestInterface {
 		    	fieldSize = featureMapQuery.size();
 		    }
 		    
-		    /**BEGIN LOOPING OF EVERY HEADER LINE TO MATCH FOR FEATURE_SET QUERY RESULTS
-		     * 
-		     */
+		    /**BEGIN LOOPING OF EVERY HEADER LINE TO MATCH FOR FEATURE_SET QUERY RESULTS**/
 		    for (VCFIDHeaderLine headerLine : header.getIDHeaderLines()){
 		    	Iterator featureSetMapIter = featureSetMapQuery
 		    			.entrySet()
@@ -257,9 +255,7 @@ public class GATK_Picard_BackendTest implements BackendTestInterface {
 		    	}
 		    }
 		    
-		    /**BEGIN LOOPING OF EVERY VARIANT LINE TO MATCH FOR chromID, (RANGE), FEATURE RESULTS
-		     * 
-		     */
+		    /**BEGIN LOOPING OF EVERY VARIANT LINE TO MATCH FOR chromID, (RANGE), FEATURE RESULTS**/
 			while (vcfIterator.hasNext()){
 				FILTER_SORTED = "";
 				//Reset the field counter on next line
@@ -315,8 +311,9 @@ public class GATK_Picard_BackendTest implements BackendTestInterface {
 						chromID = variantContext.getChr().toString();
 					}
 					
-					//GATHER THE REST OF THE POINTS FROM MATCHING ALL THE FEATURES IN QUERY
-				    while (featureMapIter.hasNext()) { //loop through each query in features
+					/**GATHER THE REST OF THE POINTS FROM MATCHING ALL THE FEATURES IN QUERY**/
+					//loop through each query in features
+				    while (featureMapIter.hasNext()) { 
 				        Map.Entry pairs = (Map.Entry)featureMapIter.next();
 				        
 				        String colname = pairs
@@ -422,7 +419,8 @@ public class GATK_Picard_BackendTest implements BackendTestInterface {
 				    	
 				    	String filterSortedHolder = new String();
 				    	Set<String> filterSortedSet;
-				    	//Resort the info field from a map format to match VCF format
+				    	
+				    	/**Resort the info field from a map format to match VCF format**/
 				    	while(attributeMapIter.hasNext()){ 
 				    		Map.Entry pair = (Map.Entry)attributeMapIter.next();
 				    		
@@ -432,8 +430,9 @@ public class GATK_Picard_BackendTest implements BackendTestInterface {
 				    		attributeSorted = attributeSorted + attributeSortedHolder;
 				    	}
 				    	
-				    	//Resort the filter set from a set format to match VCF format
-				    	if (QUERY_KEYS.contains("FILTER")){ //This runs if there is FILTER in the JSON query
+				    	/**Resort the filter set from a set format to match VCF format**/
+				    	//This runs if there is FILTER in the JSON query
+				    	if (QUERY_KEYS.contains("FILTER")){ 
 					    	while(filterIter.hasNext()){
 					    		filterSortedHolder = filterIter.next().toString() + ";";
 					    		
@@ -441,20 +440,27 @@ public class GATK_Picard_BackendTest implements BackendTestInterface {
 					    	}
 					    	
 					    	FILTER_SORTED = FILTER_SORTED.substring(0, FILTER_SORTED.length()-1);
-				    	} else if (!QUERY_KEYS.contains("FILTER")){ //This runs if there is no FILTER in the JSON query
+				    	
+				    	//This runs if there is no FILTER in the JSON query
+				    	} else if (!QUERY_KEYS.contains("FILTER")){ 
 				    		filterSortedSet = variantContext.getFilters();
-				    		if (filterSortedSet.size() == 0){ //If there is no filter applied
+				    		
+				    		//If there is no filter applied, assume that the feature is a PASS
+				    		if (filterSortedSet.size() == 0){ 
 				    			FILTER_SORTED = "PASS";
-				    		} else if (filterSortedSet.size() != 0){
-						    	while(filterIter.hasNext()){ //If there are filter(s) in the JSON query
+				    			
+			    			//If there are filter(s) applied, add them to the TSV file output
+				    		} else if (filterSortedSet.size() != 0){  
+						    	while(filterIter.hasNext()){ 
 						    		filterSortedHolder = filterIter.next().toString() + ";";
 						    		FILTER_SORTED = FILTER_SORTED + filterSortedHolder;
 						    	}
-						    	FILTER_SORTED = FILTER_SORTED.toString().substring(0, FILTER_SORTED.length()-1);
+						    	//Remove the last semicolon
+						    	FILTER_SORTED = FILTER_SORTED.toString().substring(0, FILTER_SORTED.length()-1); 
 				    		}
 				    	}
 				    	
-				    	//Prepare score to be written to file
+				    	//Prepare score to be written to TSV file
 			        	String PhredScore = String.valueOf(variantContext
 			        			.getPhredScaledQual()); 
 			        	

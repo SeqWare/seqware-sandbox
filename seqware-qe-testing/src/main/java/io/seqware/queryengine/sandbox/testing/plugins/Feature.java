@@ -102,9 +102,7 @@ public class Feature{
 		HashMap<String, String> regionMapQuery = JParse.getregionMapQuery();
 		QUERY_KEYS = featureMapQuery.keySet();
 		
-		/**INITIALIZE READING OF VCF INPUT
-		 * 
-		 */
+		/**INITIALIZE READING OF VCF INPUT**/
 		Iterator<VariantContext> vcfIterator;
 		{
 			PrintWriter writer = 
@@ -150,10 +148,7 @@ public class Feature{
 		    	fieldSize = featureMapQuery.size();
 		    }
 		    
-		    /**BEGIN LOOPING OF EVERY VARIANT LINE TO MATCH FOR CHROM_ID, (RANGE), FEATURE RESULTS
-		     * 
-		     */
-		    
+		    /**BEGIN LOOPING OF EVERY VARIANT LINE TO MATCH FOR CHROM_ID, (RANGE), FEATURE RESULTS**/
 			while (vcfIterator.hasNext()){
 				FILTER_SORTED = "";
 				//Reset the field counter on next line
@@ -209,7 +204,7 @@ public class Feature{
 						chromID = variantContext.getChr().toString();
 					}
 					
-					//GATHER THE REST OF THE POINTS FROM MATCHING ALL THE FEATURES IN QUERY
+					/**GATHER THE REST OF THE POINTS FROM MATCHING ALL THE FEATURES IN QUERY**/
 				    while (featureMapIter.hasNext()) { //loop through each query in features
 				        Map.Entry pairs = (Map.Entry)featureMapIter.next();
 				        
@@ -316,18 +311,10 @@ public class Feature{
 				    	
 				    	String filterSortedHolder = new String();
 				    	Set<String> filterSortedSet;
-				    	//Resort the info field from a map format to match VCF format
-				    	while(attributeMapIter.hasNext()){ 
-				    		Map.Entry pair = (Map.Entry)attributeMapIter.next();
-				    		
-				    		attributeSortedHolder = pair.getKey().toString() + "=" + 
-				    								 pair.getValue().toString() + ";";
-				    		
-				    		attributeSorted = attributeSorted + attributeSortedHolder;
-				    	}
 				    	
-				    	//Resort the filter set from a set format to match VCF format
-				    	if (QUERY_KEYS.contains("FILTER")){ //This runs if there is FILTER in the JSON query
+				    	/**Resort the filter set from a set format to match VCF format**/
+				    	//This runs if there is FILTER in the JSON query
+				    	if (QUERY_KEYS.contains("FILTER")){ 
 					    	while(filterIter.hasNext()){
 					    		filterSortedHolder = filterIter.next().toString() + ";";
 					    		
@@ -335,20 +322,27 @@ public class Feature{
 					    	}
 					    	
 					    	FILTER_SORTED = FILTER_SORTED.substring(0, FILTER_SORTED.length()-1);
-				    	} else if (!QUERY_KEYS.contains("FILTER")){ //This runs if there is no FILTER in the JSON query
+				    	
+				    	//This runs if there is no FILTER in the JSON query
+				    	} else if (!QUERY_KEYS.contains("FILTER")){ 
 				    		filterSortedSet = variantContext.getFilters();
-				    		if (filterSortedSet.size() == 0){ //If there is no filter applied
+				    		
+				    		//If there is no filter applied, assume that the feature is a PASS
+				    		if (filterSortedSet.size() == 0){ 
 				    			FILTER_SORTED = "PASS";
-				    		} else if (filterSortedSet.size() != 0){
-						    	while(filterIter.hasNext()){ //If there are filter(s) in the JSON query
+				    			
+			    			//If there are filter(s) applied, add them to the TSV file output
+				    		} else if (filterSortedSet.size() != 0){  
+						    	while(filterIter.hasNext()){ 
 						    		filterSortedHolder = filterIter.next().toString() + ";";
 						    		FILTER_SORTED = FILTER_SORTED + filterSortedHolder;
 						    	}
-						    	FILTER_SORTED = FILTER_SORTED.toString().substring(0, FILTER_SORTED.length()-1);
+						    	//Remove the last semicolon
+						    	FILTER_SORTED = FILTER_SORTED.toString().substring(0, FILTER_SORTED.length()-1); 
 				    		}
 				    	}
 				    	
-				    	//Prepare score to be written to file
+				    	//Prepare score to be written to TSV file
 			        	String PhredScore = String.valueOf(variantContext
 			        			.getPhredScaledQual()); 
 			        	

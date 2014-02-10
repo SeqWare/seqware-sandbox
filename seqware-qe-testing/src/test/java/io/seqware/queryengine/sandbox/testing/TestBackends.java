@@ -1,6 +1,7 @@
 package io.seqware.queryengine.sandbox.testing;
 
 import io.seqware.queryengine.sandbox.testing.impl.ADAMBackendTest;
+import io.seqware.queryengine.sandbox.testing.impl.GATK_Picard_BackendTest;
 import io.seqware.queryengine.sandbox.testing.impl.NoOpBackendTest;
 import io.seqware.queryengine.sandbox.testing.plugins.Feature;
 import io.seqware.queryengine.sandbox.testing.plugins.FeaturePluginInterface;
@@ -8,6 +9,7 @@ import io.seqware.queryengine.sandbox.testing.plugins.FeatureSet;
 import io.seqware.queryengine.sandbox.testing.plugins.ReadPluginInterface;
 import io.seqware.queryengine.sandbox.testing.plugins.ReadSet;
 import io.seqware.queryengine.sandbox.testing.plugins.Reads;
+
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
@@ -22,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import org.apache.commons.io.IOUtils;
@@ -184,11 +187,20 @@ public class TestBackends {
         Assert.assertTrue("result file does not exist", (new File(resultFile).exists()));
     }
     
+//    @Test
+//    public void testNoOpBackEnd() {
+//        try {
+//            testBackend(new NoOpBackendTest(), false, null);
+//        } catch (RuntimeException | IOException e) {
+//            Assert.assertTrue(false);
+//        }
+//    }
+    
     @Test
-    public void testNoOpBackEnd() {
-        try {
-            testBackend(new NoOpBackendTest(), false, null);
-        } catch (RuntimeException | IOException e) {
+    public void testGATK_PicardBackEnd(){
+    	try{
+    		testBackend(new GATK_Picard_BackendTest(), false, null);
+    	} catch (RuntimeException | IOException e) {
             Assert.assertTrue(false);
         }
     }
