@@ -80,16 +80,8 @@ public class Feature{
 	}
 	
 	public Map<String,String> getInfo(){
-		String line = Feature.get(7);
-		String currentToken;
-		StringTokenizer st = new StringTokenizer(line,"\t");
 		Map<String,String> infoMap = new HashMap<String,String>();
-		while (st.hasMoreTokens()){
-			currentToken = st.nextToken();
-			if (currentToken.contains(";") && currentToken.contains("=")){
-				infoMap = splitToMap(currentToken);
-			}
-		}
+		infoMap = splitToMap(Feature.get(7));
 		return infoMap;
 	}
 	
