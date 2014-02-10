@@ -51,7 +51,7 @@ public class ADAMBackendTest implements BackendTestInterface {
   public ReturnValue getIntroductionDocs() {
     ReturnValue rt = new ReturnValue();
     rt.setState(ReturnValue.SUCCESS);
-    rt.getKv().put(DOCS, "<p>Introduction</p>");
+    rt.getKv().put(BackendTestInterface.DOCS, "<p>Introduction</p>");
     return(rt);
   }
 
@@ -190,7 +190,7 @@ public class ADAMBackendTest implements BackendTestInterface {
   public ReturnValue getConclusionDocs() {
     ReturnValue rt = new ReturnValue();
     rt.setState(ReturnValue.SUCCESS);
-    rt.getKv().put(DOCS, "<p>Conclusion</p>");
+    rt.getKv().put(BackendTestInterface.DOCS, "<p>Conclusion</p>");
     return(rt);
   }
 
