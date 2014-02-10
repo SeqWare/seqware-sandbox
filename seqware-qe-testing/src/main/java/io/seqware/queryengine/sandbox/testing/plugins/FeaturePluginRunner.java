@@ -67,7 +67,7 @@ public class FeaturePluginRunner {
 		}
 		
 		txtJSONParser JParse = new txtJSONParser(queryJSON);
-		HashMap<String, String> fsmapq = JParse.getFEATURE_SET_MAP_QUERY();
+		HashMap<String, String> fsmapq = JParse.getfeatureSetMapQuery();
 
 		//Generate Complete Map of FeatureSetId and INFO
 		for (File child : filedir.listFiles()){
