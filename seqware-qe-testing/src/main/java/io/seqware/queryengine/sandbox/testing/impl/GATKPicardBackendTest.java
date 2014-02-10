@@ -47,8 +47,8 @@ import com.google.common.base.Splitter;
 public class GATKPicardBackendTest implements BackendTestInterface {
   
  
-  public static HashMap<UUID, String> READ_SETS;
-  public static HTMLDocument htmlReport; // The HTML Report to be written 
+  public static HashMap<UUID, String> READ_SETS = new HashMap<UUID, String>();
+  public static HTMLDocument htmlReport = new HTMLDocument(); // The HTML Report to be written 
   static String FILTER_SORTED;
   static Set<String> QUERY_KEYS;
   
@@ -62,7 +62,6 @@ public class GATKPicardBackendTest implements BackendTestInterface {
    */
   @Override
   public ReturnValue getIntroductionDocs() {
-    htmlReport = new HTMLDocument();
     String introduction = "<h2>GATK_Picard_Backend: Introduction</h2>";
     ReturnValue r = new ReturnValue();
     r.storeKv(BackendTestInterface.DOCS, introduction);
@@ -81,15 +80,7 @@ public class GATKPicardBackendTest implements BackendTestInterface {
 			Global.HBaseStorage.put(KEY, VALUE);
 		    long elapsedTime = System.nanoTime();
 			elapsedTime = (System.nanoTime() - elapsedTime) / 1000000;
-			
-	        try {
-				htmlReport.insertBeforeEnd(htmlReport.getElement(htmlReport.getDefaultRootElement(), StyleConstants.NameAttribute, HTML.Tag.BODY), "<div><h3>loadFeatureSet</h3><p>Loaded file in time: "+ elapsedTime + " milliseconds</p></div>");
-			} catch (BadLocationException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-
+			String htmlFragment = "<div><h3>loadFeatureSet</h3><p>Loaded file in time: "+ elapsedTime + " milliseconds</p></div>";
 			//State of SUCCESS
 			state.setState(ReturnValue.SUCCESS);
 			return state;
@@ -460,9 +451,9 @@ public class GATKPicardBackendTest implements BackendTestInterface {
       JSONQueryParser jsonParser = new JSONQueryParser(queryJSON);
       HashMap<String, String> readSetQuery = jsonParser.getReadSetQuery();
       HashMap<String, String> readsQuery = jsonParser.getReadsQuery();
-      HashMap<String, String> chQuery = jsonParser.getRegionsQuery();
+      HashMap<String, String> regionsQuery = jsonParser.getRegionsQuery();
      
-      ReadSearch rs = new ReadSearch(readSetQuery, readsQuery, chQuery);
+      ReadSearch rs = new ReadSearch(readSetQuery, readsQuery, regionsQuery);
       
       for (Entry<UUID, String> entry : READ_SETS.entrySet()) {
         File bamFile = new File(entry.getValue());

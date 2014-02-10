@@ -1,6 +1,7 @@
 package io.seqware.queryengine.sandbox.testing;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import io.seqware.queryengine.sandbox.testing.impl.GATKPicardBackendTest;
 import io.seqware.queryengine.sandbox.testing.utils.Global;
 
@@ -8,8 +9,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
-import net.sf.samtools.SAMFileReader;
 
 import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
@@ -75,12 +74,7 @@ public class TestGATKPicardBackend {
     
     @Test
     public void testGetReads() {
-      pb.getIntroductionDocs();
-      pb.loadReadSet(bamfile);
-      pb.getReads(jsonTxt);
-      File actualFile = new File("testOutput.bam");
-      SAMFileReader actualBAM = new SAMFileReader(actualFile);
-      Assert.assertNotNull(actualBAM);
+      fail("Not implemented yet.");
     }
     
     @Test

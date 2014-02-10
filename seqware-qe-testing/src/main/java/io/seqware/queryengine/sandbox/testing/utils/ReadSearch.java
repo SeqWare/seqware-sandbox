@@ -13,6 +13,7 @@ import net.sf.samtools.SAMFileWriterFactory;
 import net.sf.samtools.SAMProgramRecord;
 import net.sf.samtools.SAMReadGroupRecord;
 import net.sf.samtools.SAMRecord;
+import net.sf.samtools.SAMRecordIterator;
 import net.sf.samtools.SAMSequenceDictionary;
 import net.sf.samtools.SAMSequenceRecord;
 import edu.berkeley.cs.amplab.adam.avro.ADAMRecord;
@@ -99,6 +100,7 @@ public class ReadSearch {
     }
     
     public SAMFileWriter bamSearch( SAMFileReader samReader, String output ) {
+      ArrayList<SAMRecord> samList = new ArrayList<SAMRecord>();
       File outputBam = new File(output);
       SAMFileWriterFactory samFactory = new SAMFileWriterFactory();      
       SAMFileHeader bamHeader = samReader.getFileHeader();
@@ -279,98 +281,180 @@ public class ReadSearch {
         }
       }
       
-      // Narrow down Regions -- currently not working, need to find out how to 
-      //   work with the API for this query
-      /*
-      if (regionArray.length() !=0) {
-        
-        for (int i=0; i < regionArray.length(); i++) {
-          String region = regionArray.get(i).toString();
-          if (region.contains(":")) {
-            //int regionIndex = Integer.parseInt(region.substring(3, region.indexOf(":")));
-            int regionStart = Integer.parseInt(region.substring(region.indexOf(":") + 1, region.indexOf("-")));
-            int regionEnd = Integer.parseInt(region.substring(region.indexOf("-") + 1, region.length()));
+      if (!regionsQuery.isEmpty()) {
+        for (Entry<String, String> en : regionsQuery.entrySet()) {
+          String chrom = en.getKey();
+          String region = en.getValue();
+          int regionStart = 0;
+          int regionEnd = 0;
+          boolean all = false;
+          if (region.contains("-")) {
+            regionStart = Integer.parseInt(region.substring(0, region.indexOf("-")));
+            regionEnd = Integer.parseInt(region.substring(region.indexOf("-") + 1, region.length()));
             
             SAMRecordIterator iter = samReader.queryOverlapping(region, regionStart, regionEnd);
             if (!iter.hasNext()) {
-              //if empty, return
-              htmlReport.insertBeforeEnd(htmlReport.getElement(htmlReport.getDefaultRootElement(), StyleConstants.NameAttribute, HTML.Tag.BODY), "<p>No Results.</p></div>");
-              rt.setState(ReturnValue.SUCCESS);
-              return rt;
             }
             System.out.println(iter.next().toString());
             iter.close();
+          } else if (region.contains(".")) {
+            all = true;
+          } else {
+            regionStart = Integer.parseInt(region);
+            regionEnd = Integer.parseInt(region);
+          }
+          if (!all) {
+            for (SAMRecord r: samReader) {
+              if (chrom.equals(r.getReferenceName()) && 
+                  ((regionStart <= r.getAlignmentStart() && r.getAlignmentStart() <= regionEnd) || 
+                      (regionStart <= r.getAlignmentStart() && r.getAlignmentEnd() <= regionEnd))) {
+                samList.add(r);
+              }
+            }
+          } else {
+            for (SAMRecord r: samReader) {
+              samList.add(r);
+            }
           }
         }
+        if (samList.isEmpty()){
+          return bfw;
+        }
       }
-      */
 
       // Check Attributes -- a little redundant here..
       //   to do: finish for the rest of the read attributes
       if (!readsQuery.isEmpty()) {
-        boolean qname = false;
-        boolean flag = false;
-        boolean rname = false;
-        boolean pos = false;
-        boolean mapq = false;
-        boolean cigar = false;
-        boolean rnext = false;
-        boolean pnext = false;
-        boolean tlen = false;
-        boolean seq = false;
-        boolean qual = false;
-        
-        for (Entry<String, String> e : readsQuery.entrySet()) {
-          switch (e.getKey()) {
-            case "qname": qname = true; break;
-            case "flag": flag = true; break;
-            case "rname": rname = true; break;
-            case "pos": pos = true; break;
-            case "mapq": mapq = true; break;
-            case "cigar": cigar = true; break;
-            case "rnext": rnext = true; break;
-            case "pnext": pnext = true; break;
-            case "tlen": tlen = true; break;
-            case "seq": seq = true; break;
-            case "qual": qual = true; break;
+        if (!regionsQuery.isEmpty()) {
+          boolean qname = false;
+          boolean flag = false;
+          boolean rname = false;
+          boolean pos = false;
+          boolean mapq = false;
+          boolean cigar = false;
+          boolean rnext = false;
+          boolean pnext = false;
+          boolean tlen = false;
+          boolean seq = false;
+          boolean qual = false;
+          
+          for (Entry<String, String> e : readsQuery.entrySet()) {
+            switch (e.getKey()) {
+              case "qname": qname = true; break;
+              case "flag": flag = true; break;
+              case "rname": rname = true; break;
+              case "pos": pos = true; break;
+              case "mapq": mapq = true; break;
+              case "cigar": cigar = true; break;
+              case "rnext": rnext = true; break;
+              case "pnext": pnext = true; break;
+              case "tlen": tlen = true; break;
+              case "seq": seq = true; break;
+              case "qual": qual = true; break;
+            }
           }
-        }
-        
-        for (SAMRecord r: samReader) {
-          if (qname && !readsQuery.get("qname").equals(r.getReadName())) {
-              continue;
-          } 
-          if (flag && !readsQuery.get("flag").equals(r.getFlags())) {
-              continue;
+          
+          for (SAMRecord r: samList) {
+            if (qname && !readsQuery.get("qname").equals(r.getReadName())) {
+                continue;
+            } 
+            if (flag && !readsQuery.get("flag").equals(r.getFlags())) {
+                continue;
+            }
+            if (rname && !readsQuery.get("rname").equals(r.getReferenceName())) {
+                continue;
+            }
+            if (pos && !readsQuery.get("pos").equals(r.getAlignmentStart())) {
+                continue;
+            }
+            if (mapq && !readsQuery.get("mapq").equals(r.getMappingQuality())) {
+                continue;
+            }
+            if (cigar && !readsQuery.get("cigar").equals(r.getCigarString())) {
+                continue;
+            }
+            if (seq && !readsQuery.get("seq").equals(r.getReadString())) {
+                continue;
+            }
+            if (qual && !readsQuery.get("qual").equals(r.getBaseQualityString())) {
+                continue;
+            }
+            if (rnext && !readsQuery.get("rnext").equals(r.getMateReferenceName())) {
+                continue;
+            }
+            if (pnext && !readsQuery.get("pnext").equals(r.getMateReferenceIndex())) {
+                continue;
+            }
+            if (tlen && !readsQuery.get("tlen").equals(r.getReadLength())) {
+                continue;
+            }
+            bfw.addAlignment(r);
           }
-          if (rname && !readsQuery.get("rname").equals(r.getReferenceName())) {
-              continue;
+        } else {
+          boolean qname = false;
+          boolean flag = false;
+          boolean rname = false;
+          boolean pos = false;
+          boolean mapq = false;
+          boolean cigar = false;
+          boolean rnext = false;
+          boolean pnext = false;
+          boolean tlen = false;
+          boolean seq = false;
+          boolean qual = false;
+          
+          for (Entry<String, String> e : readsQuery.entrySet()) {
+            switch (e.getKey()) {
+              case "qname": qname = true; break;
+              case "flag": flag = true; break;
+              case "rname": rname = true; break;
+              case "pos": pos = true; break;
+              case "mapq": mapq = true; break;
+              case "cigar": cigar = true; break;
+              case "rnext": rnext = true; break;
+              case "pnext": pnext = true; break;
+              case "tlen": tlen = true; break;
+              case "seq": seq = true; break;
+              case "qual": qual = true; break;
+            }
           }
-          if (pos && !readsQuery.get("pos").equals(r.getAlignmentStart())) {
-              continue;
+          
+          for (SAMRecord r: samReader) {
+            if (qname && !readsQuery.get("qname").equals(r.getReadName())) {
+                continue;
+            } 
+            if (flag && !readsQuery.get("flag").equals(r.getFlags())) {
+                continue;
+            }
+            if (rname && !readsQuery.get("rname").equals(r.getReferenceName())) {
+                continue;
+            }
+            if (pos && !readsQuery.get("pos").equals(r.getAlignmentStart())) {
+                continue;
+            }
+            if (mapq && !readsQuery.get("mapq").equals(r.getMappingQuality())) {
+                continue;
+            }
+            if (cigar && !readsQuery.get("cigar").equals(r.getCigarString())) {
+                continue;
+            }
+            if (seq && !readsQuery.get("seq").equals(r.getReadString())) {
+                continue;
+            }
+            if (qual && !readsQuery.get("qual").equals(r.getBaseQualityString())) {
+                continue;
+            }
+            if (rnext && !readsQuery.get("rnext").equals(r.getMateReferenceName())) {
+                continue;
+            }
+            if (pnext && !readsQuery.get("pnext").equals(r.getMateReferenceIndex())) {
+                continue;
+            }
+            if (tlen && !readsQuery.get("tlen").equals(r.getReadLength())) {
+                continue;
+            }
+            bfw.addAlignment(r);
           }
-          if (mapq && !readsQuery.get("mapq").equals(r.getMappingQuality())) {
-              continue;
-          }
-          if (cigar && !readsQuery.get("cigar").equals(r.getCigarString())) {
-              continue;
-          }
-          if (seq && !readsQuery.get("seq").equals(r.getReadString())) {
-              continue;
-          }
-          if (qual && !readsQuery.get("qual").equals(r.getBaseQualityString())) {
-              continue;
-          }
-          if (rnext && !readsQuery.get("rnext").equals(r.getMateReferenceName())) {
-              continue;
-          }
-          if (pnext && !readsQuery.get("pnext").equals(r.getMateReferenceIndex())) {
-              continue;
-          }
-          if (tlen && !readsQuery.get("tlen").equals(r.getReadLength())) {
-              continue;
-          }
-          bfw.addAlignment(r);
         }
       } else {
         for (SAMRecord r: samReader) {
