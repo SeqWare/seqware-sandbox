@@ -13,9 +13,9 @@ import org.json.JSONObject;
 public class txtJSONParser {
 	
 	//Initialize query stores to dump queries from input JSON
-	HashMap<String, String> FEATURE_MAP_QUERY = new HashMap<String,String>();
-	HashMap<String, String> FEATURE_SET_MAP_QUERY = new HashMap<String,String>();
-	HashMap<String, String> REGION_MAP_QUERY = new HashMap<String,String>();
+	HashMap<String, String> featureMapQuery = new HashMap<String,String>();
+	HashMap<String, String> featureSetMapQuery = new HashMap<String,String>();
+	HashMap<String, String> regionMapQuery = new HashMap<String,String>();
 	
 	public txtJSONParser(String queryJSON) throws JSONException{
 		
@@ -38,12 +38,12 @@ public class txtJSONParser {
 					String InKey = InnerKeys.next();
 					
 					if (OutKey.equals("feature_sets")){
-						FEATURE_SET_MAP_QUERY.put(InKey.toString(), 
+						featureSetMapQuery.put(InKey.toString(), 
 										jsonObInner.getString(InKey));
 					}
 					
 					if (OutKey.equals("features")){
-						FEATURE_MAP_QUERY.put(InKey.toString(), 
+						featureMapQuery.put(InKey.toString(), 
 										jsonObInner.getString(InKey));
 					}
 				}
@@ -52,7 +52,7 @@ public class txtJSONParser {
 					if(OutKey.equals("regions")){
 						regionArray = jsonObOuter.getJSONArray(OutKey);
 						if (regionArray.length() == 0){
-							REGION_MAP_QUERY.put(".", "any");
+							regionMapQuery.put(".", "any");
 						} else {
 							for (int i=0; i< regionArray.length(); i++){
 								String region = regionArray
@@ -66,7 +66,7 @@ public class txtJSONParser {
 											region.indexOf("r")+1,
 											region.length());
 									
-									REGION_MAP_QUERY.put(chromosomeID.toString(), 
+									regionMapQuery.put(chromosomeID.toString(), 
 													".");
 									
 								} else if (region.contains(":") == true){
@@ -80,7 +80,7 @@ public class txtJSONParser {
 											region.indexOf(":")+1,
 											region.length());
 									
-									REGION_MAP_QUERY.put(chromosomeID.toString(), 
+									regionMapQuery.put(chromosomeID.toString(), 
 													range.toString());
 								}
 							}
@@ -92,16 +92,16 @@ public class txtJSONParser {
 
 	public txtJSONParser(){};
 	
-	public HashMap<String, String> getFEATURE_MAP_QUERY(){
-		return FEATURE_MAP_QUERY;
+	public HashMap<String, String> getfeatureMapQuery(){
+		return featureMapQuery;
 	}
 	
-	public HashMap<String, String> getFEATURE_SET_MAP_QUERY(){
-		return FEATURE_SET_MAP_QUERY;
+	public HashMap<String, String> getfeatureSetMapQuery(){
+		return featureSetMapQuery;
 	}
 	
-	public HashMap<String, String> getREGION_MAP_QUERY(){
-		return REGION_MAP_QUERY;
+	public HashMap<String, String> getregionMapQuery(){
+		return regionMapQuery;
 	}
 
 	public String getJSONText(String filePath) throws IOException{

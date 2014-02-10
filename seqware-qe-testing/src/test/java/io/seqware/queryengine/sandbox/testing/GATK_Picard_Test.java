@@ -1,7 +1,6 @@
 package io.seqware.queryengine.sandbox.testing;
 
 import io.seqware.queryengine.sandbox.testing.impl.GATK_Picard_BackendTest;
-import io.seqware.queryengine.sandbox.testing.impl.PicardBackendTest;
 import io.seqware.queryengine.sandbox.testing.utils.Global;
 
 import java.io.BufferedReader;
