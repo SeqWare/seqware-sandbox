@@ -1,6 +1,5 @@
 package io.seqware.queryengine.sandbox.testing.utils;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,8 +7,6 @@ import java.util.Map.Entry;
 
 import net.sf.samtools.SAMFileHeader;
 import net.sf.samtools.SAMFileReader;
-import net.sf.samtools.SAMFileWriter;
-import net.sf.samtools.SAMFileWriterFactory;
 import net.sf.samtools.SAMProgramRecord;
 import net.sf.samtools.SAMReadGroupRecord;
 import net.sf.samtools.SAMRecord;
@@ -99,12 +96,10 @@ public class ReadSearch {
       return resultADAMList;
     }
     
-    public SAMFileWriter bamSearch( SAMFileReader samReader, String output ) {
+    public ArrayList<SAMRecord> bamSearch( SAMFileReader samReader ) {
       ArrayList<SAMRecord> samList = new ArrayList<SAMRecord>();
-      File outputBam = new File(output);
-      SAMFileWriterFactory samFactory = new SAMFileWriterFactory();      
+      ArrayList<SAMRecord> bfw = new ArrayList<SAMRecord>();
       SAMFileHeader bamHeader = samReader.getFileHeader();
-      SAMFileWriter bfw = samFactory.makeSAMWriter(bamHeader, true, outputBam);
       
       List<SAMReadGroupRecord> bamReadGroups = bamHeader.getReadGroups();
       
@@ -388,7 +383,7 @@ public class ReadSearch {
             if (tlen && !readsQuery.get("tlen").equals(r.getReadLength())) {
                 continue;
             }
-            bfw.addAlignment(r);
+            bfw.add(r);
           }
         } else {
           boolean qname = false;
@@ -453,17 +448,14 @@ public class ReadSearch {
             if (tlen && !readsQuery.get("tlen").equals(r.getReadLength())) {
                 continue;
             }
-            bfw.addAlignment(r);
+            bfw.add(r);
           }
         }
       } else {
         for (SAMRecord r: samReader) {
-          bfw.addAlignment(r);
+          bfw.add(r);
         }
       }
-      // Finally, write a .bam file with result of query
-      // Also write to htmlReport
-      bfw.close();
       return bfw;
     }
     

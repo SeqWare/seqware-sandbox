@@ -28,8 +28,11 @@ import javax.swing.text.html.HTML;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 
+import net.sf.samtools.SAMFileHeader;
 import net.sf.samtools.SAMFileReader;
 import net.sf.samtools.SAMFileWriter;
+import net.sf.samtools.SAMFileWriterFactory;
+import net.sf.samtools.SAMRecord;
 
 import org.apache.commons.io.FilenameUtils;
 import org.broad.tribble.AbstractFeatureReader;
@@ -452,17 +455,25 @@ public class GATKPicardBackendTest implements BackendTestInterface {
       HashMap<String, String> readSetQuery = jsonParser.getReadSetQuery();
       HashMap<String, String> readsQuery = jsonParser.getReadsQuery();
       HashMap<String, String> regionsQuery = jsonParser.getRegionsQuery();
-     
-      ReadSearch rs = new ReadSearch(readSetQuery, readsQuery, regionsQuery);
+      ArrayList<SAMRecord> samList = new ArrayList<SAMRecord>();
       
+      ReadSearch rs = new ReadSearch(readSetQuery, readsQuery, regionsQuery);
       for (Entry<UUID, String> entry : READ_SETS.entrySet()) {
         File bamFile = new File(entry.getValue());
         SAMFileReader samReader = new SAMFileReader(bamFile);
-        SAMFileWriter writer =  rs.bamSearch(samReader, "testOutput.bam");
-        writer.close();
+        samList.addAll(rs.bamSearch(samReader));
       }
+      String outputPath = "queryOutput.bam";
+      File outputFile = new File(outputPath);
+      SAMFileHeader blankHeader =  new SAMFileHeader();
+      SAMFileWriterFactory writerFactory = new SAMFileWriterFactory();
+      SAMFileWriter bfw = writerFactory.makeBAMWriter(blankHeader, true, outputFile);
       
-      rt.storeKv(BackendTestInterface.QUERY_RESULT_FILE, "a");
+      for (SAMRecord r: samList){
+        bfw.addAlignment(r);
+      }
+      bfw.close();
+      rt.storeKv(BackendTestInterface.QUERY_RESULT_FILE, outputPath);
       try {
         //htmlReport.insertBeforeEnd(htmlReport.getElement(htmlReport.getDefaultRootElement(), StyleConstants.NameAttribute, HTML.Tag.BODY), "<p>Finished in " + elapsedTime + " milliseconds.</p>");
       } catch (Exception ex) {
