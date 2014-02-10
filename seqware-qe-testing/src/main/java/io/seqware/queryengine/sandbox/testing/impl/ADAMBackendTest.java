@@ -6,6 +6,8 @@ package io.seqware.queryengine.sandbox.testing.impl;
 
 import io.seqware.queryengine.sandbox.testing.BackendTestInterface;
 import io.seqware.queryengine.sandbox.testing.ReturnValue;
+import io.seqware.queryengine.sandbox.testing.utils.JSONQueryParser;
+import io.seqware.queryengine.sandbox.testing.utils.ReadSearch;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,9 +25,7 @@ import org.broad.tribble.AbstractFeatureReader;
 import org.broad.tribble.FeatureReader;
 import org.broadinstitute.variant.variantcontext.VariantContext;
 import org.broadinstitute.variant.vcf.VCFCodec;
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import parquet.avro.AvroParquetWriter;
 import scala.collection.JavaConverters;
@@ -120,79 +120,14 @@ public class ADAMBackendTest implements BackendTestInterface {
   @Override
   public ReturnValue getFeatures(String queryJSON) throws JSONException, IOException {
   //Read the input JSON file to seperate ArrayLists for parsing
-    ReturnValue finished = new ReturnValue();
-    JSONObject jsonObOuter = new JSONObject(queryJSON);
-    JSONArray regionArray;
-    Iterator<String> OutterKeys = jsonObOuter.keys();
+    ReturnValue rt = new ReturnValue();
+    JSONQueryParser queryParser = new JSONQueryParser(queryJSON);
     
     //Initialize query stores to dump queries from input JSON
-    HashMap<String, String> FEATURE_MAP_QUERY = new HashMap<String,String>();
-    HashMap<String, String> FEATURE_SET_MAP_QUERY = new HashMap<String,String>();
-    HashMap<String, String> REGION_MAP_QUERY = new HashMap<String,String>();
-
-    //READ THE JSON INPUT FILE
-    /** "OutKey":
-    {
-      "InKey": "jsonObInner.get(InKey)"
-    }*/
-    while (OutterKeys.hasNext()){
-      String OutKey = OutterKeys.next();
-      if (jsonObOuter.get(OutKey) instanceof JSONObject){
-        JSONObject jsonObInner = jsonObOuter.getJSONObject(OutKey);
-        Iterator<String> InnerKeys = jsonObInner.keys();
-        
-        while (InnerKeys.hasNext()){
-          String InKey = InnerKeys.next();
-          
-          if (OutKey.equals("feature_sets")){
-            FEATURE_SET_MAP_QUERY.put(InKey.toString(), 
-                    jsonObInner.getString(InKey));
-          }
-          
-          if (OutKey.equals("features")){
-            FEATURE_MAP_QUERY.put(InKey.toString(), 
-                    jsonObInner.getString(InKey));
-          }
-        }
-      } else if (jsonObOuter.get(OutKey) instanceof JSONArray){
-        JSONArray jsonArInner = jsonObOuter.getJSONArray(OutKey);
-          if(OutKey.equals("regions")){
-            regionArray = jsonObOuter.getJSONArray(OutKey);
-            
-            for (int i=0; i< regionArray.length(); i++){
-              String region = regionArray
-                      .get(i)
-                      .toString();
-              
-              if (region.contains(":") == false){
-                
-                //i.e. selects "22" from "chr22"
-                String chromosomeID = region.substring(
-                    region.indexOf("r")+1,
-                    region.length());
-                
-                REGION_MAP_QUERY.put(chromosomeID.toString(), 
-                        ".");
-                
-              } else if (region.contains(":") == true){
-                
-                //i.e. selects "22" from "chr22:1-99999"
-                String chromosomeID = region.substring(
-                    region.indexOf("r")+1,
-                    region.indexOf(":"));
-                
-                String range = region.substring(
-                    region.indexOf(":")+1,
-                    region.length());
-                
-                REGION_MAP_QUERY.put(chromosomeID.toString(), 
-                        range.toString());
-              }
-            }
-          }
-      }
-    }
-    ReturnValue rt = new ReturnValue();
+    HashMap<String, String> featuresQuery = queryParser.getFeaturesQuery();
+    HashMap<String, String> featureSetQuery = queryParser.getFeatureSetQuery();
+    HashMap<String, String> regionsQuery = queryParser.getRegionsQuery();
+    
     if (null == adamVariantList) {
       rt.setState(ReturnValue.ERROR);
       return rt;
@@ -220,39 +155,13 @@ public class ADAMBackendTest implements BackendTestInterface {
     ReturnValue rt = new ReturnValue();
     
     try {
-      JSONObject query = new JSONObject(queryJSON);
-      Iterator<String> OuterKeys = query.keys();
-
-      JSONArray regionArray = new JSONArray(); 
-      HashMap<String, String> readSetMap = new HashMap<>();
-      HashMap<String, String> readsQuery = new HashMap<>();      
-      ArrayList<String> chQuery = new ArrayList<>();
+      JSONQueryParser queryParser = new JSONQueryParser(queryJSON);
       
-      while (OuterKeys.hasNext()) {
-        String OutKey = OuterKeys.next();
-        if (query.get(OutKey) instanceof JSONObject) {
-          JSONObject jsonObInner = query.getJSONObject(OutKey);
-          Iterator<String> InnerKeys = jsonObInner.keys();
-          while (InnerKeys.hasNext()) {
-            String InKey = InnerKeys.next();
-            //Save key-values of JSON query
-            if (OutKey.equals("read_sets")) {
-              readSetMap.put(InKey, jsonObInner.getString(InKey));
-            }
-            if (OutKey.equals("reads")) {
-              readsQuery.put(InKey, jsonObInner.getString(InKey));
-            }
-          }
-          InnerKeys = null;
-        } else if (query.get(OutKey) instanceof JSONArray) {
-          if(OutKey.equals("regions")) {
-            regionArray = query.getJSONArray(OutKey);
-            for (int i=0; i< regionArray.length(); i++) {
-              chQuery.add(regionArray.getString(i));
-            }
-          }
-        } 
-      }
+      //Initialize query stores to dump queries from input JSON
+      HashMap<String, String> readsQuery = queryParser.getReadsQuery();
+      HashMap<String, String> readSetQuery = queryParser.getReadSetQuery();
+      HashMap<String, String> regionsQuery = queryParser.getRegionsQuery();
+      ReadSearch rs = new ReadSearch(readSetQuery, readsQuery, regionsQuery);
     
       if (null == adamList) {
         rt.setState(ReturnValue.ERROR);
@@ -275,7 +184,7 @@ public class ADAMBackendTest implements BackendTestInterface {
   }
 
   @Override
-  public ReturnValue runPlugin(String queryJSON, String pluginClassName) {
+  public ReturnValue runPlugin(String queryJSON, Class pluginClassName) {
     ReturnValue rt = new ReturnValue();
     rt.setState(ReturnValue.SUCCESS);
     return(rt);

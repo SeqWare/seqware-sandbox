@@ -1,5 +1,6 @@
 package io.seqware.queryengine.sandbox.testing;
 
+import static org.junit.Assert.fail;
 import io.seqware.queryengine.sandbox.testing.impl.ADAMBackendTest;
 
 import org.junit.AfterClass;
@@ -17,7 +18,7 @@ public class TestADAMBackend {
     ab = new ADAMBackendTest();
     bamfile = "src/main/resources/testdata/HG00310.chrom20.ILLUMINA.bwa.FIN.low_coverage.20120522.bam";
     vcffile = "src/main/resources/testdata/exampleVCFinput.vcf";
-    jsonTxt = null;
+    jsonTxt = "src/main/resources/testdata/query.json";
   }
 
   @AfterClass
@@ -28,13 +29,21 @@ public class TestADAMBackend {
   
   @Test
   public void testGetReads() {
-    ab.loadReadSet(bamfile);
-    ab.getReads(jsonTxt);
+    try {
+      ab.loadReadSet(bamfile);
+      ab.getReads(jsonTxt);
+    } catch (Exception ex) {
+      fail(ex.getMessage());
+    }
   } 
   
   @Test
   public void testGetFeatures() {
-    ab.loadFeatureSet(vcffile);
-    ab.getFeatures(jsonTxt);
+    try {
+      ab.loadFeatureSet(vcffile);
+      ab.getFeatures(jsonTxt);
+    } catch (Exception ex) {
+      fail(ex.getMessage());
+    }
   }
 }
