@@ -29,10 +29,10 @@ public class GATKTest {
          String temp = new String();
          
          //Point to local VCF file to be read
-         testb.loadFeatureSet("src/test/resources/exampleVCFinput.vcf");   
+         testb.loadFeatureSet("src/main/resources/testdata/exampleVCFinput.vcf");   
 
          //Point to local JSON text file to be read
-         in = new BufferedReader(new FileReader("src/test/resources/exampleJSONQuery.txt"));
+         in = new BufferedReader(new FileReader("src/main/resources/testdata/exampleJSONQuery.txt"));
          while ((line = in.readLine()) != null){
          	temp = temp.concat(line);
          }
