@@ -48,7 +48,8 @@ import com.google.common.base.Splitter;
 
 public class GATK_Picard_BackendTest implements BackendTestInterface {
   
- 
+  public Map<String,String> fileMap = 
+		  new HashMap<String,String>();
   public static SAMFileReader samReader; // Used to read the SAM/BAM file.
   public static HTMLDocument htmlReport; // The HTML Report to be written 
   static String FILTER_SORTED;
@@ -108,7 +109,11 @@ public class GATK_Picard_BackendTest implements BackendTestInterface {
 		    long elapsedTime = System.nanoTime();
 			elapsedTime = (System.nanoTime() - elapsedTime) / 1000000;
 			
+			String vcfID = vcfFile
+					.getName()
+					.substring(0, vcfFile.getName().indexOf("."));
 			
+			fileMap.put(vcfID, filePath);
 			
 	        try {
 				htmlReport.insertBeforeEnd(htmlReport.getElement(htmlReport.getDefaultRootElement(), StyleConstants.NameAttribute, HTML.Tag.BODY), "<div><h3>loadFeatureSet</h3><p>Loaded file in time: "+ elapsedTime + " milliseconds</p></div>");
@@ -169,6 +174,7 @@ public class GATK_Picard_BackendTest implements BackendTestInterface {
   }	
   
   @Override
+  //TODO: get all features that were loaded into fileMap.
   public ReturnValue getFeatures(String queryJSON) throws JSONException, IOException { 
 		
 		//Read the input JSON file to seperate ArrayLists for parsing
@@ -180,8 +186,12 @@ public class GATK_Picard_BackendTest implements BackendTestInterface {
 		//Points to input VCF file to process
 		//Points to output filepath
 		
-		File sortedVcfFile = new File(Global.HBaseStorage.get("gene").toString());
+		File sortedVcfFile = new File(fileMap.values());
+		
 		String filePath = Global.outputFilePath;
+		
+//		File sortedVcfFile = new File(Global.HBaseStorage.get("gene").toString());
+//		String filePath = Global.outputFilePath;
 		
 		txtJSONParser JParse = new txtJSONParser(queryJSON);
 		
