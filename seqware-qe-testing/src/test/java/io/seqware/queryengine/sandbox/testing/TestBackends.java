@@ -8,6 +8,7 @@ import io.seqware.queryengine.sandbox.testing.plugins.FeatureSet;
 import io.seqware.queryengine.sandbox.testing.plugins.ReadPluginInterface;
 import io.seqware.queryengine.sandbox.testing.plugins.ReadSet;
 import io.seqware.queryengine.sandbox.testing.plugins.Reads;
+
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
@@ -22,11 +23,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.apache.commons.io.FileUtils;
-import org.junit.Test;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
 import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * TestBackends

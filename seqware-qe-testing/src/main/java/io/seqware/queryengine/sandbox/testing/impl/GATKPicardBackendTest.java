@@ -12,7 +12,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -26,7 +25,6 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.html.HTML;
 import javax.swing.text.html.HTMLDocument;
-import javax.swing.text.html.HTMLEditorKit;
 
 import net.sf.samtools.SAMFileHeader;
 import net.sf.samtools.SAMFileReader;
@@ -115,6 +113,14 @@ public class GATKPicardBackendTest implements BackendTestInterface {
       rt.storeKv(BackendTestInterface.READ_SET_ID, id.toString());
       rt.setState(ReturnValue.SUCCESS);
       return rt; 
+    } else if (filePath.endsWith(".bai")) {
+      UUID id = UUID.randomUUID();
+      File baifile = new File(filePath);
+      READ_SETS.put(id, filePath);
+      
+      rt.storeKv(BackendTestInterface.READ_SET_ID, id.toString());
+      rt.setState(ReturnValue.SUCCESS);
+      return rt;
     } else {
       rt.setState(ReturnValue.BACKEND_FILE_IMPORT_NOT_SUPPORTED);
       return rt; 
@@ -503,20 +509,8 @@ public class GATKPicardBackendTest implements BackendTestInterface {
   @Override
   public ReturnValue getConclusionDocs() {
     ReturnValue rt = new ReturnValue(); 
-    // Write HTMLDocuments to file
-    try {
-      HTMLEditorKit kit = new HTMLEditorKit();
-      StringWriter writer = new StringWriter();
-      kit.write(writer, htmlReport, 0, htmlReport.getLength());
-      String s = writer.toString();
-      PrintWriter out = new PrintWriter("htmlReport.html");
-      out.print(s);
-      out.close();
-    } catch (Exception ex) { 
-      rt.setState(ReturnValue.ERROR); 
-      return rt; 
-    } 
-     
+    String conclusionDocs = "<h2>Conclusion</h2>";
+    rt.storeKv(BackendTestInterface.DOCS, conclusionDocs);
     rt.setState(ReturnValue.SUCCESS); 
     return rt;
   }
