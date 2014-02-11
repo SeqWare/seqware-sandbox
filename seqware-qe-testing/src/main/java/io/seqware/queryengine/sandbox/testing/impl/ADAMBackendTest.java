@@ -231,7 +231,9 @@ public class ADAMBackendTest implements BackendTestInterface {
 
   @Override
   public ReturnValue runPlugin(String queryJSON, Class pluginClassName) {
+    
     ReturnValue rt = new ReturnValue();
+    rt.storeKv(BackendTestInterface.PLUGIN_RESULT_FILE, output.toString());
     rt.setState(ReturnValue.SUCCESS);
     return(rt);
   }
@@ -255,13 +257,6 @@ public class ADAMBackendTest implements BackendTestInterface {
   public String getName() { 
     return("ADAMBackendTest");
   }
-
-  public ReturnValue teardownBackend(HashMap<String, String> settings) {
-    ReturnValue rt = new ReturnValue();
-    rt.setState(ReturnValue.SUCCESS);
-    return(rt);
-  }
-
 
   
 }

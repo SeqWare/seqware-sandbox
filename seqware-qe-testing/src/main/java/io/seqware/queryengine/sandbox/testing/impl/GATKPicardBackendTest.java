@@ -48,7 +48,7 @@ import com.google.common.base.Splitter;
 public class GATKPicardBackendTest implements BackendTestInterface {
   
  
-  public static HashMap<UUID, String> READ_SETS = new HashMap<UUID, String>();
+  public static HashMap<String, String> READ_SETS = new HashMap<String, String>();
   public static HTMLDocument htmlReport = new HTMLDocument(); // The HTML Report to be written 
   static String FILTER_SORTED;
   static Set<String> QUERY_KEYS;
@@ -107,16 +107,15 @@ public class GATKPicardBackendTest implements BackendTestInterface {
     if (filePath.endsWith(".sam") || filePath.endsWith(".bam")) {      
       // Generate UUID for the file and store
       UUID id = UUID.randomUUID();
-      File samfile = new File(filePath);
-      READ_SETS.put(id, filePath);
+      READ_SETS.put(id.toString(), filePath);
       
       rt.storeKv(BackendTestInterface.READ_SET_ID, id.toString());
       rt.setState(ReturnValue.SUCCESS);
       return rt; 
     } else if (filePath.endsWith(".bai")) {
+      
       UUID id = UUID.randomUUID();
-      File baifile = new File(filePath);
-      READ_SETS.put(id, filePath);
+      READ_SETS.put(id.toString(), filePath);
       
       rt.storeKv(BackendTestInterface.READ_SET_ID, id.toString());
       rt.setState(ReturnValue.SUCCESS);
@@ -464,10 +463,33 @@ public class GATKPicardBackendTest implements BackendTestInterface {
       ArrayList<SAMRecord> samList = new ArrayList<SAMRecord>();
       
       ReadSearch rs = new ReadSearch(readSetQuery, readsQuery, regionsQuery);
-      for (Entry<UUID, String> entry : READ_SETS.entrySet()) {
-        File bamFile = new File(entry.getValue());
-        SAMFileReader samReader = new SAMFileReader(bamFile);
-        samList.addAll(rs.bamSearch(samReader));
+      if (queryJSON.isEmpty()) {
+        for (Entry<String, String> e: READ_SETS.entrySet()) {
+          if (e.getValue().endsWith(".bai"))
+            continue;
+          
+          File bamfile = new File(e.getValue());
+          SAMFileReader samReader = new SAMFileReader(bamfile);
+          for (SAMRecord r: samReader) {
+            samList.add(r);
+          }
+        }
+      } else {
+        for (Entry<String, String> e: READ_SETS.entrySet()) {
+          if (e.getValue().endsWith(".bai"))
+            continue;
+          
+          if (null != READ_SETS.get(e.getKey() + "index")) {
+            File bamfile = new File(e.getValue());
+            File baifile = new File(READ_SETS.get(e.getKey() + "index"));
+            SAMFileReader samReader = new SAMFileReader(bamfile, baifile, true);
+            samList.addAll(rs.bamSearch(samReader));
+          } else {
+            File bamfile = new File(e.getValue());
+            SAMFileReader samReader = new SAMFileReader(bamfile);
+            samList.addAll(rs.bamSearch(samReader));
+          }
+        }
       }
       String outputPath = "queryOutput.bam";
       File outputFile = new File(outputPath);
@@ -480,12 +502,6 @@ public class GATKPicardBackendTest implements BackendTestInterface {
       }
       bfw.close();
       rt.storeKv(BackendTestInterface.QUERY_RESULT_FILE, outputPath);
-      try {
-        //htmlReport.insertBeforeEnd(htmlReport.getElement(htmlReport.getDefaultRootElement(), StyleConstants.NameAttribute, HTML.Tag.BODY), "<p>Finished in " + elapsedTime + " milliseconds.</p>");
-      } catch (Exception ex) {
-        rt.setState(ReturnValue.ERROR);
-        return rt;
-      }
     } catch (Exception ex) {
       System.out.println(ex.toString());
       rt.setState(ReturnValue.ERROR); 
@@ -515,13 +531,18 @@ public class GATKPicardBackendTest implements BackendTestInterface {
     return rt;
   }
   
-    @Override
-    public ReturnValue setupBackend(Map<String, String> settings) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public ReturnValue teardownBackend(Map<String, String> settings) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+  @Override
+  public ReturnValue setupBackend(Map<String, String> settings) {
+    //Either output file or db backend?
+    ReturnValue rt = new ReturnValue();
+    rt.setState(ReturnValue.SUCCESS);
+    return(rt);
+  }
+  
+  @Override
+  public ReturnValue teardownBackend(Map<String, String> settings) {
+    ReturnValue rt = new ReturnValue();
+    rt.setState(ReturnValue.SUCCESS);
+    return(rt);
+  }
 }
