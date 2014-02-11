@@ -100,7 +100,9 @@ public class GATK_Picard_BackendTest implements BackendTestInterface {
 	  ReturnValue rv = new ReturnValue();
 		
 		//Check if file ext is VCF.
-		if (FilenameUtils.getExtension(filePath).equals("vcf")){
+		if (FilenameUtils.getExtension(filePath).equals("vcf")||
+				FilenameUtils.getExtension(filePath).equals("gz")||
+					FilenameUtils.getExtension(filePath).equals("tbi")){
 			String featureSetId = BackendTestInterface.FEATURE_SET_ID;
 			File vcfFile = 
 					new File(filePath);
@@ -115,13 +117,13 @@ public class GATK_Picard_BackendTest implements BackendTestInterface {
 			
 			fileMap.put(vcfID, filePath);
 			
-	        try {
-				htmlReport.insertBeforeEnd(htmlReport.getElement(htmlReport.getDefaultRootElement(), StyleConstants.NameAttribute, HTML.Tag.BODY), "<div><h3>loadFeatureSet</h3><p>Loaded file in time: "+ elapsedTime + " milliseconds</p></div>");
-			} catch (BadLocationException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+//	        try {
+//				htmlReport.insertBeforeEnd(htmlReport.getElement(htmlReport.getDefaultRootElement(), StyleConstants.NameAttribute, HTML.Tag.BODY), "<div><h3>loadFeatureSet</h3><p>Loaded file in time: "+ elapsedTime + " milliseconds</p></div>");
+//			} catch (BadLocationException e) {
+//				e.printStackTrace();
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
 
 			//State of SUCCESS
 			rv.setState(ReturnValue.SUCCESS);
@@ -178,320 +180,330 @@ public class GATK_Picard_BackendTest implements BackendTestInterface {
   public ReturnValue getFeatures(String queryJSON) throws JSONException, IOException { 
 		
 		//Read the input JSON file to seperate ArrayLists for parsing
+	   	if (queryJSON.equals("")){
+	   		JSONObject jsonObOuter = new JSONObject("{}");
+	   	} else {
+	   		JSONObject jsonObOuter = new JSONObject(queryJSON);
+	   	}
 		ReturnValue rv = new ReturnValue();
-		JSONObject jsonObOuter = new JSONObject(queryJSON);
 		JSONArray regionArray;
 		Iterator<String> OutterKeys = jsonObOuter.keys();
 		
 		//Points to input VCF file to process
 		//Points to output filepath
 		
-		File sortedVcfFile = new File(fileMap.values());
+		System.out.println(fileMap.values());
+//		File sortedVcfFile = new File(fileMap.get("exampleVCFinput"));
 		
-		String filePath = Global.outputFilePath;
-		
+		String filePath = "src/main/resources/output/output.txt";
+	    PrintWriter writer = 
+	    		new PrintWriter(filePath, "UTF-8");
 //		File sortedVcfFile = new File(Global.HBaseStorage.get("gene").toString());
 //		String filePath = Global.outputFilePath;
 		
-		txtJSONParser JParse = new txtJSONParser(queryJSON);
-		
-		//Initialize query stores to dump queries from input JSON
-		HashMap<String, String> featureMapQuery = JParse.getfeatureMapQuery();
-		HashMap<String, String> featureSetMapQuery = JParse.getfeatureSetMapQuery();
-		HashMap<String, String> regionMapQuery = JParse.getregionMapQuery();
-		
-		QUERY_KEYS = featureMapQuery.keySet();
-		
-		/**INITIALIZE READING OF VCF INPUT**/ 
-		Iterator<VariantContext> vcfIterator;
-		{
-		    PrintWriter writer = 
-		    		new PrintWriter(filePath, "UTF-8");
-		    final VCFCodec vcfCodec = 
-		    		new VCFCodec(); //declare codec
-		    final boolean requireIndex = 
-		    		false; //index not required
-		    BufferedReader vcfReader = 
-		    		new BufferedReader(new FileReader(sortedVcfFile));
-		    FeatureReader<VariantContext> reader = 
-		    		getFeatureReader(sortedVcfFile, vcfCodec, requireIndex);
-		    vcfIterator = 
-		    		reader.iterator();
-		    VCFHeader header = 
-		    		(VCFHeader) reader.getHeader();
+	    Iterator fileMapIter = fileMap.entrySet().iterator();
+	    while (fileMapIter.hasNext()){
+	    	Map.Entry vcfFilePath = (Map.Entry)fileMapIter.next();
+	    	File sortedVcfFile = new File(vcfFilePath.getValue().toString());
+			txtJSONParser JParse = new txtJSONParser(queryJSON);
+	
+			//Initialize query stores to dump queries from input JSON
+			HashMap<String, String> featureMapQuery = JParse.getfeatureMapQuery();
+			HashMap<String, String> featureSetMapQuery = JParse.getfeatureSetMapQuery();
+			HashMap<String, String> regionMapQuery = JParse.getregionMapQuery();
+			
+			QUERY_KEYS = featureMapQuery.keySet();
+			
+		    Iterator featureSetMapIter = featureSetMapQuery
+		    		.entrySet()
+		    		.iterator();
 		    
-		    //Initialize variables for query checking
-		    int fieldSize; //Points needed for a variant Attribute (totaled through all features, and one from region) to be VALID
-		    int fieldCounter;
-		    int miniFieldCounter;
-		    int chromQueryUpperBound; //Region query
-		    int chromQueryLowerBound;
-		    int variantChromID;
-		    List<Map> sorted = new ArrayList<Map>();
-		    String chromID = new String();
-		    String queryAttribute;
-		    String variantChromPair;
-		    String variantAttribute;
-		    
-		    //Used to help sort the Filter column during reading the VCF
-		    Set<String> filterSet;
-		    List<String> filterSetQuery;
-		    
-		    //Used to help sort the Filter column during reading the VCF
-		    Set<String> infoKeySet;
-		    Set<String> infoKeySetQuery;
-		    Map<String, String> infoMapQuery;
-
-		    //Determine if user has input a chromosome query
-		    if (regionMapQuery.containsKey(".") == false){ // if query does not contain ALL chromosome 
-		    	fieldSize = featureMapQuery.size() +1;
-		    } else{
-		    	fieldSize = featureMapQuery.size();
-		    }
-		    
-		    /**BEGIN LOOPING OF EVERY HEADER LINE TO MATCH FOR FEATURE_SET QUERY RESULTS**/
-		    for (VCFIDHeaderLine headerLine : header.getIDHeaderLines()){
-		    	Iterator featureSetMapIter = featureSetMapQuery
-		    			.entrySet()
-		    			.iterator();
-		    	while (featureSetMapIter.hasNext()){
-		    		Map.Entry pairs = (Map.Entry)featureSetMapIter.next();
-		    		String headerFeatureSetValue = pairs
-		    				.getValue()
-		    				.toString();
-		    		if (headerFeatureSetValue.equals(headerLine.getID())){
-		    			writer.println(headerLine);
-		    		}
-		    	}
-		    }
-		    
-		    /**BEGIN LOOPING OF EVERY VARIANT LINE TO MATCH FOR chromID, (RANGE), FEATURE RESULTS**/
-			while (vcfIterator.hasNext()){
-				FILTER_SORTED = "";
-				//Reset the field counter on next line
-				fieldCounter = 0; 
-				miniFieldCounter = 0;
-				
-				VariantContext variantContext = vcfIterator.next();
-				
-			    Iterator regionMapIter = regionMapQuery
-			    		.entrySet()
-			    		.iterator();
-				Iterator featureMapIter = featureMapQuery
-						.entrySet()
-						.iterator();
-
-				//Loop through each query in Chromosomes in VCF
-				while(regionMapIter.hasNext()){
-					
-					Map.Entry chromPair = (Map.Entry)regionMapIter.next();
-					//GATHER FIRST POINT FROM MATCHING CHROMOSOME NUMBER AND RANGE IN QUERY
-					if (chromPair.getKey().equals(variantContext.getChr())){ //check if query in chromosomes matches current chromID in variant
-						variantChromPair = chromPair
-								.getValue()
-								.toString();
-						
-						//Checks if the current variant contains ALL POS
-						if (variantChromPair.equals(".") == true){ 
-							fieldCounter++;
-							chromID = chromPair
-									.getKey()
-									.toString();
+		    /**CHECK IF THE CURRENT FEATURESETID IN QUERY BEING LOOPED MATCHES THE FILENAME IN CURRENT fileMap ENTRY**/
+		    while (featureSetMapIter.hasNext()){
+		    	Map.Entry featureSetID = (Map.Entry)featureSetMapIter.next();
+	    		String featureSetValue = featureSetID
+	    				.getValue()
+	    				.toString();
+	    		if (featureSetID.getKey().toString().equals(vcfFilePath.getKey().toString())){
+	    			
+				/**INITIALIZE READING OF VCF INPUT**/ 
+				Iterator<VariantContext> vcfIterator;
+					{
+			
+					    final VCFCodec vcfCodec = 
+					    		new VCFCodec(); //declare codec
+					    final boolean requireIndex = 
+					    		false; //index not required
+					    BufferedReader vcfReader = 
+					    		new BufferedReader(new FileReader(sortedVcfFile));
+					    FeatureReader<VariantContext> reader = 
+					    		getFeatureReader(sortedVcfFile, vcfCodec, requireIndex);
+					    vcfIterator = 
+					    		reader.iterator();
+					    VCFHeader header = 
+					    		(VCFHeader) reader.getHeader();
+					    
+					    //Initialize variables for query checking
+					    int fieldSize; //Points needed for a variant Attribute (totaled through all features, and one from region) to be VALID
+					    int fieldCounter;
+					    int miniFieldCounter;
+					    int chromQueryUpperBound; //Region query
+					    int chromQueryLowerBound;
+					    int variantChromID;
+					    List<Map> sorted = new ArrayList<Map>();
+					    String chromID = new String();
+					    String queryAttribute;
+					    String variantChromPair;
+					    String variantAttribute;
+					    
+					    //Used to help sort the Filter column during reading the VCF
+					    Set<String> filterSet;
+					    List<String> filterSetQuery;
+					    
+					    //Used to help sort the Filter column during reading the VCF
+					    Set<String> infoKeySet;
+					    Set<String> infoKeySetQuery;
+					    Map<String, String> infoMapQuery;
+			
+					    //Determine if user has input a chromosome query
+					    if (regionMapQuery.containsKey(".") == false){ // if query does not contain ALL chromosome 
+					    	fieldSize = featureMapQuery.size() 
+					    			+1; //This is from one match from the chromoso
+					    } else{
+					    	fieldSize = featureMapQuery.size();
+					    }
+					    
+					    /**BEGIN LOOPING OF EVERY VARIANT LINE TO MATCH FOR chromID, (RANGE), FEATURE RESULTS**/
+						while (vcfIterator.hasNext()){
+							FILTER_SORTED = "";
+							//Reset the field counter on next line
+							fieldCounter = 0; 
+							miniFieldCounter = 0;
 							
-						} else if (variantChromPair.equals(".") == false) {
+							VariantContext variantContext = vcfIterator.next();
+							
+						    Iterator regionMapIter = regionMapQuery
+						    		.entrySet()
+						    		.iterator();
+							Iterator featureMapIter = featureMapQuery
+									.entrySet()
+									.iterator();
+			
+							//Loop through each query in Chromosomes in VCF
+							while(regionMapIter.hasNext()){
 								
-								chromQueryLowerBound = Integer.parseInt(variantChromPair.substring(
-										0,variantChromPair.indexOf("-")));
-								
-								chromQueryUpperBound = Integer.parseInt(variantChromPair.substring(
-										variantChromPair.indexOf("-")+1, 
-										variantChromPair.length()));
-								
-								variantChromID = variantContext.getStart();
-
-								//checks if current variant POS is within specified range
-								if (variantChromID >= chromQueryLowerBound && variantChromID <= chromQueryUpperBound){ 
-									fieldCounter++;
-									chromID = chromPair
-											.getKey()
+								Map.Entry chromPair = (Map.Entry)regionMapIter.next();
+								//GATHER FIRST POINT FROM MATCHING CHROMOSOME NUMBER AND RANGE IN QUERY
+								if (chromPair.getKey().equals(variantContext.getChr())){ //check if query in chromosomes matches current chromID in variant
+									variantChromPair = chromPair
+											.getValue()
 											.toString();
+									
+									//Checks if the current variant contains ALL POS
+									if (variantChromPair.equals(".") == true){ 
+										fieldCounter++;
+										chromID = chromPair
+												.getKey()
+												.toString();
+										
+									} else if (variantChromPair.equals(".") == false) {
+											
+											chromQueryLowerBound = Integer.parseInt(variantChromPair.substring(
+													0,variantChromPair.indexOf("-")));
+											
+											chromQueryUpperBound = Integer.parseInt(variantChromPair.substring(
+													variantChromPair.indexOf("-")+1, 
+													variantChromPair.length()));
+											
+											variantChromID = variantContext.getStart();
+			
+											//checks if current variant POS is within specified range
+											if (variantChromID >= chromQueryLowerBound && variantChromID <= chromQueryUpperBound){ 
+												fieldCounter++;
+												chromID = chromPair
+														.getKey()
+														.toString();
+											}
+									}
+								} else if (chromPair.getKey().toString().equals(".")){
+									chromID = variantContext.getChr().toString();
 								}
+								
+								/**GATHER THE REST OF THE POINTS FROM MATCHING ALL THE FEATURES IN QUERY**/
+								//loop through each query in features
+							    while (featureMapIter.hasNext()) { 
+							        Map.Entry pairs = (Map.Entry)featureMapIter.next();
+							        
+							        String colname = pairs
+							        		.getKey()
+							        		.toString();
+							        
+						        	queryAttribute = pairs
+						        			.getValue()
+						        			.toString();
+						        	
+							        if(colname.equals("INFO")){
+									    String variantAttributeNotMatched = new String();
+									    
+									    infoMapQuery = Splitter.on(",").withKeyValueSeparator("=").split(
+									    		queryAttribute);
+									    
+									    infoKeySet = variantContext
+									    		.getAttributes()
+									    		.keySet();
+			
+									    infoKeySetQuery = infoMapQuery.keySet();
+									    
+									    Map<String,Object> infoMap = variantContext.getAttributes();
+									    
+									    for (String variantKey : infoMap.keySet()){
+									    	for (String queryKey : infoKeySetQuery){
+									    		if (infoMap.get(variantKey).toString().equals(infoMapQuery.get(queryKey))){
+									    			miniFieldCounter++;
+									    		}
+									    	}
+									    }
+									    
+								        if (infoKeySet.containsAll(infoKeySetQuery) &&
+								        		miniFieldCounter == infoMapQuery.size()){	
+								        	//Accumulate points
+								        	fieldCounter++; 
+								        }
+								        
+								      //add point if QUAL matches
+							        } else if (colname.equals("QUAL")){
+							        	variantAttribute = String.valueOf(variantContext
+							        			.getPhredScaledQual()); 
+							        	
+							        	variantAttribute = variantAttribute //Truncate String converted double.
+							        			.substring(0, variantAttribute.indexOf("."));
+			
+								        if (variantAttribute.equals(queryAttribute)){	
+								        	
+								        	//Accumulate points
+								        	fieldCounter++; 
+								        }
+								        
+								        //add point if ID matches
+							        } else if (colname.equals("ID")){
+							        	variantAttribute = variantContext
+							        			.getID().toString();
+							        	
+								        if (variantAttribute.equals(queryAttribute)){	
+								        	
+								        	//Accumulate points
+								        	fieldCounter++;
+								        }
+							        } else if (colname.equals("FILTER")){
+							        	filterSet = variantContext.getFilters();
+							        	if ((filterSet.size() == 0) //check for no filters applied
+							        			&& (queryAttribute.toLowerCase().equals("false"))){
+							        		fieldCounter++;
+							        		FILTER_SORTED = "PASS";
+							        	} else if (filterSet.size() != 0){ //filters were applied, add them
+							        		
+							        		filterSetQuery = Splitter.onPattern(",").splitToList(queryAttribute);
+							        		if (filterSetQuery.containsAll(filterSet) 
+							        				&& filterSet.containsAll(filterSetQuery)){
+							        			fieldCounter++;
+							        			
+							        		}
+							        	}
+							        } else if (colname.equals("ALT")){
+							        	variantAttribute = variantContext.getAltAlleleWithHighestAlleleCount().toString();
+							        	
+							        	if (variantAttribute.equals(queryAttribute)){
+							        		fieldCounter++;
+							        	}
+							        }
+							    }
+							    
+							    /**
+							    FINAL CHECK, ONLY VARIANTS THAT HAVE MATCHED ALL THE SEARCH CRITERA WILL RUN BELOW
+							    **/
+							    
+							    if (fieldCounter == fieldSize){
+							    	Iterator attributeMapIter = variantContext
+							    			.getAttributes()
+							    			.entrySet()
+							    			.iterator();
+							    	
+							    	Iterator filterIter = variantContext
+							    			.getFilters()
+							    			.iterator();
+							    	
+							    	String attributeSorted = new String();
+							    	String attributeSortedHolder = new String();
+							    	
+							    	String filterSortedHolder = new String();
+							    	Set<String> filterSortedSet;
+							    	
+							    	/**Resort the info field from a map format to match VCF format**/
+							    	while(attributeMapIter.hasNext()){ 
+							    		Map.Entry pair = (Map.Entry)attributeMapIter.next();
+							    		
+							    		attributeSortedHolder = pair.getKey().toString() + "=" + 
+							    								 pair.getValue().toString() + ";";
+							    		
+							    		attributeSorted = attributeSorted + attributeSortedHolder;
+							    	}
+							    	
+							    	/**Resort the filter set from a set format to match VCF format**/
+							    	//This runs if there is FILTER in the JSON query
+							    	if (QUERY_KEYS.contains("FILTER")){ 
+								    	while(filterIter.hasNext()){
+								    		filterSortedHolder = filterIter.next().toString() + ";";
+								    		
+								    		FILTER_SORTED = FILTER_SORTED + filterSortedHolder;
+								    	}
+								    	
+								    	FILTER_SORTED = FILTER_SORTED.substring(0, FILTER_SORTED.length()-1);
+							    	
+							    	//This runs if there is no FILTER in the JSON query
+							    	} else if (!QUERY_KEYS.contains("FILTER")){ 
+							    		filterSortedSet = variantContext.getFilters();
+							    		
+							    		//If there is no filter applied, assume that the feature is a PASS
+							    		if (filterSortedSet.size() == 0){ 
+							    			FILTER_SORTED = "PASS";
+							    			
+						    			//If there are filter(s) applied, add them to the TSV file output
+							    		} else if (filterSortedSet.size() != 0){  
+									    	while(filterIter.hasNext()){ 
+									    		filterSortedHolder = filterIter.next().toString() + ";";
+									    		FILTER_SORTED = FILTER_SORTED + filterSortedHolder;
+									    	}
+									    	//Remove the last semicolon
+									    	FILTER_SORTED = FILTER_SORTED.toString().substring(0, FILTER_SORTED.length()-1); 
+							    		}
+							    	}
+							    	
+							    	//Prepare score to be written to TSV file
+						        	String PhredScore = String.valueOf(variantContext
+						        			.getPhredScaledQual()); 
+						        	
+						        	PhredScore = PhredScore //Truncate String converted double.
+						        			.substring(0, PhredScore.indexOf("."));
+						        	
+							    	//Write variant to a TSV file
+							    	writer.println("chr" + chromID + "\t" +
+							    					variantContext.getEnd() + "\t" +
+							    					variantContext.getID() + "\t" +
+							    					variantContext.getReference() + "\t" +
+							    					variantContext.getAltAlleleWithHighestAlleleCount() + "\t" +
+							    					PhredScore + "\t" +
+							    					FILTER_SORTED + "\t" +
+							    					attributeSorted.toString().substring(0, attributeSorted.length()-1)); //Remove last semicolon in attributeSorted
+							    }
+							}
+			
 						}
-					} else if (chromPair.getKey().toString().equals(".")){
-						chromID = variantContext.getChr().toString();
-					}
-					
-					/**GATHER THE REST OF THE POINTS FROM MATCHING ALL THE FEATURES IN QUERY**/
-					//loop through each query in features
-				    while (featureMapIter.hasNext()) { 
-				        Map.Entry pairs = (Map.Entry)featureMapIter.next();
-				        
-				        String colname = pairs
-				        		.getKey()
-				        		.toString();
-				        
-			        	queryAttribute = pairs
-			        			.getValue()
-			        			.toString();
-			        	
-				        if(colname.equals("INFO")){
-						    String variantAttributeNotMatched = new String();
-						    
-						    infoMapQuery = Splitter.on(",").withKeyValueSeparator("=").split(
-						    		queryAttribute);
-						    
-						    infoKeySet = variantContext
-						    		.getAttributes()
-						    		.keySet();
-
-						    infoKeySetQuery = infoMapQuery.keySet();
-						    
-						    Map<String,Object> infoMap = variantContext.getAttributes();
-						    
-						    for (String variantKey : infoMap.keySet()){
-						    	for (String queryKey : infoKeySetQuery){
-						    		if (infoMap.get(variantKey).toString().equals(infoMapQuery.get(queryKey))){
-						    			miniFieldCounter++;
-						    		}
-						    	}
-						    }
-						    
-					        if (infoKeySet.containsAll(infoKeySetQuery) &&
-					        		miniFieldCounter == infoMapQuery.size()){	
-					        	//Accumulate points
-					        	fieldCounter++; 
-					        }
-					        
-					      //add point if QUAL matches
-				        } else if (colname.equals("QUAL")){
-				        	variantAttribute = String.valueOf(variantContext
-				        			.getPhredScaledQual()); 
-				        	
-				        	variantAttribute = variantAttribute //Truncate String converted double.
-				        			.substring(0, variantAttribute.indexOf("."));
-
-					        if (variantAttribute.equals(queryAttribute)){	
-					        	
-					        	//Accumulate points
-					        	fieldCounter++; 
-					        }
-					        
-					        //add point if ID matches
-				        } else if (colname.equals("ID")){
-				        	variantAttribute = variantContext
-				        			.getID().toString();
-				        	
-					        if (variantAttribute.equals(queryAttribute)){	
-					        	
-					        	//Accumulate points
-					        	fieldCounter++;
-					        }
-				        } else if (colname.equals("FILTER")){
-				        	filterSet = variantContext.getFilters();
-				        	if ((filterSet.size() == 0) //check for no filters applied
-				        			&& (queryAttribute.toLowerCase().equals("false"))){
-				        		fieldCounter++;
-				        		FILTER_SORTED = "PASS";
-				        	} else if (filterSet.size() != 0){ //filters were applied, add them
-				        		
-				        		filterSetQuery = Splitter.onPattern(",").splitToList(queryAttribute);
-				        		if (filterSetQuery.containsAll(filterSet) 
-				        				&& filterSet.containsAll(filterSetQuery)){
-				        			fieldCounter++;
-				        			
-				        		}
-				        	}
-				        } else if (colname.equals("ALT")){
-				        	variantAttribute = variantContext.getAltAlleleWithHighestAlleleCount().toString();
-				        	
-				        	if (variantAttribute.equals(queryAttribute)){
-				        		fieldCounter++;
-				        	}
-				        }
-				    }
-				    
-				    /**
-				    FINAL CHECK, ONLY VARIANTS THAT HAVE MATCHED ALL THE SEARCH CRITERA WILL RUN BELOW
-				    **/
-				    
-				    if (fieldCounter == fieldSize){
-				    	Iterator attributeMapIter = variantContext
-				    			.getAttributes()
-				    			.entrySet()
-				    			.iterator();
-				    	
-				    	Iterator filterIter = variantContext
-				    			.getFilters()
-				    			.iterator();
-				    	
-				    	String attributeSorted = new String();
-				    	String attributeSortedHolder = new String();
-				    	
-				    	String filterSortedHolder = new String();
-				    	Set<String> filterSortedSet;
-				    	
-				    	/**Resort the info field from a map format to match VCF format**/
-				    	while(attributeMapIter.hasNext()){ 
-				    		Map.Entry pair = (Map.Entry)attributeMapIter.next();
-				    		
-				    		attributeSortedHolder = pair.getKey().toString() + "=" + 
-				    								 pair.getValue().toString() + ";";
-				    		
-				    		attributeSorted = attributeSorted + attributeSortedHolder;
-				    	}
-				    	
-				    	/**Resort the filter set from a set format to match VCF format**/
-				    	//This runs if there is FILTER in the JSON query
-				    	if (QUERY_KEYS.contains("FILTER")){ 
-					    	while(filterIter.hasNext()){
-					    		filterSortedHolder = filterIter.next().toString() + ";";
-					    		
-					    		FILTER_SORTED = FILTER_SORTED + filterSortedHolder;
-					    	}
-					    	
-					    	FILTER_SORTED = FILTER_SORTED.substring(0, FILTER_SORTED.length()-1);
-				    	
-				    	//This runs if there is no FILTER in the JSON query
-				    	} else if (!QUERY_KEYS.contains("FILTER")){ 
-				    		filterSortedSet = variantContext.getFilters();
-				    		
-				    		//If there is no filter applied, assume that the feature is a PASS
-				    		if (filterSortedSet.size() == 0){ 
-				    			FILTER_SORTED = "PASS";
-				    			
-			    			//If there are filter(s) applied, add them to the TSV file output
-				    		} else if (filterSortedSet.size() != 0){  
-						    	while(filterIter.hasNext()){ 
-						    		filterSortedHolder = filterIter.next().toString() + ";";
-						    		FILTER_SORTED = FILTER_SORTED + filterSortedHolder;
-						    	}
-						    	//Remove the last semicolon
-						    	FILTER_SORTED = FILTER_SORTED.toString().substring(0, FILTER_SORTED.length()-1); 
-				    		}
-				    	}
-				    	
-				    	//Prepare score to be written to TSV file
-			        	String PhredScore = String.valueOf(variantContext
-			        			.getPhredScaledQual()); 
-			        	
-			        	PhredScore = PhredScore //Truncate String converted double.
-			        			.substring(0, PhredScore.indexOf("."));
-			        	
-				    	//Write variant to a TSV file
-				    	writer.println("chr" + chromID + "\t" +
-				    					variantContext.getEnd() + "\t" +
-				    					variantContext.getID() + "\t" +
-				    					variantContext.getReference() + "\t" +
-				    					variantContext.getAltAlleleWithHighestAlleleCount() + "\t" +
-				    					PhredScore + "\t" +
-				    					FILTER_SORTED + "\t" +
-				    					attributeSorted.toString().substring(0, attributeSorted.length()-1)); //Remove last semicolon in attributeSorted
-				    }
-				}
-
-			}
+						
+					}	
+	    		}
+		    }
 			writer.close();
-		}	
+	    }
 		long elapsedTime = System.nanoTime();
 
 		try {
