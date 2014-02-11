@@ -54,6 +54,7 @@ public class GATK_Picard_BackendTest implements BackendTestInterface {
   public static HTMLDocument htmlReport; // The HTML Report to be written 
   static String FILTER_SORTED;
   static Set<String> QUERY_KEYS;
+  private long loadTime = 10000;
   
   @Override
   public String getName(){
@@ -72,27 +73,39 @@ public class GATK_Picard_BackendTest implements BackendTestInterface {
    */
   @Override
   public ReturnValue getIntroductionDocs() {
-    htmlReport = new HTMLDocument();
-    JEditorPane p = new JEditorPane();
-    p.setContentType("text/html");
-    p.setText(""
-        + " <html>"
-        + "   <head>"
-        + "     <title>SeqWare Query Engine: GATK_Picard_BackendTest</title>"
-        + "     <style type=\"text/css\">"
-        + "       body { background-color: #EEEEEE; }"
-        + "       h3  { color: red; }"
-        + "     </style>"
-        + "     </head>" 
-        + "   <body>"
-        + "     <h1>SeqWare Query Engine: GATK_Picard_BackendTest</h1>"
-        + "   </body>"
-        + "</html>"
-     );
-    htmlReport = (HTMLDocument) p.getDocument();    
-    ReturnValue r = new ReturnValue();
-    r.setState(ReturnValue.SUCCESS);
-    return r;
+	ReturnValue rv = new ReturnValue();
+	String introHTML =
+			(""
+	      + " <html>"
+	      + "   <head>"
+	      + "     <title>SeqWare Query Engine: GATK_Picard_BackendTest</title>"
+	      + "     <style type=\"text/css\">"
+	      + "       body { background-color: #EEEEEE; }"
+	      + "       h3  { color: red; }"
+	      + "     </style>"
+	      + "     </head>" 
+	      + "   <body>"
+	      + "     <h1>SeqWare Query Engine: GATK_Picard_BackendTest</h1>"
+	      + "     <p>This backend is created through the use of two API's to load and query VCF and BAM files respectively. A JSON String query is used to query the files. </p>"
+	      + "     <ul>"
+	      + "       <li><b>GATK API</b>: VCF Querying</li>"
+	      + "       <li><b>Picard/SAMTools API</b>: BAM Querying</li>"
+	      + "     </ul>"
+	      + "     <hr>"
+	      + "     <h3><center>GATK API</center></h3>"
+	      + "     <hr>"
+	      + "     <h4><b>Performance</b></h4>"
+	      + "	    <p>The VCF files have loaded in " + loadTime +  " milliseconds on average. It has so far been tested with VCF files with sizes up to 2 gigs. It takes approdimately a minute to apply a query of 4 features to a file 1.5 GB in size."
+	      + "          There is however, a lack of documentation on GATK tools, as it seems to be geared towards end users and not developers. Albeit the fact, the functions and packages were </p>"
+	      + "     <h4>GATK documentation and usage</h4>"
+	      + "	  <hr>"
+	      + "     <h3><center>Picard/SAMTools API</center><h3>"
+	      + "     <hr>"
+	      + "     <h4><b>Performance</b></h4>"
+	      + "     <h4>Picard/SAMTools documentation and usage</h4>"
+	      );
+	rv.getKv().put(BackendTestInterface.DOCS, introHTML);
+	return rv;
   }
   
   @Override
@@ -180,23 +193,23 @@ public class GATK_Picard_BackendTest implements BackendTestInterface {
   public ReturnValue getFeatures(String queryJSON) throws JSONException, IOException { 
 		
 		//Read the input JSON file to seperate ArrayLists for parsing
-	  	JSONObject jsonObOuter;
+	  	String queryJSONChecked;
 	  	
 	  	//This is to check if there is a totally blank query input (without even braces)
 	   	if (queryJSON.equals("")){
-	   		jsonObOuter = new JSONObject("{}");
+	   		queryJSONChecked = "{}";
 	   	} else {
-	   		jsonObOuter = new JSONObject(queryJSON);
+	   		queryJSONChecked = queryJSON;
 	   	}
 	   	
 		ReturnValue rv = new ReturnValue();
 		JSONArray regionArray;
-		Iterator<String> OutterKeys = jsonObOuter.keys();
+
 		
 		//Points to input VCF file to process
 		//Points to output filepath
 		
-		System.out.println(fileMap.values());
+		
 //		File sortedVcfFile = new File(fileMap.get("exampleVCFinput"));
 		
 		String filePath = "src/main/resources/output/output.txt";
@@ -209,7 +222,7 @@ public class GATK_Picard_BackendTest implements BackendTestInterface {
 	    while (fileMapIter.hasNext()){
 	    	Map.Entry vcfFilePath = (Map.Entry)fileMapIter.next();
 	    	File sortedVcfFile = new File(vcfFilePath.getValue().toString());
-			txtJSONParser JParse = new txtJSONParser(queryJSON);
+			txtJSONParser JParse = new txtJSONParser(queryJSONChecked);
 	
 			//Initialize query stores to dump queries from input JSON
 			HashMap<String, String> featureMapQuery = JParse.getfeatureMapQuery();
@@ -510,11 +523,11 @@ public class GATK_Picard_BackendTest implements BackendTestInterface {
 	    }
 		long elapsedTime = System.nanoTime();
 
-		try {
-			htmlReport.insertBeforeEnd(htmlReport.getElement(htmlReport.getDefaultRootElement(), StyleConstants.NameAttribute, HTML.Tag.BODY), "<p>Finished in " + elapsedTime + " milliseconds.</p></div>");
-		} catch (BadLocationException e) {
-			e.printStackTrace();
-		}
+//		try {
+//			htmlReport.insertBeforeEnd(htmlReport.getElement(htmlReport.getDefaultRootElement(), StyleConstants.NameAttribute, HTML.Tag.BODY), "<p>Finished in " + elapsedTime + " milliseconds.</p></div>");
+//		} catch (BadLocationException e) {
+//			e.printStackTrace();
+//		}
 		rv.getKv().put(BackendTestInterface.QUERY_RESULT_FILE, filePath);
 		return rv; 
   }
@@ -764,23 +777,13 @@ public class GATK_Picard_BackendTest implements BackendTestInterface {
    */
   @Override
   public ReturnValue getConclusionDocs() {
-    ReturnValue rt = new ReturnValue(); 
-    // Write HTMLDocuments to file
-    try {
-      HTMLEditorKit kit = new HTMLEditorKit();
-      StringWriter writer = new StringWriter();
-      kit.write(writer, htmlReport, 0, htmlReport.getLength());
-      String s = writer.toString();
-      PrintWriter out = new PrintWriter("htmlReport.html");
-      out.print(s);
-      out.close();
-    } catch (Exception ex) { 
-      rt.setState(ReturnValue.ERROR); 
-      return rt; 
-    } 
-//    rt.getKv().put(BackendTestInterface.DOCS, )
-    rt.setState(ReturnValue.SUCCESS); 
-    return rt;
+    ReturnValue rv = new ReturnValue(); 
+    String conclusionHTML = 
+      (   ""
+    	  +	"</body>"
+  	      + "</html>");
+    rv.getKv().put(BackendTestInterface.DOCS, conclusionHTML); 
+    return rv;
   }
    
   public ReturnValue setupBackend(HashMap<String, String> settings) {
