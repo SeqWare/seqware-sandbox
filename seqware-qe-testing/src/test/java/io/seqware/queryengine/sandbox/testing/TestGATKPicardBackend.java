@@ -71,7 +71,7 @@ public class TestGATKPicardBackend {
     @Test
     public void testGetReads() {
       backend.loadReadSet(bamfile);
-      backend.getReads(jsonTxt);
+      Assert.assertNotNull(backend.getReads(jsonTxt).getKv().get(BackendTestInterface.QUERY_RESULT_FILE));
     }
     
     @Test

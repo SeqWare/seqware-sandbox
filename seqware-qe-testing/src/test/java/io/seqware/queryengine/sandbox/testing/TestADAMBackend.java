@@ -46,12 +46,11 @@ public class TestADAMBackend {
   
   @Test
   public void testGetFeatures() {
-    fail("Not Implemented yet.");
-    /*try {
+    try {
       ab.loadFeatureSet(vcffile);
       ab.getFeatures(jsonTxt);
     } catch (Exception ex) {
       fail(ex.getMessage());
-    }*/
+    }
   }
 }

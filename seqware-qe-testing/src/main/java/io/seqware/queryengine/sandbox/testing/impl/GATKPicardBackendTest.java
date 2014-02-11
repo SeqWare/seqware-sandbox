@@ -26,7 +26,9 @@ import net.sf.samtools.SAMFileHeader;
 import net.sf.samtools.SAMFileReader;
 import net.sf.samtools.SAMFileWriter;
 import net.sf.samtools.SAMFileWriterFactory;
+import net.sf.samtools.SAMReadGroupRecord;
 import net.sf.samtools.SAMRecord;
+import net.sf.samtools.SAMSequenceRecord;
 
 import org.apache.commons.io.FilenameUtils;
 import org.broad.tribble.AbstractFeatureReader;
@@ -452,8 +454,8 @@ public class GATKPicardBackendTest implements BackendTestInterface {
   @Override
   public ReturnValue getReads(String queryJSON) {
     ReturnValue rt = new ReturnValue();
-    //First, parse the query for related fields
     try {
+      //First, parse the query for related fields
       JSONQueryParser jsonParser = new JSONQueryParser(queryJSON);
       HashMap<String, String> readSetQuery = jsonParser.getReadSetQuery();
       HashMap<String, String> readsQuery = jsonParser.getReadsQuery();
@@ -461,6 +463,12 @@ public class GATKPicardBackendTest implements BackendTestInterface {
       ArrayList<SAMRecord> samList = new ArrayList<SAMRecord>();
       
       ReadSearch rs = new ReadSearch(readSetQuery, readsQuery, regionsQuery);
+      
+      //Build the header
+      SAMFileHeader resultHeader =  new SAMFileHeader();
+      resultHeader.setAttribute(SAMFileHeader.VERSION_TAG, "1.0");
+      
+      //Iterate over all the saved read sets
       if (queryJSON.isEmpty()) {
         for (Entry<String, String> e: READ_SETS.entrySet()) {
           if (e.getValue().endsWith(".bai"))
@@ -470,6 +478,18 @@ public class GATKPicardBackendTest implements BackendTestInterface {
           SAMFileReader samReader = new SAMFileReader(bamfile);
           for (SAMRecord r: samReader) {
             samList.add(r);
+          }
+          List<SAMReadGroupRecord> rgs = samReader.getFileHeader().getReadGroups();
+          for (SAMReadGroupRecord rg: rgs ) {
+            if (null == resultHeader.getReadGroup(rg.getReadGroupId())) {
+              resultHeader.addReadGroup(rg);
+            }
+          }
+          List<SAMSequenceRecord> sequences = samReader.getFileHeader().getSequenceDictionary().getSequences();
+          for (SAMSequenceRecord seq: sequences) { 
+            if (null == resultHeader.getSequence(seq.getSequenceName())) {
+              resultHeader.addSequence(seq);
+            }
           }
         }
       } else {
@@ -482,18 +502,42 @@ public class GATKPicardBackendTest implements BackendTestInterface {
             File baifile = new File(READ_SETS.get(e.getKey() + "index"));
             SAMFileReader samReader = new SAMFileReader(bamfile, baifile, true);
             samList.addAll(rs.bamSearch(samReader));
+            List<SAMReadGroupRecord> rgs = samReader.getFileHeader().getReadGroups();
+            for (SAMReadGroupRecord rg: rgs ) {
+              if (null == resultHeader.getReadGroup(rg.getReadGroupId())) {
+                resultHeader.addReadGroup(rg);
+              }
+            }
+            List<SAMSequenceRecord> sequences = samReader.getFileHeader().getSequenceDictionary().getSequences();
+            for (SAMSequenceRecord seq: sequences) { 
+              if (null == resultHeader.getSequence(seq.getSequenceName())) {
+                resultHeader.addSequence(seq);
+              }
+            }
           } else {
             File bamfile = new File(e.getValue());
             SAMFileReader samReader = new SAMFileReader(bamfile);
             samList.addAll(rs.bamSearch(samReader));
+            resultHeader = samReader.getFileHeader();          
+            List<SAMReadGroupRecord> rgs = samReader.getFileHeader().getReadGroups();
+            for (SAMReadGroupRecord rg: rgs ) {
+              if (null == resultHeader.getReadGroup(rg.getReadGroupId())) {
+                resultHeader.addReadGroup(rg);
+              }
+            }
+            List<SAMSequenceRecord> sequences = samReader.getFileHeader().getSequenceDictionary().getSequences();
+            for (SAMSequenceRecord seq: sequences) { 
+              if (null == resultHeader.getSequence(seq.getSequenceName())) {
+                resultHeader.addSequence(seq);
+              }
+            }
           }
         }
       }
       String outputPath = "queryOutput.bam";
       File outputFile = new File(outputPath);
-      SAMFileHeader blankHeader =  new SAMFileHeader();
       SAMFileWriterFactory writerFactory = new SAMFileWriterFactory();
-      SAMFileWriter bfw = writerFactory.makeBAMWriter(blankHeader, true, outputFile);
+      SAMFileWriter bfw = writerFactory.makeBAMWriter(resultHeader, true, outputFile);
       
       for (SAMRecord r: samList){
         bfw.addAlignment(r);
