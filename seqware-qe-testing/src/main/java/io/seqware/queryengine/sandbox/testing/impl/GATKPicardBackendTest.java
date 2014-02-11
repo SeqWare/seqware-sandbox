@@ -20,9 +20,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.swing.text.BadLocationException;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.html.HTML;
 import javax.swing.text.html.HTMLDocument;
 
 import net.sf.samtools.SAMFileHeader;
@@ -437,11 +434,13 @@ public class GATKPicardBackendTest implements BackendTestInterface {
 		}	
 		long elapsedTime = System.nanoTime();
 
+		/*
 		try {
 			htmlReport.insertBeforeEnd(htmlReport.getElement(htmlReport.getDefaultRootElement(), StyleConstants.NameAttribute, HTML.Tag.BODY), "<p>Finished in " + elapsedTime + " milliseconds.</p></div>");
 		} catch (BadLocationException e) {
 			e.printStackTrace();
 		}
+		*/
 		finished.storeKv("queryFeatureResultFile", filePath);
 		return finished; 
   }

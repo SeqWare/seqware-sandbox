@@ -188,6 +188,16 @@ public class ADAMBackendTest implements BackendTestInterface {
             System.out.println(ex.getMessage());
           }
         }
+      } else {
+        File bamfile = new File(e.getValue());
+        SAMFileReader samReader = new SAMFileReader(bamfile);
+        for (SAMRecord r: samReader) {
+          try {
+            adamList.add(samConverter.convert(r, SequenceDictionary.fromSAMReader(samReader), RecordGroupDictionary.fromSAMReader(samReader)));
+          } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+          }
+        }
       }
     }
     if (queryJSON.isEmpty()) {
@@ -207,7 +217,7 @@ public class ADAMBackendTest implements BackendTestInterface {
         //Initialize query stores to dump queries from input JSON
         HashMap<String, String> readsQuery = queryParser.getReadsQuery();
         HashMap<String, String> readSetQuery = queryParser.getReadSetQuery();
-        HashMap<String, String> regionsQuery = queryParser.getRegionsQuery();        
+        HashMap<String, String> regionsQuery = queryParser.getRegionsQuery(); 
         
         ReadSearch rs = new ReadSearch(readSetQuery, readsQuery, regionsQuery);
         List<ADAMRecord> searchedADAMList = rs.adamSearch(adamList);

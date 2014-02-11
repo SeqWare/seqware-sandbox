@@ -1,7 +1,6 @@
 package io.seqware.queryengine.sandbox.testing;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 import io.seqware.queryengine.sandbox.testing.impl.GATKPicardBackendTest;
 import io.seqware.queryengine.sandbox.testing.utils.Global;
 
@@ -60,7 +59,7 @@ public class TestGATKPicardBackend {
 
     @Test
     public void testGetIntroductionDocs() {
-      String expHtmlReport = "<h2>GATKPicardBackend: Introduction<h2>";  
+      String expHtmlReport = "<h2>GATKPicardBackend: Introduction</h2>";  
       assertEquals(expHtmlReport, backend.getIntroductionDocs().getKv().get(BackendTestInterface.DOCS));
     }
 
@@ -71,7 +70,8 @@ public class TestGATKPicardBackend {
     
     @Test
     public void testGetReads() {
-      fail("Not implemented yet.");
+      backend.loadReadSet(bamfile);
+      backend.getReads(jsonTxt);
     }
     
     @Test

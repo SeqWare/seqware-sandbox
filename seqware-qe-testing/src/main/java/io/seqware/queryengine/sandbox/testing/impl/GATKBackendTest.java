@@ -2,8 +2,8 @@ package io.seqware.queryengine.sandbox.testing.impl;
 
 import io.seqware.queryengine.sandbox.testing.BackendTestInterface;
 import io.seqware.queryengine.sandbox.testing.ReturnValue;
-import io.seqware.queryengine.sandbox.testing.utils.*;
-import io.seqware.queryengine.sandbox.testing.model.txtJSONParser;
+import io.seqware.queryengine.sandbox.testing.utils.Global;
+import io.seqware.queryengine.sandbox.testing.utils.JSONQueryParser;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FilenameUtils;
+import org.broad.tribble.AbstractFeatureReader;
+import org.broad.tribble.FeatureReader;
 import org.broadinstitute.variant.variantcontext.VariantContext;
 import org.broadinstitute.variant.vcf.VCFCodec;
 import org.broadinstitute.variant.vcf.VCFHeader;
@@ -24,8 +26,6 @@ import org.broadinstitute.variant.vcf.VCFIDHeaderLine;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.broad.tribble.AbstractFeatureReader;
-import org.broad.tribble.FeatureReader;
 
 /**
  * TestBackends
@@ -87,12 +87,12 @@ public class GATKBackendTest implements BackendTestInterface
 		File sortedVcfFile = new File(Global.HBaseStorage.get("gene").toString());
 		String filePath = Global.outputFilePath;
 		
-		txtJSONParser JParse = new txtJSONParser(queryJSON);
+		JSONQueryParser JParse = new JSONQueryParser(queryJSON);
 		
 		//Initialize query stores to dump queries from input JSON
-		HashMap<String, String> FEATURE_MAP_QUERY = JParse.getFEATURE_MAP_QUERY();
-		HashMap<String, String> FEATURE_SET_MAP_QUERY = JParse.getFEATURE_SET_MAP_QUERY();
-		HashMap<String, String> REGION_MAP_QUERY = JParse.getREGION_MAP_QUERY();
+		HashMap<String, String> FEATURE_MAP_QUERY = JParse.getFeaturesQuery();
+		HashMap<String, String> FEATURE_SET_MAP_QUERY = JParse.getFeatureSetQuery();
+		HashMap<String, String> REGION_MAP_QUERY = JParse.getRegionsQuery();
 		
 		/**INITIALIZE READING OF VCF INPUT
 		 * 

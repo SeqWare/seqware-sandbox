@@ -22,7 +22,7 @@ public class JSONQueryParser {
         readSetQuery = new HashMap<String, String>();
         readsQuery = new HashMap<String, String>();
         featureMapQuery = new HashMap<String, String>();
-        featureMapQuery = new HashMap<String, String>();
+        featureSetMapQuery = new HashMap<String, String>();
         regionMapQuery = new HashMap<String, String>();
         
         while (outerKeys.hasNext()) {
