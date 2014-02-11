@@ -180,11 +180,15 @@ public class GATK_Picard_BackendTest implements BackendTestInterface {
   public ReturnValue getFeatures(String queryJSON) throws JSONException, IOException { 
 		
 		//Read the input JSON file to seperate ArrayLists for parsing
+	  	JSONObject jsonObOuter;
+	  	
+	  	//This is to check if there is a totally blank query input (without even braces)
 	   	if (queryJSON.equals("")){
-	   		JSONObject jsonObOuter = new JSONObject("{}");
+	   		jsonObOuter = new JSONObject("{}");
 	   	} else {
-	   		JSONObject jsonObOuter = new JSONObject(queryJSON);
+	   		jsonObOuter = new JSONObject(queryJSON);
 	   	}
+	   	
 		ReturnValue rv = new ReturnValue();
 		JSONArray regionArray;
 		Iterator<String> OutterKeys = jsonObOuter.keys();
