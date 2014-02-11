@@ -180,6 +180,15 @@
             </snapshots>
         </repository>
 
+	<repository>
+            <id>akka.repo</id>
+            <url>http://repo.akka.io/releases/</url>
+        </repository>
+        <repository>
+            <id>hadoop-bam</id>
+            <url>http://hadoop-bam.sourceforge.net/maven/</url>
+        </repository>
+
     </repositories>
     <build>
         <pluginManagement>
