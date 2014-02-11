@@ -55,7 +55,7 @@ public class GATKPicardBackendTest implements BackendTestInterface {
   
   @Override
   public String getName(){
-    return "GATK_Picard_BackendTest";
+    return "GATKPicardBackendTest";
   }
   
   /** getIntroductionDocs()
@@ -63,7 +63,7 @@ public class GATKPicardBackendTest implements BackendTestInterface {
    */
   @Override
   public ReturnValue getIntroductionDocs() {
-    String introduction = "<h2>GATK_Picard_Backend: Introduction</h2>";
+    String introduction = "<h2>GATKPicardBackend: Introduction</h2>";
     ReturnValue r = new ReturnValue();
     r.storeKv(BackendTestInterface.DOCS, introduction);
     r.setState(ReturnValue.SUCCESS);
