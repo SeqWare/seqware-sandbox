@@ -2,7 +2,6 @@ package io.seqware.queryengine.sandbox.testing.impl;
 
 import io.seqware.queryengine.sandbox.testing.BackendTestInterface;
 import io.seqware.queryengine.sandbox.testing.ReturnValue;
-import io.seqware.queryengine.sandbox.testing.model.txtJSONParser;
 import io.seqware.queryengine.sandbox.testing.utils.Global;
 import io.seqware.queryengine.sandbox.testing.utils.JSONQueryParser;
 import io.seqware.queryengine.sandbox.testing.utils.ReadSearch;
@@ -144,12 +143,12 @@ public class GATKPicardBackendTest implements BackendTestInterface {
 		File sortedVcfFile = new File(Global.HBaseStorage.get("gene").toString());
 		String filePath = Global.outputFilePath;
 		
-		txtJSONParser JParse = new txtJSONParser(queryJSON);
+		JSONQueryParser JParse = new JSONQueryParser(queryJSON);
 		
 		//Initialize query stores to dump queries from input JSON
-		HashMap<String, String> FEATURE_MAP_QUERY = JParse.getFEATURE_MAP_QUERY();
-		HashMap<String, String> FEATURE_SET_MAP_QUERY = JParse.getFEATURE_SET_MAP_QUERY();
-		HashMap<String, String> REGION_MAP_QUERY = JParse.getREGION_MAP_QUERY();
+		HashMap<String, String> FEATURE_MAP_QUERY = JParse.getFeaturesQuery();
+		HashMap<String, String> FEATURE_SET_MAP_QUERY = JParse.getFeatureSetQuery();
+		HashMap<String, String> REGION_MAP_QUERY = JParse.getRegionsQuery();
 		
 		QUERY_KEYS = FEATURE_MAP_QUERY.keySet();
 		/**INITIALIZE READING OF VCF INPUT
