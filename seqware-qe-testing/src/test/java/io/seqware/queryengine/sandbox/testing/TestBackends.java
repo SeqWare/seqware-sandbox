@@ -1,7 +1,7 @@
 package io.seqware.queryengine.sandbox.testing;
 
 import io.seqware.queryengine.sandbox.testing.impl.ADAMBackendTest;
-import io.seqware.queryengine.sandbox.testing.impl.GATK_Picard_BackendTest;
+import io.seqware.queryengine.sandbox.testing.impl.GATKPicardBackendTest;
 import io.seqware.queryengine.sandbox.testing.impl.NoOpBackendTest;
 import io.seqware.queryengine.sandbox.testing.plugins.Feature;
 import io.seqware.queryengine.sandbox.testing.plugins.FeaturePluginInterface;
@@ -199,7 +199,7 @@ public class TestBackends {
     @Test
     public void testGATK_PicardBackEnd(){
     	try{
-    		testBackend(new GATK_Picard_BackendTest(), false, null);
+    		testBackend(new GATKPicardBackendTest(), false, null);
     	} catch (RuntimeException | IOException e) {
             Assert.assertTrue(false);
         }
