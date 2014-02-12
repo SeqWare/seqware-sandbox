@@ -26,3 +26,5 @@
 .settings
 # Mac files
 *.DS_Store
+# Downloaded Data
+/seqware-qe-testing/download_data

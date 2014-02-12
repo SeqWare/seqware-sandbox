@@ -10,19 +10,10 @@
       "QUAL":"100",
       "FILTER" : "q10,s50,q12"
     },
-   "read_sets": 
-    {
-        "key": "value",
-        "key2": "value2"
-    },
   "reads": 
     {
       "cigar": "76M",
       "qname": "ERR018455.38578514"
     },
-   "regions":
-     [
-		  "chr9:22125019-22125913",
-      	"chr9"
-     ]
+  "regions": [ "chr20" ]
 }
