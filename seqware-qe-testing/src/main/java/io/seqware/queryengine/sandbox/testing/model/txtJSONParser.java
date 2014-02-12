@@ -21,13 +21,30 @@ public class txtJSONParser {
 		
 		JSONObject jsonObOuter = new JSONObject(queryJSON);
 		JSONArray regionArray;
-		Iterator<String> OutterKeys = jsonObOuter.keys();
-	
+		//Generate missing keys if they are blank in the query. 
+		do{
+			JSONObject emptyObject = new JSONObject("{}");
+			JSONArray emptyArray = new JSONArray("[]");
+			if (!jsonObOuter.has("features")){
+				jsonObOuter.put("features", emptyObject);
+			} else if (!jsonObOuter.has("feature_sets")){
+				jsonObOuter.put("feature_sets", emptyObject);
+			} else if (!jsonObOuter.has("reads")){
+				jsonObOuter.put("reads", emptyObject);
+			} else if (!jsonObOuter.has("read_sets")){
+				jsonObOuter.put("read_sets", emptyObject);
+			} else if (!jsonObOuter.has("regions")){
+				jsonObOuter.put("regions", emptyArray);
+			}
+		} while (jsonObOuter.length() != 5);
+		System.out.println(jsonObOuter);
+		
 		//READ THE JSON INPUT FILE
 		/**	"OutKey":
 		{
 			"InKey": "jsonObInner.get(InKey)"
 		}*/
+		Iterator<String> OutterKeys = jsonObOuter.keys();
 		while (OutterKeys.hasNext()){
 			String OutKey = OutterKeys.next();
 			if (jsonObOuter.get(OutKey) instanceof JSONObject){
