@@ -32,7 +32,7 @@ public class FeaturePluginRunnerTest {
 		
 		//Move these to some external global variable later, will not be called in the runPlugin params
 		String outputDir = System.getProperty("user.home") + "/Filtered";
-		String inputDir = "src/main/resources/PluginData/";
+		String inputDir = "src/main/resources/PluginData/"; // change this to fileMap input
 		
 		File jsonQuery = new File("src/main/resources/testdata/query.json");
 		InputStream is = new FileInputStream(jsonQuery);
