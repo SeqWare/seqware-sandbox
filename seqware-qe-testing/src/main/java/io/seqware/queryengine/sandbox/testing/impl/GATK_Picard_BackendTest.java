@@ -573,10 +573,7 @@ public class GATK_Picard_BackendTest implements BackendTestInterface {
 					}
 					
 				}	
-	    		
-		    
-			writer.close();
-	    }
+	    }writer.close();
 		rv.getKv().put(BackendTestInterface.QUERY_RESULT_FILE, filePath);
 		return rv; 
   }
