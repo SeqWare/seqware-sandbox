@@ -1,4 +1,4 @@
-package io.seqware.queryengine.sandbox.testing.model;
+package io.seqware.queryengine.sandbox.testing.utils;
 
 import java.io.File;
 import java.io.IOException;
