@@ -23,7 +23,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class GATK_Picard_Test {
-    @Test
+    // @Test
     public void testAll() throws IOException, JSONException{
     	 ReturnValue rv = new ReturnValue();
          
