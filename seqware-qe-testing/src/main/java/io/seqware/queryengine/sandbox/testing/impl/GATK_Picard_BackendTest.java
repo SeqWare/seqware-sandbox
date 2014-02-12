@@ -327,7 +327,7 @@ public class GATK_Picard_BackendTest implements BackendTestInterface {
 				    String chromID = new String();
 				    String queryAttribute;
 				    String variantChromPair;
-				    String variantAttribute;
+				    String variantAttribute = new String();
 				    
 				    //Used to help sort the Filter column during reading the VCF
 				    Set<String> filterSet;
@@ -488,7 +488,7 @@ public class GATK_Picard_BackendTest implements BackendTestInterface {
 						        	if (variantAttribute.equals(queryAttribute)){
 						        		fieldCounter++;
 						        	}
-						        }
+						        } else {continue;}
 						    }
 						    
 						    /**
