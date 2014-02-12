@@ -19,7 +19,7 @@ import io.seqware.queryengine.sandbox.testing.ReturnValue;
 import io.seqware.queryengine.sandbox.testing.model.VCFReader;
 
 public class FeaturePluginRunnerTest {
-	@Test
+	
 	//This is basically and external implementation of the runPlugin function in BackendTestInterface, for ease of testing.
 	//Will be added into GATK_Picard_Backend test.
 	public ReturnValue runPlugin() throws IOException, JSONException{
