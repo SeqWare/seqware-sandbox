@@ -174,7 +174,7 @@ public class GATK_Picard_BackendTest implements BackendTestInterface {
 							.getName()
 							.substring(0, vcfFile.getName().indexOf("."));
 					fileMap.put(vcfID, gzDecompressedVCF);
-					System.out.println("Decompressed to" + gzDecompressedVCF);
+					System.out.println("Decompressed to " + gzDecompressedVCF);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
