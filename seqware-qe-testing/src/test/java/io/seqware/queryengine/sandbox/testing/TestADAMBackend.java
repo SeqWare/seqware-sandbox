@@ -34,7 +34,7 @@ public class TestADAMBackend {
     bamfile = null;
   } 
   
-  @Test
+  // @Test
   public void testGetReads() {
     try {
       ab.loadReadSet(bamfile);
@@ -44,7 +44,7 @@ public class TestADAMBackend {
     }
   } 
   
-  @Test
+  // @Test
   public void testGetFeatures() {
     try {
       ab.loadFeatureSet(vcffile);

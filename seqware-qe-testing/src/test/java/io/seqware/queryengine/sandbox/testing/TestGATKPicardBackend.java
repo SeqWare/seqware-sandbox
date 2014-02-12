@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
 
 import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
@@ -17,7 +18,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class TestGATKPicardBackend {
-    @Test
+//    @Test
     public void testAll() throws IOException, JSONException{
     	   ReturnValue returned = new ReturnValue();
          
@@ -26,7 +27,7 @@ public class TestGATKPicardBackend {
     	   backend.loadFeatureSet(vcffile);  
  		
          //Point to TSV output file to be written to
-         Global.outputFilePath = File.createTempFile("output", "txt").getAbsolutePath();
+//         Global.outputFilePath = File.createTempFile("output", "txt").getAbsolutePath();
          
          //Obtain matched features
          returned = backend.getFeatures(jsonTxt);    	
@@ -47,7 +48,12 @@ public class TestGATKPicardBackend {
 	    
   	  backend = new GATKPicardBackendTest();
       bamfile = "src/main/resources/testdata/HG00310.chrom20.ILLUMINA.bwa.FIN.low_coverage.20120522.bam";
-      vcffile = "src/main/resources/testdata/exampleVCFinput.vcf";
+      vcffile = "src/main/resources/NA12156_lcl_SRR801819.vcf";
+      
+      PrintWriter writer = new PrintWriter("/Users/bso/Report.html", "UTF-8");
+      writer.println(backend.getIntroductionDocs().getKv().get(BackendTestInterface.DOCS));
+      writer.println(backend.getConclusionDocs().getKv().get(BackendTestInterface.DOCS));
+      writer.close();
     }
     
     @AfterClass
@@ -57,24 +63,24 @@ public class TestGATKPicardBackend {
       jsonTxt = null;
     }
 
-    @Test
+//    @Test
     public void testGetIntroductionDocs() {
       String expHtmlReport = "<h2>GATKPicardBackend: Introduction</h2>";  
       assertEquals(expHtmlReport, backend.getIntroductionDocs().getKv().get(BackendTestInterface.DOCS));
     }
 
-    @Test
+//    @Test
     public void testLoadReadSet() {
       Assert.assertNotNull(backend.loadReadSet(bamfile).getKv().get(BackendTestInterface.READ_SET_ID));
     }
     
-    @Test
+//    @Test
     public void testGetReads() {
       backend.loadReadSet(bamfile);
       Assert.assertNotNull(backend.getReads(jsonTxt).getKv().get(BackendTestInterface.QUERY_RESULT_FILE));
     }
     
-    @Test
+//    @Test
     public void testGetConclusionDocs() {
       String expHtmlReport = "<h2>Conclusion</h2>"; 
       assertEquals(expHtmlReport, backend.getConclusionDocs().getKv().get(BackendTestInterface.DOCS));
