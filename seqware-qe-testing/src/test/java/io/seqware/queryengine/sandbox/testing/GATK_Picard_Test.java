@@ -1,7 +1,6 @@
 package io.seqware.queryengine.sandbox.testing;
 
-import io.seqware.queryengine.sandbox.testing.impl.GATK_Picard_BackendTest;
-import io.seqware.queryengine.sandbox.testing.utils.Global;
+import io.seqware.queryengine.sandbox.testing.impl.*;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -33,7 +32,7 @@ public class GATK_Picard_Test {
          rv = gb.loadFeatureSet(vcffile);  
  		 
          //Point to TSV output file to be written to
-         Global.outputFilePath = File.createTempFile("output", "txt").getAbsolutePath();
+//         Global.outputFilePath = File.createTempFile("output", "txt").getAbsolutePath();
          
  		//Obtain matched features
          rv = gb.getFeatures(jsonTxt);    	
@@ -57,7 +56,7 @@ public class GATK_Picard_Test {
       bamfile = "src/main/resources/testdata/HG00310.chrom20.ILLUMINA.bwa.FIN.low_coverage.20120522.bam";
       
       gb = new GATK_Picard_BackendTest();
-      vcffile = "src/main/resources/testdata/exampleVCFinput.vcf";
+      vcffile = "src/main/resources/NA12156_lcl_SRR801819.vcf";
       
       GATK_Picard_BackendTest b = new GATK_Picard_BackendTest();
       PrintWriter writer = new PrintWriter("/Users/bso/Report.html", "UTF-8");
