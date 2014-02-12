@@ -37,7 +37,6 @@ public class txtJSONParser {
 				jsonObOuter.put("regions", emptyArray);
 			}
 		} while (jsonObOuter.length() != 5);
-		System.out.println(jsonObOuter);
 		
 		//READ THE JSON INPUT FILE
 		/**	"OutKey":
