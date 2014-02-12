@@ -5,6 +5,7 @@
 package io.seqware.queryengine.sandbox.testing.plugins;
 
 import io.seqware.queryengine.sandbox.testing.model.*;
+import io.seqware.queryengine.sandbox.testing.utils.JSONQueryParser;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -95,11 +96,11 @@ public class Feature{
 
 		File filePath = new File(outputFile+"/"+filename+".txt");
 		
-		txtJSONParser JParse = new txtJSONParser(queryJSON);
+		JSONQueryParser JParse = new JSONQueryParser(queryJSON);
 		
 		//Initialize query stores to dump queries from input JSON
-		HashMap<String, String> featureMapQuery = JParse.getfeatureMapQuery();
-		HashMap<String, String> regionMapQuery = JParse.getregionMapQuery();
+		HashMap<String, String> featureMapQuery = JParse.getFeaturesQuery();
+		HashMap<String, String> regionMapQuery = JParse.getRegionsQuery();
 		QUERY_KEYS = featureMapQuery.keySet();
 		
 		/**INITIALIZE READING OF VCF INPUT**/

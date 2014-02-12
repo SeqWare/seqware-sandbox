@@ -2,6 +2,7 @@ package io.seqware.queryengine.sandbox.testing.plugins;
 
 import io.seqware.queryengine.sandbox.testing.model.VCFReader;
 import io.seqware.queryengine.sandbox.testing.model.txtJSONParser;
+import io.seqware.queryengine.sandbox.testing.utils.JSONQueryParser;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -66,8 +67,8 @@ public class FeaturePluginRunner {
 			FileUtils.cleanDirectory(makefile);
 		}
 		
-		txtJSONParser JParse = new txtJSONParser(queryJSON);
-		HashMap<String, String> fsmapq = JParse.getfeatureSetMapQuery();
+		JSONQueryParser JParse = new JSONQueryParser(queryJSON);
+		HashMap<String, String> fsmapq = JParse.getFeatureSetQuery();
 
 		//Generate Complete Map of FeatureSetId and INFO
 		for (File child : filedir.listFiles()){

@@ -143,7 +143,7 @@ public class GATKPicardBackendTest implements BackendTestInterface {
   @Override
   public ReturnValue loadFeatureSet(String filePath) { 
 	  ReturnValue rv = new ReturnValue();
-	  GATK_Picard_BackendTest bt = new GATK_Picard_BackendTest();
+	  GATKPicardBackendTest bt = new GATKPicardBackendTest();
 	  String fileExtension = FilenameUtils.getExtension(filePath);
 	  String gzDecompressedVCF = new String();
 	  String VALUE = new String();
@@ -152,7 +152,7 @@ public class GATKPicardBackendTest implements BackendTestInterface {
 		if (fileExtension.equals("vcf")||
 				fileExtension.equals("gz")||
 				fileExtension.equals("tbi")){
-			String htmlFragment = "<div><h3>loadFeatureSet</h3><p>Loaded file in time: "+ elapsedTime + " milliseconds</p></div>";
+			String htmlFragment = "<div><h3>loadFeatureSet</h3><p>Loaded file in time: " + " milliseconds</p></div>";
 			//Decompress the gz file
 			if (fileExtension.equals("gz")){
 				try {
@@ -263,12 +263,12 @@ public class GATKPicardBackendTest implements BackendTestInterface {
 	    while (fileMapIter.hasNext()){
 	    	Map.Entry vcfFilePath = (Map.Entry)fileMapIter.next();
 	    	File sortedVcfFile = new File(vcfFilePath.getValue().toString());
-			txtJSONParser JParse = new txtJSONParser(queryJSONChecked);
+			JSONQueryParser JParse = new JSONQueryParser(queryJSONChecked);
 			int featureSetCount = 0;
 			//Initialize query stores to dump queries from input JSON
-			HashMap<String, String> featureMapQuery = JParse.getfeatureMapQuery();
-			HashMap<String, String> featureSetMapQuery = JParse.getfeatureSetMapQuery();
-			HashMap<String, String> regionMapQuery = JParse.getregionMapQuery();
+			HashMap<String, String> featureMapQuery = JParse.getFeaturesQuery();
+			HashMap<String, String> featureSetMapQuery = JParse.getFeatureSetQuery();
+			HashMap<String, String> regionMapQuery = JParse.getRegionsQuery();
 			
 			QUERY_KEYS = featureMapQuery.keySet();
 			
@@ -560,7 +560,7 @@ public class GATKPicardBackendTest implements BackendTestInterface {
 		
 					}
 					
-		/*
+		
 				}	
 	    }writer.close();
 		rv.getKv().put(BackendTestInterface.QUERY_RESULT_FILE, filePath);
@@ -693,9 +693,8 @@ public class GATKPicardBackendTest implements BackendTestInterface {
     	  +	"</body>"
   	      + "</html>");
     rv.getKv().put(BackendTestInterface.DOCS, conclusionHTML); 
+    rv.setState(ReturnValue.SUCCESS); 
     return rv;
-    rt.setState(ReturnValue.SUCCESS); 
-    return rt;
   }
   
   @Override

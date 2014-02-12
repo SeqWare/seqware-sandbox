@@ -24,7 +24,29 @@ public class JSONQueryParser {
         featureMapQuery = new HashMap<String, String>();
         featureSetMapQuery = new HashMap<String, String>();
         regionMapQuery = new HashMap<String, String>();
-        
+
+		//Generate missing keys if they are blank in the query. 
+		do{
+			JSONObject emptyObject = new JSONObject("{}");
+			JSONArray emptyArray = new JSONArray("[]");
+			if (!query.has("features")){
+				query.put("features", emptyObject);
+			} else if (!query.has("feature_sets")){
+				query.put("feature_sets", emptyObject);
+			} else if (!query.has("reads")){
+				query.put("reads", emptyObject);
+			} else if (!query.has("read_sets")){
+				query.put("read_sets", emptyObject);
+			} else if (!query.has("regions")){
+				query.put("regions", emptyArray);
+			}
+		} while (query.length() != 5);
+		
+		//READ THE JSON INPUT FILE
+		/**	"OutKey":
+		{
+			"InKey": "jsonObInner.get(InKey)"
+		}*/
         while (outerKeys.hasNext()) {
             String outKey = outerKeys.next();
             if (query.get(outKey) instanceof JSONObject) {
