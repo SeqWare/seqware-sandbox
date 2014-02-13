@@ -1,21 +1,2 @@
 {
-  "feature_sets": 
-   	{
-      "vcf4chr10":"vcf4chr10",
-      "vcf3chr9":"vcf3chr9",
-      "vcf2chr9":"vcf2chr9",
-      "vcf4chr5":"vcf4chr5"
-    },
-   "features": 
-    {
-      "QUAL":"100",
-      "INFO":"AC=1,VT=SNP",
-      "ALT":"T"
-    },
-  "reads": 
-    {
-      "cigar": "76M",
-      "qname": "ERR018455.38578514"
-    },
-  "regions": [ "chr20" ]
 }
