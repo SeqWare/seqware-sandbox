@@ -16,7 +16,7 @@ import org.junit.Test;
 
 import io.seqware.queryengine.sandbox.testing.plugins.*;
 import io.seqware.queryengine.sandbox.testing.ReturnValue;
-import io.seqware.queryengine.sandbox.testing.model.VCFReader;
+import io.seqware.queryengine.sandbox.testing.utils.VCFReader;
 
 public class FeaturePluginRunnerTest {
 	
