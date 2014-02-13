@@ -1,19 +1,2 @@
 {
-  "feature_sets": 
-   	{
-        "RSQ": "RSQ",
-        "SVLEN": "SVLEN"
-    },
-   "features": 
-    {
-      "INFO":"VT=SNP,AC=1",
-      "QUAL":"100",
-      "FILTER" : "q10,s50,q12"
-    },
-  "reads": 
-    {
-      "cigar": "76M",
-      "qname": "ERR018455.38578514"
-    },
-  "regions": [ "chr20" ]
 }

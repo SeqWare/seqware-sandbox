@@ -16,7 +16,6 @@ public class JSONQueryParser {
     
     public JSONQueryParser(String queryJSON) throws JSONException {
         JSONObject query = new JSONObject(queryJSON);
-        Iterator<String> outerKeys = query.keys();
         JSONArray regionArray = new JSONArray(); 
         
         readSetQuery = new HashMap<String, String>();
@@ -24,7 +23,30 @@ public class JSONQueryParser {
         featureMapQuery = new HashMap<String, String>();
         featureSetMapQuery = new HashMap<String, String>();
         regionMapQuery = new HashMap<String, String>();
-        
+
+		//Generate missing keys if they are blank in the query. 
+		do{
+			JSONObject emptyObject = new JSONObject("{}");
+			JSONArray emptyArray = new JSONArray("[]");
+			if (!query.has("features")){
+				query.put("features", emptyObject);
+			} else if (!query.has("feature_sets")){
+				query.put("feature_sets", emptyObject);
+			} else if (!query.has("reads")){
+				query.put("reads", emptyObject);
+			} else if (!query.has("read_sets")){
+				query.put("read_sets", emptyObject);
+			} else if (!query.has("regions")){
+				query.put("regions", emptyArray);
+			}
+		} while (query.length() != 5);
+		
+		//READ THE JSON INPUT FILE
+		/**	"outKey":
+		{
+			"InKey": "jsonObInner.get(InKey)"
+		}*/
+		Iterator<String> outerKeys = query.keys();
         while (outerKeys.hasNext()) {
             String outKey = outerKeys.next();
             if (query.get(outKey) instanceof JSONObject) {
@@ -49,42 +71,45 @@ public class JSONQueryParser {
                 }
                 innerKeys = null;
             } else if (query.get(outKey) instanceof JSONArray) {
-                JSONArray jsonArInner = query.getJSONArray(outKey);
-                if(outKey.equals("regions")) {
-                    regionArray = query.getJSONArray(outKey);
-                    
-                    for (int i=0; i< regionArray.length(); i++) {
-                        String region = regionArray
-                            .get(i)
-                            .toString();
-                        
-                        if (region.contains(":") == false) {
-                            
-                            //i.e. selects "22" from "chr22"
-                            String chromosomeID = region.substring(
-                                region.indexOf("r")+1,
-                                region.length());
-                            
-                            regionMapQuery.put(chromosomeID.toString(), 
-                                ".");
-                          
-                        } else if (region.contains(":") == true) {
-                            
-                            //i.e. selects "22" from "chr22:1-99999"
-                            String chromosomeID = region.substring(
-                                region.indexOf("r")+1,
-                                region.indexOf(":"));
-                            
-                            String range = region.substring(  
-                                region.indexOf(":")+1,
-                                region.length());
-                            
-                            regionMapQuery.put(chromosomeID.toString(), 
-                                range.toString());
-                        }
-                    }
-                }
-            } 
+				JSONArray jsonArInner = query.getJSONArray(outKey);
+				if(outKey.equals("regions")){
+					regionArray = query.getJSONArray(outKey);
+					if (regionArray.length() == 0){
+						regionMapQuery.put(".", "any");
+					} else {
+						for (int i=0; i< regionArray.length(); i++){
+							String region = regionArray
+											.get(i)
+											.toString();
+							
+							if (region.contains(":") == false){
+								
+								//i.e. selects "22" from "chr22"
+								String chromosomeID = region.substring(
+										region.indexOf("r")+1,
+										region.length());
+								
+								regionMapQuery.put(chromosomeID.toString(), 
+												".");
+								
+							} else if (region.contains(":") == true){
+								
+								//i.e. selects "22" from "chr22:1-99999"
+								String chromosomeID = region.substring(
+										region.indexOf("r")+1,
+										region.indexOf(":"));
+								
+								String range = region.substring(
+										region.indexOf(":")+1,
+										region.length());
+								
+								regionMapQuery.put(chromosomeID.toString(), 
+												range.toString());
+							}
+						}
+					}
+				}
+		} 
         } 
     }
     

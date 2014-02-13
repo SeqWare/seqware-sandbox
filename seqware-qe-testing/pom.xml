@@ -27,17 +27,17 @@
             <artifactId>commons-logging</artifactId>
             <version>1.0.4</version>
         </dependency>
-        <dependency> 
-            <groupId>org.projectlombok</groupId> 
-            <artifactId>lombok</artifactId> 
-            <version>1.12.2</version>
-        </dependency> 
-
 		<dependency>
 		    <groupId>com.google.guava</groupId>
 		    <artifactId>guava</artifactId>
 		    <version>16.0</version>
 		</dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId> 
+            <artifactId>lombok</artifactId> 
+            <version>1.12.2</version>
+        </dependency> 
+
         <dependency>
             <groupId>org.apache.hive</groupId>
             <artifactId>hive-jdbc</artifactId>
@@ -179,7 +179,17 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
-
+        <repository>
+            <id>snapshot.seqware.sourceforge.net</id>
+            <name>SeqWare Dependencies Maven Repository</name>
+            <url>http://seqwaremaven.oicr.on.ca/artifactory/repo/seqware-dependencies-snapshot</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
 	<repository>
             <id>akka.repo</id>
             <url>http://repo.akka.io/releases/</url>
