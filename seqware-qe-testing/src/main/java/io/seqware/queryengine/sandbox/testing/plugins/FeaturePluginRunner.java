@@ -1,9 +1,7 @@
 package io.seqware.queryengine.sandbox.testing.plugins;
 
 import io.seqware.queryengine.sandbox.testing.ReturnValue;
-import io.seqware.queryengine.sandbox.testing.TestBackends;
 import io.seqware.queryengine.sandbox.testing.utils.VCFReader;
-import io.seqware.queryengine.sandbox.testing.TestBackends.AbstractPlugin;
 import io.seqware.queryengine.sandbox.testing.utils.JSONQueryParser;
 
 import java.io.BufferedReader;
@@ -15,7 +13,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
