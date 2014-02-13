@@ -1,6 +1,9 @@
 package io.seqware.queryengine.sandbox.testing.plugins;
 
+import io.seqware.queryengine.sandbox.testing.ReturnValue;
+import io.seqware.queryengine.sandbox.testing.TestBackends;
 import io.seqware.queryengine.sandbox.testing.utils.VCFReader;
+import io.seqware.queryengine.sandbox.testing.TestBackends.AbstractPlugin;
 import io.seqware.queryengine.sandbox.testing.model.txtJSONParser;
 import io.seqware.queryengine.sandbox.testing.utils.JSONQueryParser;
 
@@ -13,6 +16,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -22,7 +26,8 @@ import org.json.JSONException;
 public class FeaturePluginRunner {
 	//TODO: 1. Filter files
 	//		2. Run plugin on the filtered files
-	
+	  public Map<String,String> fileMap = 
+			  new HashMap<String,String>();
 	public Map<String,String> applyMap(String InputFilePath, Map<FeatureSet, Collection<Feature>> features) throws IOException{
 		VCFReader inputVCF = 
 				new VCFReader(InputFilePath);
@@ -51,15 +56,21 @@ public class FeaturePluginRunner {
 	}
 
 	//Apply filter as determined by the JSON query
-	public void getFilteredFiles(String Directory, String queryJSON, String OutputFilePath) throws IOException, JSONException{
+	public void getFilteredFiles(String queryJSON, String OutputFilePath) throws IOException, JSONException{
 		String InputFilePath;
+		String inputDir; 
+		String[] inputDirs = fileMap.keySet().toArray(new String[fileMap.keySet().size()]);
+		inputDir = inputDirs[0].toString();
+		inputDir = inputDir.substring(0, inputDir.lastIndexOf("/"));
+		
 		File filedir = 
-				new File(Directory);
+				new File(inputDir);
 		
 		Feature FeatureID = 
 				new Feature();
 		
 		File makefile = new File(OutputFilePath);
+		
 		
 		if (!makefile.exists()){
 			boolean success = makefile.mkdirs();
@@ -86,6 +97,10 @@ public class FeaturePluginRunner {
 		}
 	}
 	
+	public ReturnValue runPlugin(String queryJSON, Class pluginClass){
+		
+		return null;
+	}
 	
 	//TODO Create function to go through input vcf file and implement map function
 	public Map<FeatureSet, Collection<Feature>> makeMapInput(String Directory) throws IOException{
@@ -120,4 +135,32 @@ public class FeaturePluginRunner {
 		return MapInput;
 	}
 	
+	public class SimpleReadsCountPlugin extends AbstractPlugin<Reads, ReadSet> implements ReadPluginInterface{
+    }
+    
+    public class SimpleFeaturesCountPlugin extends AbstractPlugin<Feature, FeatureSet> implements FeaturePluginInterface{
+    }
+    
+    public abstract class AbstractPlugin <UNIT, SET>{
+        public final String count = "COUNT";
+        
+        public void map(long position, Map<SET, Collection<UNIT>> reads, Map<String, String> output) {
+            if (!output.containsKey(count)){
+                output.put(count, String.valueOf(0));
+            }
+            for(Collection<UNIT> readCollection  :reads.values()){
+                Integer currentCount = Integer.valueOf(output.get(count));
+                int nextCount = currentCount += readCollection.size();
+                output.put(count, String.valueOf(nextCount));
+            }
+        }
+
+        public void reduce(String key, Iterable<String> values, Map<String, String> output) {
+                Integer currentCount = Integer.valueOf(output.get(count));
+                for(String value : values){
+                    currentCount = currentCount += 1;
+                }
+                output.put(count, String.valueOf(currentCount));
+        }
+    }
 }
