@@ -18,19 +18,19 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class TestGATKPicardBackend {
-//    @Test
-    public void testAll() throws IOException, JSONException{
-    	   ReturnValue returned = new ReturnValue();
-         
+    @Test
+    public void testAll() throws Exception{
+    	ReturnValue returned = new ReturnValue();
+        
 
          //Point to local VCF file to be read
-    	   backend.loadFeatureSet(vcffile);  
+    	backend.loadFeatureSet(vcffile);  
  		
          //Point to TSV output file to be written to
-//         Global.outputFilePath = File.createTempFile("output", "txt").getAbsolutePath();
+//      Global.outputFilePath = File.createTempFile("output", "txt").getAbsolutePath();
          
          //Obtain matched features
-         returned = backend.getFeatures(jsonTxt);    	
+        returned = backend.getFeatures(jsonTxt);    	
     }
 
     static GATKPicardBackendTest backend; 
@@ -51,8 +51,10 @@ public class TestGATKPicardBackend {
       vcffile = "src/main/resources/NA12156_lcl_SRR801819.vcf";
       
       PrintWriter writer = new PrintWriter("/Users/bso/Report.html", "UTF-8");
+      fillOutHeader(writer);
       writer.println(backend.getIntroductionDocs().getKv().get(BackendTestInterface.DOCS));
       writer.println(backend.getConclusionDocs().getKv().get(BackendTestInterface.DOCS));
+      fillOutFooter(writer);
       writer.close();
     }
     
@@ -63,6 +65,14 @@ public class TestGATKPicardBackend {
       jsonTxt = null;
     }
 
+    private static void fillOutHeader(PrintWriter o) {
+        o.write("<html><body>");
+    }
+
+    private static void fillOutFooter(PrintWriter o) {
+        o.write("</body></html>");
+    }
+    
 //    @Test
     public void testGetIntroductionDocs() {
       String expHtmlReport = "<h2>GATKPicardBackend: Introduction</h2>";  

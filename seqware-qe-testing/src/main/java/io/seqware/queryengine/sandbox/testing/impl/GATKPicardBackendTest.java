@@ -70,7 +70,6 @@ public class GATKPicardBackendTest implements BackendTestInterface {
 	ReturnValue rv = new ReturnValue();
 	String introHTML =
 			(""
-	      + " <html>"
 	      + "   <head>"
 	      + "     <title>SeqWare Query Engine: GATK_Picard_BackendTest</title>"
 	      + "     <style type=\"text/css\">"
@@ -78,7 +77,6 @@ public class GATKPicardBackendTest implements BackendTestInterface {
 	      + "       h3  { color: red; }"
 	      + "     </style>"
 	      + "     </head>" 
-	      + "   <body>"
 	      + "     <h1>SeqWare Query Engine: GATK_Picard_BackendTest</h1>"
 	      + "     <p>This backend is created through the use of two API's to load and query VCF and BAM files respectively. A JSON String query is used to query the files. </p>"
 	      + "     <ul>"
@@ -689,9 +687,7 @@ public class GATKPicardBackendTest implements BackendTestInterface {
   public ReturnValue getConclusionDocs() {
     ReturnValue rv = new ReturnValue(); 
     String conclusionHTML = 
-      (   ""
-    	  +	"</body>"
-  	      + "</html>");
+      (   "");
     rv.getKv().put(BackendTestInterface.DOCS, conclusionHTML); 
     rv.setState(ReturnValue.SUCCESS); 
     return rv;

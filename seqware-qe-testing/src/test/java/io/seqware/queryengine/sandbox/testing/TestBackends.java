@@ -196,7 +196,7 @@ public class TestBackends {
 //        }
 //    }
     
-    @Test
+//    @Test
     public void testGATK_PicardBackEnd(){
     	try{
     		testBackend(new GATKPicardBackendTest(), false, null);
