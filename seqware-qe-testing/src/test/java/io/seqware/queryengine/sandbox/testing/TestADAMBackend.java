@@ -1,6 +1,5 @@
 package io.seqware.queryengine.sandbox.testing;
 
-import static org.junit.Assert.fail;
 import io.seqware.queryengine.sandbox.testing.impl.ADAMBackendTest;
 
 import java.io.File;
@@ -10,7 +9,6 @@ import java.io.InputStream;
 import org.apache.commons.io.IOUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Test;
 
 public class TestADAMBackend {
   static ADAMBackendTest ab;
@@ -22,7 +20,7 @@ public class TestADAMBackend {
   public static void setUp() throws Exception {
     ab = new ADAMBackendTest();
     bamfile = "src/main/resources/testdata/HG00310.chrom20.ILLUMINA.bwa.FIN.low_coverage.20120522.bam";
-    vcffile = "src/main/resources/testdata/exampleVCFinput.vcf";
+    vcffile = "download_data/NA12156_lcl_SRR801819.wgs.COMPLETE_GENOMICS.20121201.snps_indels_svs_meis.high_coverage.genotypes.vcf";
     File jsonQuery = new File("src/main/resources/testdata/query.json");
     InputStream is = new FileInputStream(jsonQuery);
     jsonTxt = IOUtils.toString(is);
@@ -33,7 +31,7 @@ public class TestADAMBackend {
     ab = null;
     bamfile = null;
   } 
-  
+  /*
   // @Test
   public void testGetReads() {
     try {
@@ -52,5 +50,5 @@ public class TestADAMBackend {
     } catch (Exception ex) {
       fail(ex.getMessage());
     }
-  }
+  }*/
 }

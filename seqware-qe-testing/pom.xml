@@ -115,8 +115,8 @@
         </dependency>
         <dependency>
             <groupId>edu.berkeley.cs.amplab.adam</groupId>
-            <artifactId>adam-cli</artifactId>
-            <version>0.6.1-20140204.165940-1</version>
+            <artifactId>adam</artifactId>
+            <version>0.6.1-20140213.165211-1</version>
         </dependency>
         <dependency>
             <groupId>org.scala-lang</groupId>
