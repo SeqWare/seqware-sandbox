@@ -179,7 +179,17 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
-
+        <repository>
+            <id>snapshot.seqware.sourceforge.net</id>
+            <name>SeqWare Dependencies Maven Repository</name>
+            <url>http://seqwaremaven.oicr.on.ca/artifactory/repo/seqware-dependencies-snapshot</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
 	<repository>
             <id>akka.repo</id>
             <url>http://repo.akka.io/releases/</url>

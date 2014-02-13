@@ -48,7 +48,7 @@ public class TestGATKPicardBackend {
 	    
   	  backend = new GATKPicardBackendTest();
       bamfile = "src/main/resources/testdata/HG00310.chrom20.ILLUMINA.bwa.FIN.low_coverage.20120522.bam";
-      vcffile = "src/main/resources/NA12156_lcl_SRR801819.vcf";
+      vcffile = "src/main/resources/testdata/exampleVCFinput.vcf";
       
       PrintWriter writer = new PrintWriter("/Users/bso/Report.html", "UTF-8");
       fillOutHeader(writer);
