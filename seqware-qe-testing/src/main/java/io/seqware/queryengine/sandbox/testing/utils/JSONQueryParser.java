@@ -16,7 +16,6 @@ public class JSONQueryParser {
     
     public JSONQueryParser(String queryJSON) throws JSONException {
         JSONObject query = new JSONObject(queryJSON);
-        Iterator<String> outerKeys = query.keys();
         JSONArray regionArray = new JSONArray(); 
         
         readSetQuery = new HashMap<String, String>();
@@ -47,6 +46,7 @@ public class JSONQueryParser {
 		{
 			"InKey": "jsonObInner.get(InKey)"
 		}*/
+		Iterator<String> outerKeys = query.keys();
         while (outerKeys.hasNext()) {
             String outKey = outerKeys.next();
             if (query.get(outKey) instanceof JSONObject) {
