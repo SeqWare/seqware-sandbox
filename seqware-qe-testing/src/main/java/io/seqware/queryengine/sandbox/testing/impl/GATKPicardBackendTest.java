@@ -687,7 +687,6 @@ public class GATKPicardBackendTest implements BackendTestInterface {
 		inputDir = inputDirs[0].toString();
 		
 		inputDir = inputDir.substring(0, inputDir.lastIndexOf("/"));
-		System.out.println(inputDir);
 		File filedir = 
 				new File(inputDir);
 		
@@ -709,7 +708,6 @@ public class GATKPicardBackendTest implements BackendTestInterface {
 		//Generate Complete Map of FeatureSetId and INFO
 		for (File child : filedir.listFiles()){
 			InputFilePath = child.getAbsolutePath();
-			System.out.println(child.getName());
 			String filename = child
 					.getName()
 					.substring(0, child.getName().indexOf("."));
@@ -787,9 +785,41 @@ public class GATKPicardBackendTest implements BackendTestInterface {
     
   @Override
   public ReturnValue runPlugin(String queryJSON, Class pluginClass) {
-    ReturnValue rt = new ReturnValue(); 
-    rt.setState(ReturnValue.NOT_IMPLEMENTED); 
-    return rt; 
+      String outputDir = "src/main/resources/PluginData_Filtered";
+      ReturnValue rt = new ReturnValue(); 
+      Map<FeatureSet, Collection<Feature>> features;
+	  
+  	  try {
+		  /**Filtering commences**/
+		  getFilteredFiles(queryJSON, outputDir);
+		
+		  /**Create feature data set from filtered files**/
+		  features = makeMapInput(outputDir);
+		
+	  } catch (IOException | JSONException e) {
+		  e.printStackTrace();
+	  }
+	  
+  	  try {
+		System.out.println(pluginClass.getMethods()[0].getClass());
+	} catch (SecurityException e) {
+		e.printStackTrace();
+	}
+//		//TODO: run map method from pluginClass for every genome position in every filtered file
+//		FeatureCountPlugin countInstance = new FeatureCountPlugin();
+//		
+//		String vcfFilePath = new String();
+//		vcfReader = new VCFReader(vcfFilePath);
+//		vIter = vcfReader.getVCFIterator();
+//		while (vIter.hasNext()){
+//			VariantContext vContext = vIter.next();
+//			countInstance.map(vContext.getStart(), features, output); //Run plugin for every position.
+//			
+//		}
+		
+	  rt.getKv().put("pluginResultFile", outputDir);
+      rt.setState(ReturnValue.NOT_IMPLEMENTED); 
+      return rt; 
   }   
 
   /** getConclusionDocs

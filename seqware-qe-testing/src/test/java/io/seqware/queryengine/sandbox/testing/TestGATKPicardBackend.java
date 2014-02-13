@@ -51,7 +51,7 @@ public class TestGATKPicardBackend {
       bamfile = "src/main/resources/testdata/HG00310.chrom20.ILLUMINA.bwa.FIN.low_coverage.20120522.bam";
       vcffile = "src/main/resources/testdata/exampleVCFinput.vcf";
       
-      PrintWriter writer = new PrintWriter("/Users/bso/Report.html", "UTF-8");
+      PrintWriter writer = new PrintWriter(System.getProperty("user.home") + "/Report.html", "UTF-8");
       fillOutHeader(writer);
       writer.println(backend.getIntroductionDocs().getKv().get(BackendTestInterface.DOCS));
       writer.println(backend.getConclusionDocs().getKv().get(BackendTestInterface.DOCS));
