@@ -30,7 +30,6 @@ import org.broadinstitute.variant.vcf.VCFCodec;
 import org.json.JSONException;
 
 import parquet.avro.AvroParquetWriter;
-import scala.collection.JavaConverters;
 import edu.berkeley.cs.amplab.adam.avro.ADAMRecord;
 import edu.berkeley.cs.amplab.adam.avro.ADAMVariant;
 import edu.berkeley.cs.amplab.adam.converters.SAMRecordConverter;
@@ -46,7 +45,7 @@ import edu.berkeley.cs.amplab.adam.models.SequenceDictionary;
 public class ADAMBackendTest implements BackendTestInterface {
   public static Path output = new Path("testOutput.adam"); 
   public static ArrayList<ADAMRecord> adamList = new ArrayList<ADAMRecord>();
-  public static List<List<ADAMVariant>> adamVariantList;
+  public static List<ADAMVariant> adamVariantList;
   public static HashMap<String, String> READ_SETS = new HashMap<String, String>();
 
   @Override
@@ -76,13 +75,14 @@ public class ADAMBackendTest implements BackendTestInterface {
       VCFCodec vcfCodec = new VCFCodec();
       FeatureReader<VariantContext> reader = AbstractFeatureReader.getFeatureReader(filePath, vcfCodec, false);
       Iterator<VariantContext> iter = reader.iterator();
-      adamVariantList = new ArrayList<List<ADAMVariant>>();
       
       // Converts a Scala List to a Scala Buffer to a Java List (No workaround)
       while (iter.hasNext()) {
         VariantContext vc = iter.next();
-        adamVariantList.add((List<ADAMVariant>) JavaConverters.bufferAsJavaListConverter(vcc.convertVariants(vc).toBuffer()));
+        //System.out.print(vc.getID());
+       // adamVariantList.addAll(JavaConversions.bufferAsJavaList((vcc.convertVariants(vc).toBuffer())));
       }
+      System.out.println("a");
     } catch (Exception ex) {
       System.out.println("Error" + ex.getMessage());
       rt.setState(ReturnValue.ERROR);
@@ -153,10 +153,8 @@ public class ADAMBackendTest implements BackendTestInterface {
     // Try writing to a parquet file
     try {
       AvroParquetWriter<ADAMVariant> parquetWriter = new AvroParquetWriter<ADAMVariant>(output, ADAMVariant.SCHEMA$);
-      for (List<ADAMVariant> l: adamVariantList) {
-        for (ADAMVariant a: l) {
-          parquetWriter.write(a);
-        }
+      for (ADAMVariant a: adamVariantList) {
+        parquetWriter.write(a);
       }
       parquetWriter.close();
     } catch (Exception ex) {
