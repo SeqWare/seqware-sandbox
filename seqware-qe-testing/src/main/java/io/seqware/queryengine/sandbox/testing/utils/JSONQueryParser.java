@@ -42,7 +42,7 @@ public class JSONQueryParser {
 		} while (query.length() != 5);
 		
 		//READ THE JSON INPUT FILE
-		/**	"OutKey":
+		/**	"outKey":
 		{
 			"InKey": "jsonObInner.get(InKey)"
 		}*/
@@ -71,42 +71,45 @@ public class JSONQueryParser {
                 }
                 innerKeys = null;
             } else if (query.get(outKey) instanceof JSONArray) {
-                JSONArray jsonArInner = query.getJSONArray(outKey);
-                if(outKey.equals("regions")) {
-                    regionArray = query.getJSONArray(outKey);
-                    
-                    for (int i=0; i< regionArray.length(); i++) {
-                        String region = regionArray
-                            .get(i)
-                            .toString();
-                        
-                        if (region.contains(":") == false) {
-                            
-                            //i.e. selects "22" from "chr22"
-                            String chromosomeID = region.substring(
-                                region.indexOf("r")+1,
-                                region.length());
-                            
-                            regionMapQuery.put(chromosomeID.toString(), 
-                                ".");
-                          
-                        } else if (region.contains(":") == true) {
-                            
-                            //i.e. selects "22" from "chr22:1-99999"
-                            String chromosomeID = region.substring(
-                                region.indexOf("r")+1,
-                                region.indexOf(":"));
-                            
-                            String range = region.substring(  
-                                region.indexOf(":")+1,
-                                region.length());
-                            
-                            regionMapQuery.put(chromosomeID.toString(), 
-                                range.toString());
-                        }
-                    }
-                }
-            } 
+				JSONArray jsonArInner = query.getJSONArray(outKey);
+				if(outKey.equals("regions")){
+					regionArray = query.getJSONArray(outKey);
+					if (regionArray.length() == 0){
+						regionMapQuery.put(".", "any");
+					} else {
+						for (int i=0; i< regionArray.length(); i++){
+							String region = regionArray
+											.get(i)
+											.toString();
+							
+							if (region.contains(":") == false){
+								
+								//i.e. selects "22" from "chr22"
+								String chromosomeID = region.substring(
+										region.indexOf("r")+1,
+										region.length());
+								
+								regionMapQuery.put(chromosomeID.toString(), 
+												".");
+								
+							} else if (region.contains(":") == true){
+								
+								//i.e. selects "22" from "chr22:1-99999"
+								String chromosomeID = region.substring(
+										region.indexOf("r")+1,
+										region.indexOf(":"));
+								
+								String range = region.substring(
+										region.indexOf(":")+1,
+										region.length());
+								
+								regionMapQuery.put(chromosomeID.toString(), 
+												range.toString());
+							}
+						}
+					}
+				}
+		} 
         } 
     }
     

@@ -1,7 +1,6 @@
 package io.seqware.queryengine.sandbox.testing.plugins;
 
 import io.seqware.queryengine.sandbox.testing.utils.VCFReader;
-import io.seqware.queryengine.sandbox.testing.model.txtJSONParser;
 import io.seqware.queryengine.sandbox.testing.utils.JSONQueryParser;
 
 import java.io.BufferedReader;

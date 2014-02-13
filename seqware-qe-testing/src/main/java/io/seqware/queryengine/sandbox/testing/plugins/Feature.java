@@ -4,7 +4,6 @@
  */
 package io.seqware.queryengine.sandbox.testing.plugins;
 
-import io.seqware.queryengine.sandbox.testing.model.*;
 import io.seqware.queryengine.sandbox.testing.utils.JSONQueryParser;
 
 import java.io.BufferedReader;
