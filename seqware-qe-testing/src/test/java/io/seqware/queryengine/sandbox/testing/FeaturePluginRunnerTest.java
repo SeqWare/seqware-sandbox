@@ -15,6 +15,7 @@ import org.json.JSONException;
 import org.junit.Assert;
 import org.junit.Test;
 
+import io.seqware.queryengine.sandbox.testing.TestBackends.AbstractPlugin;
 import io.seqware.queryengine.sandbox.testing.impl.GATKPicardBackendTest;
 import io.seqware.queryengine.sandbox.testing.plugins.*;
 import io.seqware.queryengine.sandbox.testing.ReturnValue;
@@ -36,7 +37,7 @@ public class FeaturePluginRunnerTest {
 		InputStream is = new FileInputStream(jsonQuery);
 		String jsonTxt = IOUtils.toString(is);
 		
-		b.runPlugin(jsonTxt, FeatureCountPlugin.class);
+		b.runPlugin(jsonTxt, SimpleFeaturesCountPlugin.class);
 	}
 	
     @Test
@@ -48,26 +49,31 @@ public class FeaturePluginRunnerTest {
         }
     }
 
-	public class FeatureCountPlugin implements FeaturePluginInterface{
+    public class SimpleFeaturesCountPlugin extends AbstractPlugin<Feature, FeatureSet> implements FeaturePluginInterface{
+    }
+    
+    public abstract class AbstractPlugin <UNIT, SET>{
+        public final String count = "COUNT";
+        
+        public void map(long position, Map<SET, Collection<UNIT>> reads, Map<String, String> output) {
+            if (!output.containsKey(count)){
+                output.put(count, String.valueOf(0));
+            }
+            for(Collection<UNIT> readCollection  :reads.values()){
+                Integer currentCount = Integer.valueOf(output.get(count));
+                int nextCount = currentCount += readCollection.size();
+                output.put(count, String.valueOf(nextCount));
+            }
+        }
 
-		@Override
-		public void map(long position,
-				Map<FeatureSet, Collection<Feature>> features,
-				Map<String, String> output) {
-			Iterator<Feature> featureIter = features.get("vcf1chr5").iterator();
-			while (featureIter.hasNext()){
-				System.out.println();
-			}
-		}
-
-		@Override
-		public void reduce(String key, Iterable<String> values,
-				Map<String, String> output) {
-			
-			
-		}
-		
-	}
+        public void reduce(String key, Iterable<String> values, Map<String, String> output) {
+                Integer currentCount = Integer.valueOf(output.get(count));
+                for(String value : values){
+                    currentCount = currentCount += 1;
+                }
+                output.put(count, String.valueOf(currentCount));
+        }
+    }
 	
 	
 }

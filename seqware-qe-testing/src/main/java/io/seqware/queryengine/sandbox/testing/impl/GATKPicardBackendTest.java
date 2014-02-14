@@ -12,6 +12,7 @@ import io.seqware.queryengine.sandbox.testing.plugins.FeaturePluginRunner.Abstra
 import io.seqware.queryengine.sandbox.testing.utils.Global;
 import io.seqware.queryengine.sandbox.testing.utils.JSONQueryParser;
 import io.seqware.queryengine.sandbox.testing.utils.ReadSearch;
+import io.seqware.queryengine.sandbox.testing.utils.VCFReader;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -20,6 +21,8 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -58,6 +61,8 @@ import com.google.common.base.Splitter;
 public class GATKPicardBackendTest implements BackendTestInterface {
   
   public Map<String,String> fileMap = 
+		  new HashMap<String,String>();
+  public Map<String,String> filteredFileMap = 
 		  new HashMap<String,String>();
   public static HashMap<String, String> READ_SETS = new HashMap<String, String>();
   public static HTMLDocument htmlReport = new HTMLDocument(); // The HTML Report to be written 
@@ -680,37 +685,37 @@ public class GATKPicardBackendTest implements BackendTestInterface {
     rt.setState(ReturnValue.SUCCESS); 
     return rt;  
   }
+  
+
   public void getFilteredFiles(String queryJSON, String OutputFilePath) throws IOException, JSONException{
 		String InputFilePath;
 		String inputDir; 
 		String[] inputDirs = fileMap.values().toArray(new String[fileMap.values().size()]);
 		inputDir = inputDirs[0].toString();
-		
 		inputDir = inputDir.substring(0, inputDir.lastIndexOf("/"));
-		File filedir = 
+		File unfilteredFolder = 
 				new File(inputDir);
+		File filteredFolder = 
+				new File(OutputFilePath);
 		
 		Feature FeatureID = 
 				new Feature();
 		
-		File makefile = new File(OutputFilePath);
-		
-		
-		if (!makefile.exists()){
-			boolean success = makefile.mkdirs();
-		} else if (makefile.exists()){
-			FileUtils.cleanDirectory(makefile);
+		if (!filteredFolder.exists()){
+			boolean success = filteredFolder.mkdirs();
+		} else if (filteredFolder.exists()){
+			FileUtils.cleanDirectory(filteredFolder);
 		}
 		
 		JSONQueryParser JParse = new JSONQueryParser(queryJSON);
 		HashMap<String, String> fsmapq = JParse.getFeatureSetQuery();
 
 		//Generate Complete Map of FeatureSetId and INFO
-		for (File child : filedir.listFiles()){
-			InputFilePath = child.getAbsolutePath();
-			String filename = child
+		for (File unfilteredFile : unfilteredFolder.listFiles()){
+			InputFilePath = unfilteredFile.getAbsolutePath();
+			String filename = unfilteredFile
 					.getName()
-					.substring(0, child.getName().indexOf("."));
+					.substring(0, unfilteredFile.getName().indexOf("."));
 			if (FilenameUtils.getExtension(InputFilePath).equals("vcf")
 					&& ((fsmapq.keySet().contains(filename)) || (fsmapq.size() ==0))){ 
 				//Write this to temp file output
@@ -718,6 +723,12 @@ public class GATKPicardBackendTest implements BackendTestInterface {
 
 			}
 			
+		for (File filteredFile : filteredFolder.listFiles()){
+			String filteredFilename = filteredFile
+					.getName()
+					.substring(0, filteredFile.getName().indexOf("."));
+			filteredFileMap.put(filteredFilename, filteredFile.getAbsolutePath());
+			}
 		}
 	}
   
@@ -785,26 +796,56 @@ public class GATKPicardBackendTest implements BackendTestInterface {
     
   @Override
   public ReturnValue runPlugin(String queryJSON, Class pluginClass) {
+	  ReturnValue rt = new ReturnValue();
       String outputDir = "src/main/resources/PluginData_Filtered";
-      ReturnValue rt = new ReturnValue(); 
-      Map<FeatureSet, Collection<Feature>> features;
+	  String inputDir;
+	  String[] inputDirs = fileMap.values().toArray(new String[fileMap.values().size()]);
+	  inputDir = inputDirs[0].toString(); //src/main/resources
+	  VCFReader vcfReader;
+	  Iterator<VariantContext> vIter;
+	  HashMap<String,String> output = new HashMap<String,String>();
+	  HashMap<String,String> reduceOutput = new HashMap<String,String>();
+	  String reduceKey = "";
 	  
-  	  try {
+	  Map<FeatureSet, Collection<Feature>> features;
+	  try {
+		  PrintWriter writer = 
+				  new PrintWriter("/src/main/resources/pluginResult.txt", "UTF-8");
+		  Method map = 
+				  pluginClass.getMethod("map", long.class, Map.class, Map.class);
+		  Method reduce = 
+				  pluginClass.getMethod("reduce", String.class, Iterable.class, Map.class);
+		  Object plugin = pluginClass.newInstance();
+		  
 		  /**Filtering commences**/
 		  getFilteredFiles(queryJSON, outputDir);
 		
-		  /**Create feature data set from filtered files**/
+		  /**Create feature data set from filtered files for use in plugin**/
 		  features = makeMapInput(outputDir);
-		
-	  } catch (IOException | JSONException e) {
+		  
+		  /**Go through the set of VCF's that the plugin runs on**/
+		  for (String key : fileMap.keySet()){
+			  vcfReader = new VCFReader(fileMap.get(key));
+			  vIter = vcfReader.getVCFIterator();
+			  while (vIter.hasNext()){
+		  		  VariantContext vContext = vIter.next();
+				try {
+					map.invoke(plugin, Long.parseLong(String.valueOf(vContext.getStart())), features, output);
+					reduce.invoke(plugin, reduceKey, output.entrySet().iterator(),reduceOutput);
+				} catch (IllegalAccessException |IllegalArgumentException | InvocationTargetException e) {
+					e.printStackTrace();
+				} writer.println(reduceOutput);
+			  }
+		  }writer.close();
+		  rt.getKv().put("pluginResultFile", "/src/main/resources/pluginResult.txt");
+	      rt.setState(ReturnValue.NOT_IMPLEMENTED); 
+	      return rt; 
+	  } catch (NoSuchMethodException |SecurityException |IOException | JSONException | InstantiationException | IllegalAccessException e) {
+		  // TODO Auto-generated catch block
 		  e.printStackTrace();
+		  rt.setState(ReturnValue.ERROR);
+		  return rt;
 	  }
-	  
-  	  try {
-		System.out.println(pluginClass.getMethods()[0].getClass());
-	} catch (SecurityException e) {
-		e.printStackTrace();
-	}
 //		//TODO: run map method from pluginClass for every genome position in every filtered file
 //		FeatureCountPlugin countInstance = new FeatureCountPlugin();
 //		
@@ -817,10 +858,8 @@ public class GATKPicardBackendTest implements BackendTestInterface {
 //			
 //		}
 		
-	  rt.getKv().put("pluginResultFile", outputDir);
-      rt.setState(ReturnValue.NOT_IMPLEMENTED); 
-      return rt; 
-  }   
+
+  }
 
   /** getConclusionDocs
    *  Writes htmlReport to file
