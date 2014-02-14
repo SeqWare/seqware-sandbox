@@ -2,7 +2,6 @@ package io.seqware.queryengine.sandbox.testing;
 
 import static org.junit.Assert.assertEquals;
 import io.seqware.queryengine.sandbox.testing.impl.GATKPicardBackendTest;
-import io.seqware.queryengine.sandbox.testing.utils.Global;
 import io.seqware.queryengine.sandbox.testing.ReturnValue;
 
 import java.io.File;
@@ -26,10 +25,7 @@ public class TestGATKPicardBackend {
 
          //Point to local VCF file to be read
     	backend.loadFeatureSet(vcffile);  
- 		
-         //Point to TSV output file to be written to
-//      Global.outputFilePath = File.createTempFile("output", "txt").getAbsolutePath();
-         
+ 		         
          //Obtain matched features
         returned = backend.getFeatures(jsonTxt);    	
     }
