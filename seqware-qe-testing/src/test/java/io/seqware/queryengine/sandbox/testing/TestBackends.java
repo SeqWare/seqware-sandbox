@@ -128,7 +128,7 @@ public class TestBackends {
 //                }
 
                 // query the features
-                output.write(testFeatureSets(featureSets, b));
+//                output.write(testFeatureSets(featureSets, b));
 
                 // query the reads
 //                output.write(testReadSets(readSets, b));

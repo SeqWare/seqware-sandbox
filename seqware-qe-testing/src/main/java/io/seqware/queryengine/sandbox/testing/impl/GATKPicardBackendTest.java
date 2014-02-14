@@ -250,15 +250,7 @@ public class GATKPicardBackendTest implements BackendTestInterface {
 	  System.out.println("Testing now.");
 	  System.out.println(fileMap);
 		//Read the input JSON file to seperate ArrayLists for parsing
-	  	String queryJSONChecked;
 	  	
-	  	//This is to check if there is a totally blank query input (without even braces)
-	   	if (queryJSON.equals("")){
-	   		queryJSONChecked = "{}";
-	   	} else {
-	   		queryJSONChecked = queryJSON;
-	   	}
-	   	
 		ReturnValue rv = new ReturnValue();
 		JSONArray regionArray;
 
@@ -274,7 +266,7 @@ public class GATKPicardBackendTest implements BackendTestInterface {
 	    while (fileMapIter.hasNext()){
 	    	Map.Entry vcfFilePath = (Map.Entry)fileMapIter.next();
 	    	File sortedVcfFile = new File(vcfFilePath.getValue().toString());
-			JSONQueryParser JParse = new JSONQueryParser(queryJSONChecked);
+			JSONQueryParser JParse = new JSONQueryParser(queryJSON);
 			int featureSetCount = 0;
 			//Initialize query stores to dump queries from input JSON
 			HashMap<String, String> featureMapQuery = JParse.getFeaturesQuery();
