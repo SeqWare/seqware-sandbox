@@ -28,9 +28,11 @@ public class FeaturePluginRunnerTest {
 	public void testBackend(BackendTestInterface b) throws IOException, JSONException{
 		ReturnValue rv = new ReturnValue();
 
-		File inputDir = new File("src/main/resources/PluginData/");
+		File inputDir = new File("src/main/resources/");
 		for (File child : inputDir.listFiles()){
-			b.loadFeatureSet(child.getAbsolutePath());
+			if (!child.isDirectory()){
+				b.loadFeatureSet(child.getAbsolutePath());	
+			}
 		}
 		
 		File jsonQuery = new File("src/main/resources/testdata/query.json");
@@ -45,7 +47,9 @@ public class FeaturePluginRunnerTest {
     	try{
     		testBackend(new GATKPicardBackendTest());
     	} catch (RuntimeException | IOException e) {
+            e.printStackTrace();
             Assert.assertTrue(false);
+ 
         }
     }
 

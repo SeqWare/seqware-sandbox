@@ -688,13 +688,9 @@ public class GATKPicardBackendTest implements BackendTestInterface {
   
 
   public void getFilteredFiles(String queryJSON, String OutputFilePath) throws IOException, JSONException{
-		String InputFilePath;
-		String inputDir; 
-		String[] inputDirs = fileMap.values().toArray(new String[fileMap.values().size()]);
-		inputDir = inputDirs[0].toString();
-		inputDir = inputDir.substring(0, inputDir.lastIndexOf("/"));
+		String InputFilePath; 
 		File unfilteredFolder = 
-				new File(inputDir);
+				new File("src/main/resources/PluginData");
 		File filteredFolder = 
 				new File(OutputFilePath);
 		
@@ -803,19 +799,18 @@ public class GATKPicardBackendTest implements BackendTestInterface {
 	  inputDir = inputDirs[0].toString(); //src/main/resources
 	  VCFReader vcfReader;
 	  Iterator<VariantContext> vIter;
-	  HashMap<String,String> output = new HashMap<String,String>();
-	  HashMap<String,String> reduceOutput = new HashMap<String,String>();
+	  Map<String,String> output = new HashMap<String,String>();
+	  Map<String,String> reduceOutput = new HashMap<String,String>();
 	  String reduceKey = "";
-	  
+	  SimpleFeaturesCountPlugin plugin = new SimpleFeaturesCountPlugin();
 	  Map<FeatureSet, Collection<Feature>> features;
 	  try {
 		  PrintWriter writer = 
-				  new PrintWriter("/src/main/resources/pluginResult.txt", "UTF-8");
+				  new PrintWriter("src/main/resources/pluginResult.txt", "UTF-8");
 		  Method map = 
 				  pluginClass.getMethod("map", long.class, Map.class, Map.class);
 		  Method reduce = 
 				  pluginClass.getMethod("reduce", String.class, Iterable.class, Map.class);
-		  Object plugin = pluginClass.newInstance();
 		  
 		  /**Filtering commences**/
 		  getFilteredFiles(queryJSON, outputDir);
@@ -825,22 +820,25 @@ public class GATKPicardBackendTest implements BackendTestInterface {
 		  
 		  /**Go through the set of VCF's that the plugin runs on**/
 		  for (String key : fileMap.keySet()){
+			  System.out.println(key + " " + fileMap.get(key));
 			  vcfReader = new VCFReader(fileMap.get(key));
 			  vIter = vcfReader.getVCFIterator();
+			  
 			  while (vIter.hasNext()){
 		  		  VariantContext vContext = vIter.next();
+		  		  
 				try {
-					map.invoke(plugin, Long.parseLong(String.valueOf(vContext.getStart())), features, output);
-					reduce.invoke(plugin, reduceKey, output.entrySet().iterator(),reduceOutput);
-				} catch (IllegalAccessException |IllegalArgumentException | InvocationTargetException e) {
+					plugin.map(Long.parseLong(String.valueOf(vContext.getStart())), features, output);
+//					plugin.reduce(reduceKey, output.values().iterator(),reduceOutput);
+				} catch (IllegalArgumentException e) {
 					e.printStackTrace();
-				} writer.println(reduceOutput);
-			  }
+				}
+			  }writer.println(output.toString());
 		  }writer.close();
-		  rt.getKv().put("pluginResultFile", "/src/main/resources/pluginResult.txt");
+		  rt.getKv().put("pluginResultFile", "src/main/resources/pluginResult.txt");
 	      rt.setState(ReturnValue.NOT_IMPLEMENTED); 
 	      return rt; 
-	  } catch (NoSuchMethodException |SecurityException |IOException | JSONException | InstantiationException | IllegalAccessException e) {
+	  } catch (NoSuchMethodException |SecurityException |IOException | JSONException e) {
 		  // TODO Auto-generated catch block
 		  e.printStackTrace();
 		  rt.setState(ReturnValue.ERROR);
