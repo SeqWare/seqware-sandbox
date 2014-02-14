@@ -35,7 +35,7 @@ import com.google.common.base.Splitter;
  */
 
 public class Feature{
-	ArrayList<String> Feature;
+	ArrayList<String> Feature = new ArrayList<String>();
 	static String FILTER_SORTED;
 	static Set<String> QUERY_KEYS;
 	
@@ -311,6 +311,16 @@ public class Feature{
 				    	
 				    	String filterSortedHolder = new String();
 				    	Set<String> filterSortedSet;
+				    	
+				    	/**Resort the info field from a map format to match VCF format**/
+				    	while(attributeMapIter.hasNext()){ 
+				    		Map.Entry pair = (Map.Entry)attributeMapIter.next();
+				    		
+				    		attributeSortedHolder = pair.getKey().toString() + "=" + 
+				    								 pair.getValue().toString() + ";";
+				    		
+				    		attributeSorted = attributeSorted + attributeSortedHolder;
+				    	}
 				    	
 				    	/**Resort the filter set from a set format to match VCF format**/
 				    	//This runs if there is FILTER in the JSON query

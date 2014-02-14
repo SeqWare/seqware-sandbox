@@ -15,6 +15,9 @@ public class JSONQueryParser {
     private HashMap<String, String> regionMapQuery;
     
     public JSONQueryParser(String queryJSON) throws JSONException {
+    	if (queryJSON.equals("")){
+    		queryJSON = "{}";
+    	}
         JSONObject query = new JSONObject(queryJSON);
         JSONArray regionArray = new JSONArray(); 
         
