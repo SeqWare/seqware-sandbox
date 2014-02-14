@@ -2,7 +2,6 @@ package io.seqware.queryengine.sandbox.testing;
 
 import static org.junit.Assert.assertEquals;
 import io.seqware.queryengine.sandbox.testing.impl.GATKPicardBackendTest;
-import io.seqware.queryengine.sandbox.testing.ReturnValue;
 
 import java.io.File;
 import java.io.FileInputStream;
