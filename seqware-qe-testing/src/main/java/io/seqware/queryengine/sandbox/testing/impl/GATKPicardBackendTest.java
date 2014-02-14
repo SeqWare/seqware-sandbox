@@ -247,8 +247,8 @@ public class GATKPicardBackendTest implements BackendTestInterface {
   @Override
   //TODO: get all features that were loaded into fileMap.
   public ReturnValue getFeatures(String queryJSON) throws JSONException, IOException { 
-	  System.out.println("Testing now.");
-	  System.out.println(fileMap);
+	  System.out.println("Testing getFeatures for : ");
+	  System.out.println(fileMap.keySet());
 		//Read the input JSON file to seperate ArrayLists for parsing
 	  	
 		ReturnValue rv = new ReturnValue();
@@ -811,7 +811,6 @@ public class GATKPicardBackendTest implements BackendTestInterface {
 		  
 		  /**Go through the set of VCF's that the plugin runs on**/
 		  for (String key : fileMap.keySet()){
-			  System.out.println(key + " " + fileMap.get(key));
 			  vcfReader = new VCFReader(fileMap.get(key));
 			  vIter = vcfReader.getVCFIterator();
 			  
