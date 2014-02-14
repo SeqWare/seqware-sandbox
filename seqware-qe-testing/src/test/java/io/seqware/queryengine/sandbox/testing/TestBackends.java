@@ -137,8 +137,8 @@ public class TestBackends {
                 // TODO: we need to define a way to enumerate plugins, @ServiceInterface?
                 
                 // run the plugin with a blank query, meaning no pre-filtering of reads
-//                ReturnValue runReadPlugin = b.runPlugin("", SimpleReadsCountPlugin.class);
-//                simpleFileCheck(runReadPlugin, BackendTestInterface.PLUGIN_RESULT_FILE);
+                ReturnValue runReadPlugin = b.runPlugin("", SimpleReadsCountPlugin.class);
+                simpleFileCheck(runReadPlugin, BackendTestInterface.PLUGIN_RESULT_FILE);
                 // do some tests on the content of the plugin results, in this case a count of reads
                 
                 // run the plugin with a blank query, meaning no pre-filtering of features

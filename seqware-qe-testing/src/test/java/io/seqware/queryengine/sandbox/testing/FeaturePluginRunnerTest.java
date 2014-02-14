@@ -42,7 +42,7 @@ public class FeaturePluginRunnerTest {
 		b.runPlugin(jsonTxt, SimpleFeaturesCountPlugin.class);
 	}
 	
-    @Test
+    // @Test
     public void testGATK_PicardBackEnd() throws JSONException{
     	try{
     		testBackend(new GATKPicardBackendTest());

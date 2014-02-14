@@ -8,7 +8,6 @@ import io.seqware.queryengine.sandbox.testing.plugins.FeatureSet;
 import io.seqware.queryengine.sandbox.testing.plugins.ReadPluginInterface;
 import io.seqware.queryengine.sandbox.testing.plugins.ReadSet;
 import io.seqware.queryengine.sandbox.testing.plugins.Reads;
-import io.seqware.queryengine.sandbox.testing.plugins.FeaturePluginRunner.AbstractPlugin;
 import io.seqware.queryengine.sandbox.testing.utils.Global;
 import io.seqware.queryengine.sandbox.testing.utils.JSONQueryParser;
 import io.seqware.queryengine.sandbox.testing.utils.ReadSearch;

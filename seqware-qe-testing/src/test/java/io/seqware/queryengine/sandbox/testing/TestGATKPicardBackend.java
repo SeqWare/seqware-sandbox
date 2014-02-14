@@ -19,7 +19,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class TestGATKPicardBackend {
-    @Test
+    // @Test
     public void testAll() throws Exception{
     	ReturnValue returned = new ReturnValue();
         
