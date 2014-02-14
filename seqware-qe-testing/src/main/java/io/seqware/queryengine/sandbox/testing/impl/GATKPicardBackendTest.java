@@ -720,37 +720,37 @@ public class GATKPicardBackendTest implements BackendTestInterface {
 	}
   
 	//TODO Create function to go through input vcf file and implement map function
-	public Map<FeatureSet, Collection<Feature>> makeMapInput(String Directory) throws IOException{
-		File filedir = 
-				new File(Directory);
-		
-		Map<FeatureSet,Collection<Feature>> MapInput = 
-				new HashMap<FeatureSet,Collection<Feature>>();
-		
-		ArrayList<Feature> Features = 
-				new ArrayList<Feature>();
-		
-		String line;
-		for (File child : filedir.listFiles()){
-			String AbsolutePath = child.getAbsolutePath();
-			if (FilenameUtils.getExtension(AbsolutePath).equals("txt")){
-				FeatureSet featureset = 
-						new FeatureSet(child);
-				
-				BufferedReader in = 
-						new BufferedReader(
-								new FileReader(AbsolutePath));
-				
-				while((line = in.readLine()) != null){
-					Feature feature = 
-							new Feature(line);
-						Features.add(feature);
-				}
-				MapInput.put(featureset, Features);	
+  public Map<FeatureSet, Collection<Feature>> makeMapInput(String Directory) throws IOException{
+	File filedir = 
+			new File(Directory);
+	
+	Map<FeatureSet,Collection<Feature>> MapInput = 
+			new HashMap<FeatureSet,Collection<Feature>>();
+	
+	ArrayList<Feature> Features = 
+			new ArrayList<Feature>();
+	
+	String line;
+	for (File child : filedir.listFiles()){
+		String AbsolutePath = child.getAbsolutePath();
+		if (FilenameUtils.getExtension(AbsolutePath).equals("txt")){
+			FeatureSet featureset = 
+					new FeatureSet(child);
+			
+			BufferedReader in = 
+					new BufferedReader(
+							new FileReader(AbsolutePath));
+			
+			while((line = in.readLine()) != null){
+				Feature feature = 
+						new Feature(line);
+					Features.add(feature);
 			}
+			MapInput.put(featureset, Features);	
 		}
-		return MapInput;
 	}
+	return MapInput;
+  }
 	
 	public class SimpleReadsCountPlugin extends AbstractPlugin<Reads, ReadSet> implements ReadPluginInterface{
   }
@@ -798,10 +798,6 @@ public class GATKPicardBackendTest implements BackendTestInterface {
 	  try {
 		  PrintWriter writer = 
 				  new PrintWriter("src/main/resources/pluginResult.txt", "UTF-8");
-		  Method map = 
-				  pluginClass.getMethod("map", long.class, Map.class, Map.class);
-		  Method reduce = 
-				  pluginClass.getMethod("reduce", String.class, Iterable.class, Map.class);
 		  
 		  /**Filtering commences**/
 		  getFilteredFiles(queryJSON, outputDir);
@@ -809,7 +805,7 @@ public class GATKPicardBackendTest implements BackendTestInterface {
 		  /**Create feature data set from filtered files for use in plugin**/
 		  features = makeMapInput(outputDir);
 		  
-		  /**Go through the set of VCF's that the plugin runs on**/
+		  /**Go through the set of VCF's (as loaded in loadFeatureSet) that the plugin runs on**/
 		  for (String key : fileMap.keySet()){
 			  vcfReader = new VCFReader(fileMap.get(key));
 			  vIter = vcfReader.getVCFIterator();
@@ -828,25 +824,11 @@ public class GATKPicardBackendTest implements BackendTestInterface {
 		  rt.getKv().put("pluginResultFile", "src/main/resources/pluginResult.txt");
 	      rt.setState(ReturnValue.NOT_IMPLEMENTED); 
 	      return rt; 
-	  } catch (NoSuchMethodException |SecurityException |IOException | JSONException e) {
-		  // TODO Auto-generated catch block
+	  } catch (SecurityException |IOException | JSONException e) {
 		  e.printStackTrace();
 		  rt.setState(ReturnValue.ERROR);
 		  return rt;
 	  }
-//		//TODO: run map method from pluginClass for every genome position in every filtered file
-//		FeatureCountPlugin countInstance = new FeatureCountPlugin();
-//		
-//		String vcfFilePath = new String();
-//		vcfReader = new VCFReader(vcfFilePath);
-//		vIter = vcfReader.getVCFIterator();
-//		while (vIter.hasNext()){
-//			VariantContext vContext = vIter.next();
-//			countInstance.map(vContext.getStart(), features, output); //Run plugin for every position.
-//			
-//		}
-		
-
   }
 
   /** getConclusionDocs
