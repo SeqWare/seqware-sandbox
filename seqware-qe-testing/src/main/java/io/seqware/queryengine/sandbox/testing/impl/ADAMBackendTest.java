@@ -32,6 +32,7 @@ import org.json.JSONException;
 
 import parquet.avro.AvroParquetWriter;
 import scala.collection.JavaConversions;
+import edu.berkeley.cs.amplab.adam.avro.ADAMGenotype;
 import edu.berkeley.cs.amplab.adam.avro.ADAMRecord;
 import edu.berkeley.cs.amplab.adam.avro.ADAMVariant;
 import edu.berkeley.cs.amplab.adam.converters.SAMRecordConverter;
@@ -145,6 +146,7 @@ public class ADAMBackendTest implements BackendTestInterface {
     HashMap<String, String> featureSetQuery = queryParser.getFeatureSetQuery();
     HashMap<String, String> regionsQuery = queryParser.getRegionsQuery();
     adamVariantList = new ArrayList<ADAMVariant>();
+    ArrayList<ADAMGenotype> adamGenotypeList = new ArrayList<ADAMGenotype>();
     VariantContextConverter vcc = new VariantContextConverter();
     VCFCodec vcfCodec = new VCFCodec();
     
@@ -168,11 +170,8 @@ public class ADAMBackendTest implements BackendTestInterface {
           List<Object> list = JavaConversions.bufferAsJavaList(vcc.convertVariants(vc).toBuffer());
           for (Object o: list) {
             adamVariantList.add((ADAMVariant) o);
+            //adamGenotypeList
           }
-          // to remove:
-          count++;
-          if (count > 10000)
-            break; 
         }
       } catch (Exception ex) {
         System.out.println("Error: " + ex.getMessage());
