@@ -12,8 +12,10 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.broadinstitute.variant.variantcontext.VariantContext;
 import org.json.JSONException;
+import org.junit.Assert;
 import org.junit.Test;
 
+import io.seqware.queryengine.sandbox.testing.TestBackends.AbstractPlugin;
 import io.seqware.queryengine.sandbox.testing.impl.GATKPicardBackendTest;
 import io.seqware.queryengine.sandbox.testing.plugins.*;
 import io.seqware.queryengine.sandbox.testing.ReturnValue;
@@ -23,74 +25,59 @@ public class FeaturePluginRunnerTest {
 	
 	//This is basically and external implementation of the runPlugin function in BackendTestInterface, for ease of testing.
 	//Will be added into GATK_Picard_Backend test.
-	@Test
-	public void runPlugin() throws IOException, JSONException{
-		GATKPicardBackendTest b = new GATKPicardBackendTest();
+	public void testBackend(BackendTestInterface b) throws IOException, JSONException{
 		ReturnValue rv = new ReturnValue();
-		VCFReader vcfReader;
-		Iterator<VariantContext> vIter;
-		Map<FeatureSet, Collection<Feature>> features;
-		Map<String,String> output = new HashMap<String,String>();
-		
-		
-		//Move these to some external global variable later, will not be called in the runPlugin params
-		String outputDir = "src/main/resources/PluginData_Filtered";
-		
-		//This is to do a mock load of the input files
-		//TAKE OUT in impl
-		File inputDir = new File("src/main/resources/PluginData/");
+
+		File inputDir = new File("src/main/resources/");
 		for (File child : inputDir.listFiles()){
-			b.loadFeatureSet(child.getAbsolutePath());
+			if (!child.isDirectory()){
+				b.loadFeatureSet(child.getAbsolutePath());	
+			}
 		}
-		
 		
 		File jsonQuery = new File("src/main/resources/testdata/query.json");
 		InputStream is = new FileInputStream(jsonQuery);
 		String jsonTxt = IOUtils.toString(is);
 		
-		/**Filtering commences**/
-		b.getFilteredFiles(jsonTxt, outputDir);
-		
-		/**Create feature data set from filtered files**/
-		features = b.makeMapInput(outputDir);
-		
-//		//TODO: run map method from pluginClass for every genome position in every filtered file
-//		FeatureCountPlugin countInstance = new FeatureCountPlugin();
-//		
-//		String vcfFilePath = new String();
-//		vcfReader = new VCFReader(vcfFilePath);
-//		vIter = vcfReader.getVCFIterator();
-//		while (vIter.hasNext()){
-//			VariantContext vContext = vIter.next();
-//			countInstance.map(vContext.getStart(), features, output); //Run plugin for every position.
-//			
-//		}
-		
-		
-		rv.getKv().put("pluginResultFile", "resultFilePath");
-//		return rv;
+		b.runPlugin(jsonTxt, SimpleFeaturesCountPlugin.class);
 	}
 	
-	public class FeatureCountPlugin implements FeaturePluginInterface{
+    // @Test
+    public void testGATK_PicardBackEnd() throws JSONException{
+    	try{
+    		testBackend(new GATKPicardBackendTest());
+    	} catch (RuntimeException | IOException e) {
+            e.printStackTrace();
+            Assert.assertTrue(false);
+ 
+        }
+    }
 
-		@Override
-		public void map(long position,
-				Map<FeatureSet, Collection<Feature>> features,
-				Map<String, String> output) {
-			Iterator<Feature> featureIter = features.get("vcf1chr5").iterator();
-			while (featureIter.hasNext()){
-				System.out.println();
-			}
-		}
+    public class SimpleFeaturesCountPlugin extends AbstractPlugin<Feature, FeatureSet> implements FeaturePluginInterface{
+    }
+    
+    public abstract class AbstractPlugin <UNIT, SET>{
+        public final String count = "COUNT";
+        
+        public void map(long position, Map<SET, Collection<UNIT>> reads, Map<String, String> output) {
+            if (!output.containsKey(count)){
+                output.put(count, String.valueOf(0));
+            }
+            for(Collection<UNIT> readCollection  :reads.values()){
+                Integer currentCount = Integer.valueOf(output.get(count));
+                int nextCount = currentCount += readCollection.size();
+                output.put(count, String.valueOf(nextCount));
+            }
+        }
 
-		@Override
-		public void reduce(String key, Iterable<String> values,
-				Map<String, String> output) {
-			
-			
-		}
-		
-	}
+        public void reduce(String key, Iterable<String> values, Map<String, String> output) {
+                Integer currentCount = Integer.valueOf(output.get(count));
+                for(String value : values){
+                    currentCount = currentCount += 1;
+                }
+                output.put(count, String.valueOf(currentCount));
+        }
+    }
 	
 	
 }

@@ -2,7 +2,6 @@ package io.seqware.queryengine.sandbox.testing;
 
 import static org.junit.Assert.assertEquals;
 import io.seqware.queryengine.sandbox.testing.impl.GATKPicardBackendTest;
-import io.seqware.queryengine.sandbox.testing.utils.Global;
 import io.seqware.queryengine.sandbox.testing.ReturnValue;
 
 import java.io.File;
@@ -19,17 +18,14 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class TestGATKPicardBackend {
-    @Test
+    // @Test
     public void testAll() throws Exception{
     	ReturnValue returned = new ReturnValue();
         
 
          //Point to local VCF file to be read
     	backend.loadFeatureSet(vcffile);  
- 		
-         //Point to TSV output file to be written to
-//      Global.outputFilePath = File.createTempFile("output", "txt").getAbsolutePath();
-         
+ 		         
          //Obtain matched features
         returned = backend.getFeatures(jsonTxt);    	
     }
@@ -51,7 +47,7 @@ public class TestGATKPicardBackend {
       bamfile = "src/main/resources/testdata/HG00310.chrom20.ILLUMINA.bwa.FIN.low_coverage.20120522.bam";
       vcffile = "src/main/resources/testdata/exampleVCFinput.vcf";
       
-      PrintWriter writer = new PrintWriter("/Users/bso/Report.html", "UTF-8");
+      PrintWriter writer = new PrintWriter(System.getProperty("user.home") + "/Report.html", "UTF-8");
       fillOutHeader(writer);
       writer.println(backend.getIntroductionDocs().getKv().get(BackendTestInterface.DOCS));
       writer.println(backend.getConclusionDocs().getKv().get(BackendTestInterface.DOCS));

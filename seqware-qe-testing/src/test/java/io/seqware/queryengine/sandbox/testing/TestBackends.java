@@ -78,8 +78,8 @@ public class TestBackends {
             // assumes there is a vcf index named *.vcf.gz.tbi
             String[] vcfs = new String[]{
                 "ftp://ftp-trace.ncbi.nih.gov/1000genomes/ftp/data/NA12156/cg_data/NA12156_lcl_SRR801819.wgs.COMPLETE_GENOMICS.20121201.snps_indels_svs_meis.high_coverage.genotypes.vcf.gz",
-//                "ftp://ftp-trace.ncbi.nih.gov/1000genomes/ftp/data/NA12155/cg_data/NA12155_lcl_SRR801818.wgs.COMPLETE_GENOMICS.20121201.snps_indels_svs_meis.high_coverage.genotypes.vcf.gz",
-//                "ftp://ftp-trace.ncbi.nih.gov/1000genomes/ftp/data/NA07029/cg_data/NA07029_lcl_SRR800229.wgs.COMPLETE_GENOMICS.20121201.snps_indels_svs_meis.high_coverage.genotypes.vcf.gz"
+                "ftp://ftp-trace.ncbi.nih.gov/1000genomes/ftp/data/NA12155/cg_data/NA12155_lcl_SRR801818.wgs.COMPLETE_GENOMICS.20121201.snps_indels_svs_meis.high_coverage.genotypes.vcf.gz",
+                "ftp://ftp-trace.ncbi.nih.gov/1000genomes/ftp/data/NA07029/cg_data/NA07029_lcl_SRR800229.wgs.COMPLETE_GENOMICS.20121201.snps_indels_svs_meis.high_coverage.genotypes.vcf.gz"
             };
             // now download
 //            List<File> localBams = download(bams, ".bai");
@@ -107,7 +107,7 @@ public class TestBackends {
                 output.write(b.getIntroductionDocs().getKv().get(BackendTestInterface.DOCS));
 
                 // setup the backend
-//                check(b.setupBackend(settings));
+                check(b.setupBackend(settings));
 
                 // iterate over the featureSets
                 ArrayList<String> featureSets = new ArrayList<>();
@@ -137,8 +137,8 @@ public class TestBackends {
                 // TODO: we need to define a way to enumerate plugins, @ServiceInterface?
                 
                 // run the plugin with a blank query, meaning no pre-filtering of reads
-//                ReturnValue runReadPlugin = b.runPlugin("", SimpleReadsCountPlugin.class);
-//                simpleFileCheck(runReadPlugin, BackendTestInterface.PLUGIN_RESULT_FILE);
+                ReturnValue runReadPlugin = b.runPlugin("", SimpleReadsCountPlugin.class);
+                simpleFileCheck(runReadPlugin, BackendTestInterface.PLUGIN_RESULT_FILE);
                 // do some tests on the content of the plugin results, in this case a count of reads
                 
                 // run the plugin with a blank query, meaning no pre-filtering of features
