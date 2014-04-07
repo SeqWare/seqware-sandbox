@@ -2,6 +2,8 @@
 
 This demonstrates the usage of Ansible to create jenkins slave nodes. This has several components which may be useful for Bindle including code that sets up postgres ready for regression testing, creating a seqware folder and settings file, setting up SSH keys, Java, and building /etc/hosts (albeit in a hard-coded simplified manner).
 
+TO-DO: Setup seqware-vagrant (Bindle) without hard-coding floating IP addresses so that jenkins capacity can scale as needed.
+
 # Usage
 
 1. Add your public keys to files/public_keys and edit the listed keys under "setup SSH keys" in the site.yml accordingly. 
