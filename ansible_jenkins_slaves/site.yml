@@ -1,0 +1,45 @@
+---
+- include: db.yml
+- hosts: jenkins 
+  sudo: True
+  tasks:
+  - hostname: name=jenkins-slave
+  - name: ensure maven is installed
+    apt: name=maven state=installed
+  - name: ensure git is installed
+    apt: name=git state=installed
+  - name: Add JRE ppa
+    apt_repository: repo="deb http://ppa.launchpad.net/webupd8team/java/ubuntu precise main" state=present
+  - name: Automatically select the Oracle License
+    shell: echo debconf shared/accepted-oracle-license-v1-1 select true | sudo debconf-set-selections
+  - name: Install JRE
+    apt: pkg=oracle-java7-installer state=latest update-cache=yes force=yes
+  - name: setup SSH keys
+    authorized_key: user=ubuntu
+                    key="{{ item }}"
+    with_file:
+    - files/public_keys/orz
+    - files/public_keys/jenkins
+
+  - name: Create .m2 folder
+    file: path=/home/ubuntu/.m2 state=directory
+  - name: Copy maven configuration
+    copy: src=files/settings.xml dest=/home/ubuntu/.m2/ 
+
+  - name: Create .seqware folder
+    file: path=/home/ubuntu/.seqware state=directory
+  - name: Copy seqware configuration
+    copy: src=files/settings dest=/home/ubuntu/.seqware/ 
+
+  # fix up hostname --fqdn call needed for JUnique library
+  - name: "Build hosts file"
+    lineinfile: dest=/etc/hosts line="127.0.0.1 jenkins-slave " state=present
+    with_items: groups['jenkins']
+
+  # Idempotent way to build a /etc/hosts file with Ansible using your Ansible hosts inventory for a source.
+  # Will include all hosts the playbook is run on.
+  # Inspired from http://xmeblog.blogspot.com/2013/06/ansible-dynamicaly-update-etchosts.html
+  - name: "Build hosts file"
+    lineinfile: dest=/etc/hosts regexp='.*{{ item }}$' line="{{ hostvars[item].ansible_default_ipv4.address }} {{item}}" state=present
+    when: hostvars[item].ansible_default_ipv4.address is defined
+    with_items: groups['all']
