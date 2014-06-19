@@ -2,6 +2,8 @@
 - include: db.yml
 - hosts: demo
   sudo: True
+  vars: 
+    welcome: Would you kindly checkout
   tasks:
   - hostname: name=demo
   - name: ensure maven is installed
@@ -16,6 +18,9 @@
 
   - name: Install JRE
     apt: pkg=oracle-java7-installer state=latest update-cache=yes force=yes
+
+  - name: Template motd
+    template: src=00-header.j2 dest=/etc/update-motd.d/00-header
 
 #- hosts: demo
 #  sudo: True
