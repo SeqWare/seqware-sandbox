@@ -10,6 +10,8 @@
     apt: name=maven state=installed update_cache=yes cache_valid_time=3600
   - name: ensure git is installed
     apt: name=git state=installed update_cache=yes cache_valid_time=3600
+  - name: ensure cowsay is installed
+    apt: name=cowsay state=installed update_cache=yes cache_valid_time=3600
 
   - name: Add JRE ppa
     apt_repository: repo="deb http://ppa.launchpad.net/webupd8team/java/ubuntu precise main" state=present
@@ -33,3 +35,13 @@
 #  roles:
   #    - {role: Ansibles.perl}
 
+
+  - name: Register any killed states?
+    shell: dmesg | grep "killed"
+    register: killed_msg
+    failed_when: '"killed" in killed_msg.stdout' 
+    changed_when: false
+
+
+  - name: Create cowsay dmesg
+    shell: creates=cowsay.dmesg.out dmesg | cowsay > cowsay.dmesg.out
