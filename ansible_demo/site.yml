@@ -1,0 +1,30 @@
+---
+- include: db.yml
+- hosts: demo
+  sudo: True
+  tasks:
+  - hostname: name=demo
+  - name: ensure maven is installed
+    apt: name=maven state=installed update_cache=yes cache_valid_time=3600
+  - name: ensure git is installed
+    apt: name=git state=installed update_cache=yes cache_valid_time=3600
+
+  - name: Add JRE ppa
+    apt_repository: repo="deb http://ppa.launchpad.net/webupd8team/java/ubuntu precise main" state=present
+  - name: Automatically select the Oracle License
+    shell: echo debconf shared/accepted-oracle-license-v1-1 select true | sudo debconf-set-selections
+
+  - name: Install JRE
+    apt: pkg=oracle-java7-installer state=latest update-cache=yes force=yes
+
+#- hosts: demo
+#  sudo: True
+#  roles:
+  #    - {role: java, java_provider: Cloudera}
+
+
+#- hosts: demo
+#  sudo: True
+#  roles:
+  #    - {role: Ansibles.perl}
+
