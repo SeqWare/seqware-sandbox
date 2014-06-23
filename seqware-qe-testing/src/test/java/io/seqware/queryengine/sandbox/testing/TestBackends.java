@@ -1,8 +1,6 @@
 package io.seqware.queryengine.sandbox.testing;
 
-import io.seqware.queryengine.sandbox.testing.impl.ADAMBackendTest;
 import io.seqware.queryengine.sandbox.testing.impl.GATKPicardBackendTest;
-import io.seqware.queryengine.sandbox.testing.impl.NoOpBackendTest;
 import io.seqware.queryengine.sandbox.testing.plugins.Feature;
 import io.seqware.queryengine.sandbox.testing.plugins.FeaturePluginInterface;
 import io.seqware.queryengine.sandbox.testing.plugins.FeatureSet;
@@ -26,10 +24,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.io.FileUtils;
-import org.junit.Test;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
 import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * TestBackends
@@ -72,17 +70,17 @@ public class TestBackends {
             // assumes there is a bam index named *.bam.bai
             String[] bams = new String[]{
                 "ftp://ftp-trace.ncbi.nih.gov/1000genomes/ftp/data/NA12156/cg_data/NA12156_lcl_SRR801819.mapped.COMPLETE_GENOMICS.CGworkflow2_2_evidenceOnly.CEU.high_coverage.20130401.bam",
-                "ftp://ftp-trace.ncbi.nih.gov/1000genomes/ftp/data/NA12155/cg_data/NA12155_lcl_SRR801818.mapped.COMPLETE_GENOMICS.CGworkflow2_2_evidenceOnly.CEU.high_coverage.20130401.bam",
-                "ftp://ftp-trace.ncbi.nih.gov/1000genomes/ftp/data/NA07029/cg_data/NA07029_lcl_SRR800229.mapped.COMPLETE_GENOMICS.CGworkflow2_2_evidenceOnly.CEU.high_coverage.20130401.bam"
+                //"ftp://ftp-trace.ncbi.nih.gov/1000genomes/ftp/data/NA12155/cg_data/NA12155_lcl_SRR801818.mapped.COMPLETE_GENOMICS.CGworkflow2_2_evidenceOnly.CEU.high_coverage.20130401.bam",
+                //"ftp://ftp-trace.ncbi.nih.gov/1000genomes/ftp/data/NA07029/cg_data/NA07029_lcl_SRR800229.mapped.COMPLETE_GENOMICS.CGworkflow2_2_evidenceOnly.CEU.high_coverage.20130401.bam"
             };
             // assumes there is a vcf index named *.vcf.gz.tbi
             String[] vcfs = new String[]{
                 "ftp://ftp-trace.ncbi.nih.gov/1000genomes/ftp/data/NA12156/cg_data/NA12156_lcl_SRR801819.wgs.COMPLETE_GENOMICS.20121201.snps_indels_svs_meis.high_coverage.genotypes.vcf.gz",
-                "ftp://ftp-trace.ncbi.nih.gov/1000genomes/ftp/data/NA12155/cg_data/NA12155_lcl_SRR801818.wgs.COMPLETE_GENOMICS.20121201.snps_indels_svs_meis.high_coverage.genotypes.vcf.gz",
-                "ftp://ftp-trace.ncbi.nih.gov/1000genomes/ftp/data/NA07029/cg_data/NA07029_lcl_SRR800229.wgs.COMPLETE_GENOMICS.20121201.snps_indels_svs_meis.high_coverage.genotypes.vcf.gz"
+                //"ftp://ftp-trace.ncbi.nih.gov/1000genomes/ftp/data/NA12155/cg_data/NA12155_lcl_SRR801818.wgs.COMPLETE_GENOMICS.20121201.snps_indels_svs_meis.high_coverage.genotypes.vcf.gz",
+                //"ftp://ftp-trace.ncbi.nih.gov/1000genomes/ftp/data/NA07029/cg_data/NA07029_lcl_SRR800229.wgs.COMPLETE_GENOMICS.20121201.snps_indels_svs_meis.high_coverage.genotypes.vcf.gz"
             };
             // now download
-//            List<File> localBams = download(bams, ".bai");
+            List<File> localBams = download(bams, ".bai");
             List<File> localVCFs = download(vcfs, ".tbi");
 
 
@@ -210,9 +208,9 @@ public class TestBackends {
      *
      * @param args
      */
-    public static void main(String[] args) throws IOException {
-        testBackend(new ADAMBackendTest(), true, args);
-    }
+//    public static void main(String[] args) throws IOException {
+//        testBackend(new ADAMBackendTest(), true, args);
+//    }
 
     private static void fillOutHeader(PrintWriter o) {
         o.write("<html><body>");
@@ -259,8 +257,8 @@ public class TestBackends {
           // blank query should return all features from all read sets
         ReturnValue features = b.getReads("");
         simpleFileCheck(features, BackendTestInterface.QUERY_RESULT_FILE);
-        // query should return all features from chromosome 22 across all read sets
-        features = b.getReads("{\"regions\":{[\"chr22\"]}}");
+        // query should return all features from chromosome 20 across all read sets
+        features = b.getReads("{\"regions\":[\"chr20\"]}");
         simpleFileCheck(features, BackendTestInterface.QUERY_RESULT_FILE);
         return ("<p>Readset query testing completed</p>");
     }

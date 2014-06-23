@@ -1,24 +1,20 @@
 package io.seqware.queryengine.sandbox.testing;
 
-import static org.junit.Assert.assertEquals;
 import io.seqware.queryengine.sandbox.testing.impl.GATKPicardBackendTest;
-import io.seqware.queryengine.sandbox.testing.ReturnValue;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 
 import org.apache.commons.io.IOUtils;
-import org.json.JSONException;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class TestGATKPicardBackend {
-    // @Test
+    @Test
     public void testAll() throws Exception{
     	ReturnValue returned = new ReturnValue();
         
@@ -68,29 +64,16 @@ public class TestGATKPicardBackend {
 
     private static void fillOutFooter(PrintWriter o) {
         o.write("</body></html>");
-    }
-    
-//    @Test
-    public void testGetIntroductionDocs() {
-      String expHtmlReport = "<h2>GATKPicardBackend: Introduction</h2>";  
-      assertEquals(expHtmlReport, backend.getIntroductionDocs().getKv().get(BackendTestInterface.DOCS));
-    }
+    }    
 
-//    @Test
+    @Test
     public void testLoadReadSet() {
       Assert.assertNotNull(backend.loadReadSet(bamfile).getKv().get(BackendTestInterface.READ_SET_ID));
     }
     
-//    @Test
+    @Test
     public void testGetReads() {
       backend.loadReadSet(bamfile);
       Assert.assertNotNull(backend.getReads(jsonTxt).getKv().get(BackendTestInterface.QUERY_RESULT_FILE));
-    }
-    
-//    @Test
-    public void testGetConclusionDocs() {
-      String expHtmlReport = "<h2>Conclusion</h2>"; 
-      assertEquals(expHtmlReport, backend.getConclusionDocs().getKv().get(BackendTestInterface.DOCS));
-    }
-    
+    }   
 }

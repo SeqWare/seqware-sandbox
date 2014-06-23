@@ -19,8 +19,6 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -29,8 +27,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.zip.GZIPInputStream;
 import java.util.UUID;
+import java.util.zip.GZIPInputStream;
 
 import javax.swing.text.html.HTMLDocument;
 
@@ -49,10 +47,8 @@ import org.broad.tribble.FeatureReader;
 import org.broadinstitute.variant.variantcontext.VariantContext;
 import org.broadinstitute.variant.vcf.VCFCodec;
 import org.broadinstitute.variant.vcf.VCFHeader;
-import org.broadinstitute.variant.vcf.VCFIDHeaderLine;
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import com.google.common.base.Splitter;
 
@@ -578,7 +574,8 @@ public class GATKPicardBackendTest implements BackendTestInterface {
     ReturnValue rt = new ReturnValue();
     try {
       //First, parse the query for related fields
-      JSONQueryParser jsonParser = new JSONQueryParser(queryJSON);
+      JSONQueryParser jsonParser = new JSONQueryParser();
+      jsonParser.parseBamQuery(queryJSON);
       HashMap<String, String> readSetQuery = jsonParser.getReadSetQuery();
       HashMap<String, String> readsQuery = jsonParser.getReadsQuery();
       HashMap<String, String> regionsQuery = jsonParser.getRegionsQuery();
