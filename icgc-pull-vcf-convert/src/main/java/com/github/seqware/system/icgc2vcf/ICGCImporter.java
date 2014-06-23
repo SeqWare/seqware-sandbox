@@ -19,11 +19,14 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
@@ -32,14 +35,23 @@ import org.apache.commons.io.FileUtils;
 public class ICGCImporter {
   
   //String URL = "https://portal.dcc.icgc.org/api/download/info/prod-06e-32-22";
-  public static String URL = "https://portal.dcc.icgc.org/api/download/info/release_14";
-
+  public static String URL = "http://dcc.icgc.org/api/download/info/release_14";
+  
   public static void main(String[] args) {
-    System.out.println("Dowloading files");
-    List<File> downloadICGCFiles = downloadICGCFiles();
-    System.out.println("Files downloaded to: " + downloadICGCFiles.get(0).getParent());
-    List<File> unzippedFiles = unzipFiles(downloadICGCFiles);
-    System.out.println("Files unzipped to: " + unzippedFiles.get(0).getParent());
+    List<File> unzippedFiles = null;
+    if (args.length > 1){
+        // this allows us to locate ICGC files that have already been downloaded
+        String targetDirectory = args[1];
+        Collection<File> listFiles = FileUtils.listFiles(new File(targetDirectory), new String[]{"tsv"}, true);
+        unzippedFiles = new ArrayList<File>();
+        unzippedFiles.addAll(listFiles);
+    } else{
+        System.out.println("Downloading files");
+        List<File> downloadICGCFiles = downloadICGCFiles();
+        System.out.println("Files downloaded to: " + downloadICGCFiles.get(0).getParent());
+        unzippedFiles = unzipFiles(downloadICGCFiles);
+        System.out.println("Files unzipped to: " + unzippedFiles.get(0).getParent());
+    }
     // convert files to VCF format
     Map<String, File> convertedFiles = convertFiles(unzippedFiles);
     // printout file locations
@@ -90,6 +102,16 @@ public class ICGCImporter {
           String[] columns = line.split("\t");
           String icgc_donor_id = columns[header.indexOf("icgc_donor_id")];
           String icgc_mutation_id = columns[header.indexOf("icgc_mutation_id")];
+          
+          String mutation = columns[header.indexOf("mutation")];
+          // for September 20, 2013: a problem with the pre-ETL data arises when the mutation column is too large, skip these for now
+          // but get rid of this afterwards when the data is fixed
+          if (mutation.length() > 400){
+              System.out.println("Skipped mutation with length > 400 in donor" + icgc_donor_id);
+              System.out.println("Skipped line was " + line);
+              continue;
+          }
+          
           if (!mappedLines.containsKey(icgc_donor_id)) {
             mappedLines.put(icgc_donor_id, new HashMap<String, List<String[]>>());
           }
@@ -100,8 +122,17 @@ public class ICGCImporter {
         }
         // dump to files named by combination of donor and project
         for (Entry<String, Map<String, List<String[]>>> donorCollection : mappedLines.entrySet()) {
-          // determine file name and create file
-          String project = file.getName().substring(file.getName().indexOf(".") + 1, file.getName().lastIndexOf("."));
+          String project;
+          // in pre-processed ICGC files, this is incorrect, get the project from the file itself
+          if (header.contains("icgc_project_id")){
+              List<String[]> value = donorCollection.getValue().entrySet().iterator().next().getValue();
+              project = value.get(0)[header.indexOf("icgc_project_id")];
+          } else{
+              // in the static dump files
+              // determine file name and create file
+              project = file.getName().substring(file.getName().indexOf(".") + 1, file.getName().lastIndexOf("."));
+          }
+          
           String filename = project + "." + donorCollection.getKey() + ".vcf";
           File outputFile = new File(createTempDir, filename);
           System.out.println("   output VCF: " + outputFile.getAbsolutePath());
@@ -109,12 +140,13 @@ public class ICGCImporter {
           FileUtils.writeStringToFile(outputFile, "##" + SOFeatureImporter.PRAGMA_QE_TAG_FORMAT + "=project=" + project + "\n", true);
           FileUtils.writeStringToFile(outputFile, "##" + SOFeatureImporter.PRAGMA_QE_TAG_FORMAT + "=donor=" + donorCollection.getKey() + "\n", true);
           FileUtils.writeStringToFile(outputFile, "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\n", true);
+          SortedSet<String> outputLines = new TreeSet<String>();
           for (Entry<String, List<String[]>> mutationCollection : donorCollection.getValue().entrySet()) {
             String id = mutationCollection.getKey();
             String chromosome = mutationCollection.getValue().get(0)[header.indexOf("chromosome")];
             String pos = mutationCollection.getValue().get(0)[header.indexOf("chromosome_start")];
             // TODO: fix this mismatch between data formats, icgc data format allows a null reference_genome_allele while VCF requires the allele to be one of A,C,G,T,N    
-            String[] mutation = mutationCollection.getValue().get(0)[header.indexOf("mutation")].split(">");
+            String[] mutation = mutationCollection.getValue().get(0)[header.indexOf("mutation")].split(">");          
             // TODO: this silly check is because simple_somatic_mutation.LICA-FR.tsv has values of TCATTAAATCTTTAG [... truncated]
             String ref = mutation.length > 0 ? mutation[0] : ".";
             String alt = mutation.length > 1 ? mutation[1] : ".";
@@ -134,7 +166,14 @@ public class ICGCImporter {
               // TODO: here we would normally pull out stuff from each line for tags, not sure which tags we want, leaving this blank for now
               // for example, consequence_type looks like it can be converted to SNPEFF_EFFECT, but how to we tie-break?
               //info.append("EnsemblGene=").append(line[header.indexOf("gene_affected")]).append(";");
-              if (line[header.indexOf("gene_affected")] != null && !"".equals(line[header.indexOf("gene_affected")])) { geneIds.put(line[header.indexOf("gene_affected")], "true"); }
+              try{
+              if (line[header.indexOf("gene_affected")] != null 
+                      && !"".equals(line[header.indexOf("gene_affected")])) {
+                  geneIds.put(line[header.indexOf("gene_affected")], "true"); 
+              } 
+              } catch(ArrayIndexOutOfBoundsException ex){
+                  /** ignore, pre-processed data can have blank values for gene_affected */
+              }
             }
             if (geneIds.keySet().size() > 0) {
               info.append("EnsemblGene=");
@@ -144,13 +183,14 @@ public class ICGCImporter {
                   first = false;
                   info.append(geneId);
                 } else {
-                  info.append("," + geneId);
+                  info.append(",").append(geneId);
                 }
               }
             }
             // write final line to file
-            FileUtils.writeStringToFile(outputFile, chromosome + "\t" + pos + "\t" + id + "\t" + ref + "\t" + alt + "\t" + qual + "\t" + filter + "\t" + info + "\n", true);
+            outputLines.add(chromosome + "\t" + pos + "\t" + id + "\t" + ref + "\t" + alt + "\t" + qual + "\t" + filter + "\t" + info);
           }
+          FileUtils.writeLines(outputFile, outputLines , true);
           resultFiles.put(donorCollection.getKey(), outputFile);
         }
 
@@ -172,7 +212,7 @@ public class ICGCImporter {
   }
 
   public static File downloadFile(String url, File file) throws IOException {
-    URL actualURL = new URL("https://portal.dcc.icgc.org/api/download?fn=" + url);
+    URL actualURL = new URL("http://dcc.icgc.org/api/download?fn=" + url);
     FileUtils.copyURLToFile(actualURL, file);
     return file;
   }
@@ -187,12 +227,12 @@ public class ICGCImporter {
 
       Line[] projectLines = gson.fromJson(line, Line[].class);
       for (Line projLine : projectLines) {
-        String somatic_mutations = downloadIndex("https://portal.dcc.icgc.org/api/download/info" + projLine.name);
+        String somatic_mutations = downloadIndex("http://dcc.icgc.org/api/download/info" + projLine.name);
         Gson pgson = new Gson();
         Line[] fileLines = pgson.fromJson(somatic_mutations, Line[].class);
         for (Line fileLine : fileLines) {
           if (fileLine.name.contains("simple_somatic_mutation")) {
-            String url2 = "https://portal.dcc.icgc.org/api/download?fn=" + fileLine.name;
+            String url2 = "http://dcc.icgc.org/api/download?fn=" + fileLine.name;
             System.out.println("  downloading " + url2);
             File file = new File(createTempDir, fileLine.name.substring(fileLine.name.lastIndexOf("/")));
             resultFiles.add(ICGCImporter.downloadFile(fileLine.name, file));

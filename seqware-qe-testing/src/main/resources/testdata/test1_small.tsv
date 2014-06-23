@@ -1,0 +1,11 @@
+# chr \t start \t stop \t reference \t variant \t ke1y=value1;key2=value2 \n
+# hashtag for comment
+# starts at base 1 like VCF, insertions/deletions show base "in front" of mutation, like VCF
+# take a look at these in the UCSC browser: http://genome.ucsc.edu/cgi-bin/hgTracks?db=hg19
+# snps
+chr21	33034891	33034891	T	A	type=snp;isDbSNP=false
+chr20	46844929	46844929	C	G	type=snp;isDbSNP=true;dbSNPId=rs238103892
+# insertion
+chr20	11271871	11271873	G	GATTAC	type=insertion;ReactomeId=1337482;consequence=frameshift
+# deletion
+chr19	7800954	7800957	GCTA	G	type=deletion;consequence=nonsynonymous

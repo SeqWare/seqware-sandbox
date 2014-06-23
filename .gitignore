@@ -18,4 +18,16 @@
 /seqware-webservice-client-prototype-2/HTML5Application/nbproject/private
 /seqware-webservice-client-prototype-2/HTML5Application1/nbproject/private/
 /seqware-webservice/target/
-/qe_pig_udf/target/
+/seqware-qe-testing/target/
+/icgc-pull-vcf-convert/target/
+# Eclipse files
+.classpath
+.project
+.settings
+# Mac files
+*.DS_Store
+# Downloaded Data
+/seqware-qe-testing/download_data
+
+ansible_jenkins_slaves/files/public_keys/*
+ansible_jenkins_slaves/files/settings.xml
