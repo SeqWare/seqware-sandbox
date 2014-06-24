@@ -1,5 +1,6 @@
 package io.seqware.queryengine.sandbox.testing;
 
+import static org.junit.Assert.fail;
 import io.seqware.queryengine.sandbox.testing.impl.ADAMBackendTest;
 
 import java.io.File;
@@ -9,6 +10,7 @@ import java.io.InputStream;
 import org.apache.commons.io.IOUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Test;
 
 public class TestADAMBackend {
   static ADAMBackendTest ab;
@@ -31,8 +33,8 @@ public class TestADAMBackend {
     ab = null;
     bamfile = null;
   } 
-  /*
-  // @Test
+  
+  @Test
   public void testGetReads() {
     try {
       ab.loadReadSet(bamfile);
@@ -42,7 +44,7 @@ public class TestADAMBackend {
     }
   } 
   
-  // @Test
+  @Test
   public void testGetFeatures() {
     try {
       ab.loadFeatureSet(vcffile);
@@ -50,5 +52,5 @@ public class TestADAMBackend {
     } catch (Exception ex) {
       fail(ex.getMessage());
     }
-  }*/
+  }
 }
