@@ -27,6 +27,9 @@
   - name: Ensure template matches motd
     template: src=00-header.j2 dest=/etc/update-motd.d/00-header
 
+  - name: Ensure that postgres is running 
+    service: name=postgresql state=running
+
   - name: Register any killed states?
     shell: dmesg | grep "killed"
     register: killed_msg
