@@ -1,4 +1,4 @@
-= SeqWare Oozie Restart Script =
+# SeqWare Oozie Restart Script #
 
 I found the retry mechanism built into SeqWare was problematic.  It tended to fail in the sense that restarted workflows would simply restart and then immedialtely fail again.  Denis indicated this, in some cases, was caused by an apparent bug in Oozie.
 
