@@ -18,7 +18,6 @@
     authorized_key: user=ubuntu
                     key="{{ item }}"
     with_file:
-    - files/public_keys/orz
     - files/public_keys/jenkins
 
   - name: Create .m2 folder
@@ -43,3 +42,42 @@
     lineinfile: dest=/etc/hosts regexp='.*{{ item }}$' line="{{ hostvars[item].ansible_default_ipv4.address }} {{item}}" state=present
     when: hostvars[item].ansible_default_ipv4.address is defined
     with_items: groups['all']
+
+- hosts: jenkins_bindle
+  sudo: True
+  tasks:
+  # Install Bindle Dependencies
+  - name: make sure JSON perl module is installed
+    apt: name=libjson-perl state=latest
+  - name: make sure Template perl module is installed
+    apt: name=libtemplate-perl state=latest
+  - name: make sure "Config::Simple" perl module is installed
+    apt: name=libconfig-simple-perl state=latest
+  - name: make sure "Carp::Always" perl module is installed
+    apt: name=libcarp-always-perl state=latest
+  - name: make sure "IPC::System::Simple" perl module is installed
+    apt: name=libipc-system-simple-perl state=latest
+  - name: make sure make is installed
+    apt: name=make state=latest
+  - name: make sure gcc is installed
+    apt: name=gcc state=latest
+  - name: update apt-get
+    apt: update-cache=yes
+  - name: make sure wget is installed
+    apt: name=wget state=latest
+  - name: download Vagrant 1.6.3
+    get_url: url=https://dl.bintray.com/mitchellh/vagrant/vagrant_1.6.3_x86_64.deb dest=/home/ubuntu mode=0755
+  - name: Install Vagrant 1.6.3
+    command: sudo dpkg -i vagrant_1.6.3_x86_64.deb
+  - name: Install vagrant-aws plugin
+    shell: vagrant plugin install vagrant-aws
+  - name: Install vagrant-openstack-plugin
+    shell: vagrant plugin install vagrant-openstack-plugin
+  - name: Install cpanm
+    shell: curl -L http://cpanmin.us | perl - --sudo App::cpanminus
+  - name: make sure HTML::Manipulator is installed
+    cpanm: name=HTML::Manipulator
+  - name: make sure Net::OpenSSH is installed
+    cpanm: name=Net::OpenSSH
+  - name: make sure Term::ProgressBar is installed
+    cpanm: name=Term::ProgressBar
