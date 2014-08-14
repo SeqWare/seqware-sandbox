@@ -1,6 +1,6 @@
 ---
 - include: db.yml
-- hosts: jenkins 
+- hosts: all 
   sudo: True
   tasks:
   - hostname: name=jenkins-slave
@@ -21,14 +21,14 @@
     - files/public_keys/jenkins
 
   - name: Create .m2 folder
-    file: path=/home/ubuntu/.m2 state=directory
+    file: path=/home/ubuntu/.m2 state=directory owner=ubuntu
   - name: Copy maven configuration
-    copy: src=files/settings.xml dest=/home/ubuntu/.m2/ 
+    copy: src=files/settings.xml dest=/home/ubuntu/.m2/ owner=ubuntu 
 
   - name: Create .seqware folder
-    file: path=/home/ubuntu/.seqware state=directory
+    file: path=/home/ubuntu/.seqware state=directory owner=ubuntu
   - name: Copy seqware configuration
-    copy: src=files/settings dest=/home/ubuntu/.seqware/ 
+    copy: src=files/settings dest=/home/ubuntu/.seqware/ owner=ubuntu
 
   # fix up hostname --fqdn call needed for JUnique library
   - name: Build hosts file entry for hostname (hardcoded)
