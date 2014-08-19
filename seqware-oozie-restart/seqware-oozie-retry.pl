@@ -23,6 +23,8 @@ run("hadoop fs -rm $hdfspath/job.properties");
 run("hadoop fs -put $local_dir/job.properties $hdfspath/job.properties");
 run("oozie job -oozie http://master:11000/oozie -config $local_dir/job.properties -rerun $jobid");
 sleep 5;
+# this sometimes doesn't work if the job.properties ends up having both retry variables:
+# E0404: Only one of the properties are allowed [oozie.wf.rerun.skip.nodes OR oozie.wf.rerun.failnodes]
 run("seqware workflow-run retry --accession $swid");
 sleep 5;
 run("oozie job -oozie http://master:11000/oozie -config $local_dir/job.properties -info $jobid");
