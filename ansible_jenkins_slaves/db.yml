@@ -1,7 +1,0 @@
----
-- hosts: jenkins 
-  sudo: True
-  roles:
-    - role: postgres
-      tags:
-        - postgres

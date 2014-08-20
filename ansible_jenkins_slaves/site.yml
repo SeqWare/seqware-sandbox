@@ -1,11 +1,16 @@
 ---
-- include: db.yml
+- hosts: all
+  sudo: True
+  roles:
+    - role: postgres
+      tags:
+        - postgres
 - hosts: all 
   sudo: True
   tasks:
   - hostname: name=jenkins-slave
   - name: ensure maven is installed
-    apt: name=maven state=installed
+    apt: name=maven state=installed update_cache=yes
   - name: ensure git is installed
     apt: name=git state=installed
   - name: Add JRE ppa
@@ -31,9 +36,9 @@
     copy: src=files/settings dest=/home/ubuntu/.seqware/ owner=ubuntu
 
   # fix up hostname --fqdn call needed for JUnique library
-  - name: Build hosts file entry for hostname (hardcoded)
-    lineinfile: dest=/etc/hosts line="127.0.0.1 jenkins-slave " state=present
-    with_items: groups['jenkins']
+  - name: Build hosts file entry for hostname
+    lineinfile: dest=/etc/hosts line="127.0.0.1 {{ansible_hostname}}" state=present
+    with_items: groups['all']
 
   # Idempotent way to build a /etc/hosts file with Ansible using your Ansible hosts inventory for a source.
   # Will include all hosts the playbook is run on.
@@ -71,8 +76,10 @@
     command: sudo dpkg -i vagrant_1.6.3_x86_64.deb
   - name: Install vagrant-aws plugin
     shell: vagrant plugin install vagrant-aws
+    sudo_user: ubuntu
   - name: Install vagrant-openstack-plugin
     shell: vagrant plugin install vagrant-openstack-plugin
+    sudo_user: ubuntu
   - name: Install cpanm
     shell: curl -L http://cpanmin.us | perl - --sudo App::cpanminus
   - name: make sure HTML::Manipulator is installed
