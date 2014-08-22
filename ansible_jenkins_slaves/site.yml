@@ -78,7 +78,7 @@
     shell: vagrant plugin install vagrant-aws
     sudo_user: ubuntu
   - name: Install vagrant-openstack-plugin
-    shell: vagrant plugin install vagrant-openstack-plugin
+    shell: vagrant plugin install vagrant-openstack-plugin --plugin-version 0.7.0
     sudo_user: ubuntu
   - name: Install cpanm
     shell: curl -L http://cpanmin.us | perl - --sudo App::cpanminus
