@@ -8,7 +8,6 @@
 - hosts: all 
   sudo: True
   tasks:
-  - hostname: name=jenkins-slave
   - name: ensure maven is installed
     apt: name=maven state=installed update_cache=yes
   - name: ensure git is installed
@@ -34,6 +33,9 @@
     file: path=/home/ubuntu/.seqware state=directory owner=ubuntu
   - name: Copy seqware configuration
     copy: src=files/settings dest=/home/ubuntu/.seqware/ owner=ubuntu
+
+  - name: Set hostname
+    hostname: name={{ansible_hostname}}
 
   # fix up hostname --fqdn call needed for JUnique library
   - name: Build hosts file entry for hostname
