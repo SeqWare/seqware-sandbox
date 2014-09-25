@@ -16,6 +16,16 @@ Just use the sample data and curl to load
 
 Alternatively, you can follow the SeqWare Query Engine readme to import a VCF and dump it to JSON. 
 
+## Pruging Data
+
+If you want to clean out elastic search do the following:
+
+    curl -XDELETE 'http://localhost:9200/queryengine'
+
+You can see the general status and confirm you removed this with:
+
+    curl 'localhost:9200/_cat/indices?v'
+
 ## Setup Sense
 
 Install the chrome Sense plugin for elasticsearch. This makes it easy to see what's in the index and to do searches.  Once you load data you can search using:
