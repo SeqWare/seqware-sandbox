@@ -16,7 +16,7 @@ Just use the sample data and curl to load
 
 Alternatively, you can follow the SeqWare Query Engine readme to import a VCF and dump it to JSON. 
 
-## Making More Data
+## Making Custom Data
 
 I created a simple script that will take a JSON describing patients and the VCF files to use for each. It will then directly generate a JSON doc ready to load:
 
