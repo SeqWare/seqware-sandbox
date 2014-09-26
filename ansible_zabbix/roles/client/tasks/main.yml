@@ -1,0 +1,14 @@
+# client/tasks/main.yml
+---
+
+- name: Install zabbix agent 
+  apt: name=zabbix-agent state=latest
+
+- name: Template zabbix agent
+  template: src=zabbix.j2 dest=/etc/zabbix/zabbix_agentd.conf
+  notify: restart zabbix-agent
+
+- name: Activate client services
+  service: name={{ item }} state=started enabled=yes
+  with_items:
+    - zabbix-agent 
