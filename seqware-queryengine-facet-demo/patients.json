@@ -1,0 +1,122 @@
+{
+  "1001" : {
+    "gender": "male",
+    "age": "65_to_69",
+    "race": "white",
+    "diagnosis_code": ["555.3"],
+    "smoker": "yes",
+    "drugs": ["Infliximab"],
+    "biorepo": ["small_intestine_FFPE"],
+    "vcf_file": "VariantAnnotation_0.10.4_LS1155.annotated.vcf",
+    "max_variants" : 3450,
+    "prob_of_inclusion" : 0.1
+  },
+  "1002" : {
+    "gender": "male",
+    "age": "20_to_24",
+    "race": "black",
+    "diagnosis_code": ["555.1"],
+    "smoker": "former",
+    "drugs": ["Azathioprine", "Infliximab"],
+    "biorepo": ["small_intestine_FFPE", "blood"],
+    "vcf_file": "VariantAnnotation_0.10.4_LS1155.annotated.vcf",
+    "max_variants" : 6280,
+    "prob_of_inclusion" : 0.1
+  },
+  "1003" : {
+    "gender": "female",
+    "age": "35_to_39",
+    "race": "white",
+    "diagnosis_code": ["555.4"],
+    "smoker": "no",
+    "drugs": ["Azathioprine", "Infliximab"],
+    "biorepo": ["large_intestine", "small_intestine_FFPE"],
+    "vcf_file": "VariantAnnotation_0.10.4_LS1155.annotated.vcf",
+    "max_variants" : 5920,
+    "prob_of_inclusion" : 0.1
+  },
+  "1004" : {
+    "gender": "male",
+    "age": "85_to_89",
+    "race": "white",
+    "diagnosis_code": ["555.1"],
+    "smoker": "yes",
+    "drugs": ["Azathioprine"],
+    "biorepo": ["large_intestine_FFPE"],
+    "vcf_file": "VariantAnnotation_0.10.4_LS1155.annotated.vcf",
+    "max_variants" : 8734,
+    "prob_of_inclusion" : 0.1
+  },
+  "1005" : {
+    "gender": "female",
+    "age": "55_to_59",
+    "race": "black",
+    "diagnosis_code": ["555.2"],
+    "smoker": "no",
+    "drugs": ["Infliximab"],
+    "biorepo": ["small_intestine_FFPE"],
+    "vcf_file": "VariantAnnotation_0.10.4_LS1155.annotated.vcf",
+    "max_variants" : 6748,
+    "prob_of_inclusion" : 0.1
+  },
+  "1006" : {
+    "gender": "male",
+    "age": "45_to_49",
+    "race": "white",
+    "diagnosis_code": ["555.1"],
+    "smoker": "no",
+    "drugs": ["Infliximab", "Azathioprine"],
+    "biorepo": ["small_intestine_FFPE", "blood"],
+    "vcf_file": "VariantAnnotation_0.10.4_LS1155.annotated.vcf",
+    "max_variants" : 5738,
+    "prob_of_inclusion" : 0.1
+  },
+  "1007" : {
+    "gender": "female",
+    "age": "70_to_74",
+    "race": "white",
+    "diagnosis_code": ["555.4"],
+    "smoker": "no",
+    "drugs": ["Infliximab"],
+    "biorepo": ["blood"],
+    "vcf_file": "VariantAnnotation_0.10.4_LS1155.annotated.vcf",
+    "max_variants" : 9483,
+    "prob_of_inclusion" : 0.1
+  },
+  "1008" : {
+    "gender": "male",
+    "age": "20_to_24",
+    "race": "black",
+    "diagnosis_code": ["555.1"],
+    "smoker": "yes",
+    "drugs": ["Azathioprine"],
+    "biorepo": ["small_intestine"],
+    "vcf_file": "VariantAnnotation_0.10.4_LS1155.annotated.vcf",
+    "max_variants" : 7364,
+    "prob_of_inclusion" : 0.1
+  },
+  "1009" : {
+    "gender": "female",
+    "age": "10_to_14",
+    "race": "white",
+    "diagnosis_code": ["555.1"],
+    "smoker": "no",
+    "drugs": ["Infliximab"],
+    "biorepo": ["blood"],
+    "vcf_file": "VariantAnnotation_0.10.4_LS1155.annotated.vcf",
+    "max_variants" : 7383,
+    "prob_of_inclusion" : 0.1
+  },
+  "1010" : {
+    "gender": "female",
+    "age": "55_to_59",
+    "race": "black",
+    "diagnosis_code": ["555.2"],
+    "smoker": "yes",
+    "drugs": ["Infliximab"],
+    "biorepo": ["small_intestine_FFPE"],
+    "vcf_file": "VariantAnnotation_0.10.4_LS1155.annotated.vcf",
+    "max_variants" : 4859,
+    "prob_of_inclusion" : 0.1
+  }
+}

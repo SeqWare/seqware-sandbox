@@ -18,6 +18,12 @@
     <link rel="stylesheet" href="/common/css/elasticjs.css">
 
     <script src="/common/lib/modernizr-2.6.1.min.js"></script>
+    <script language="JavaScript">
+     function changeJBrowse(url)
+     {
+       window.frames["jbrowse"].location.href=url;
+     }
+    </script>
 </body>
 </head>
 
@@ -34,7 +40,11 @@
         <div class="row-fluid" style="margin-top:5%">
             <div class="span2 well">
                 <ul class="nav nav-list">
-                    <li class="nav-header">Feature Set</li>
+
+                    <li class="divider"></li>
+                    <li class="nav-header">Demographic Data</li>
+                    <li class="divider"></li>
+                    <li class="nav-header">Patient</li>
                     <li ng-repeat="feature_set in results.facets.feature_setFacet.terms">
                         <label class="checkbox">
                             <input type="checkbox" ng-checked="hasFilter('feature_set', feature_set.term)" ng-click="handleFilter('feature_set', feature_set.term)">
@@ -42,6 +52,83 @@
                             <span class="muted">({{feature_set.count}})</span>
                         </label>
                     </li>
+
+                    <li class="divider"></li>
+                    <li class="nav-header">Gender</li>
+                    <li ng-repeat="gender in results.facets.genderFacet.terms">
+                        <label class="checkbox">
+                            <input type="checkbox" ng-checked="hasFilter('gender', gender.term)" ng-click="handleFilter('gender', gender.term)">
+                            {{gender.term}}
+                            <span class="muted">({{gender.count}})</span>
+                        </label>
+                    </li>
+
+                    <li class="divider"></li>
+                    <li class="nav-header">Age</li>
+                    <li ng-repeat="age in results.facets.ageFacet.terms">
+                        <label class="checkbox">
+                            <input type="checkbox" ng-checked="hasFilter('age', age.term)" ng-click="handleFilter('age', age.term)">
+                            {{age.term}}
+                            <span class="muted">({{age.count}})</span>
+                        </label>
+                    </li>
+
+                    <li class="divider"></li>
+                    <li class="nav-header">Race</li>
+                    <li ng-repeat="race in results.facets.raceFacet.terms">
+                        <label class="checkbox">
+                            <input type="checkbox" ng-checked="hasFilter('race', race.term)" ng-click="handleFilter('race', race.term)">
+                            {{race.term}}
+                            <span class="muted">({{race.count}})</span>
+                        </label>
+                    </li>
+
+                    <li class="divider"></li>
+                    <li class="nav-header">Vitals Data</li>
+                    <li class="divider"></li>
+                    <li class="nav-header">Smoker</li>
+                    <li ng-repeat="smoker in results.facets.smokerFacet.terms">
+                        <label class="checkbox">
+                            <input type="checkbox" ng-checked="hasFilter('smoker', smoker.term)" ng-click="handleFilter('smoker', smoker.term)">
+                            {{smoker.term}}
+                            <span class="muted">({{smoker.count}})</span>
+                        </label>
+                    </li>
+
+                    <li class="divider"></li>
+                    <li class="nav-header">Clinical Data</li>
+                    <li class="divider"></li>
+                    <li class="nav-header">Diagnosis Code</li>
+                    <li ng-repeat="diagnosis_code in results.facets.diagnosis_codeFacet.terms">
+                        <label class="checkbox">
+                            <input type="checkbox" ng-checked="hasFilter('diagnosis_code', diagnosis_code.term)" ng-click="handleFilter('diagnosis_code', diagnosis_code.term)">
+                            {{diagnosis_code.term}}
+                            <span class="muted">({{diagnosis_code.count}})</span>
+                        </label>
+                    </li>
+
+                    <li class="divider"></li>
+                    <li class="nav-header">Drugs</li>
+                    <li ng-repeat="drugs in results.facets.drugsFacet.terms">
+                        <label class="checkbox">
+                            <input type="checkbox" ng-checked="hasFilter('drugs', drugs.term)" ng-click="handleFilter('drugs', drugs.term)">
+                            {{drugs.term}}
+                            <span class="muted">({{drugs.count}})</span>
+                        </label>
+                    </li>
+
+                    <li class="divider"></li>
+                    <li class="nav-header">Bio Repository</li>
+                    <li ng-repeat="biorepo in results.facets.biorepoFacet.terms">
+                        <label class="checkbox">
+                            <input type="checkbox" ng-checked="hasFilter('biorepo', biorepo.term)" ng-click="handleFilter('biorepo', biorepo.term)">
+                            {{biorepo.term}}
+                            <span class="muted">({{biorepo.count}})</span>
+                        </label>
+                    </li>
+
+                    <li class="divider"></li>
+                    <li class="nav-header">Genomic Data</li>
                     <li class="divider"></li>
                     <li class="nav-header">Variant Type</li>
                     <li ng-repeat="variant_type in results.facets.variant_typeFacet.terms">
@@ -52,7 +139,7 @@
                         </label>
                     </li>
                     <li class="divider"></li>
-                    <li class="nav-header">Databases</li>
+                    <li class="nav-header">Annotations</li>
                     <li ng-repeat="tag in results.facets.databasesFacet.terms">
                         <label class="checkbox">
                             <input type="checkbox" ng-checked="hasFilter('databases', tag.term)" ng-click="handleFilter('databases', tag.term)">
@@ -72,15 +159,27 @@
                 </ul>
             </div>
             <div class="span5">
+
+                <iframe name="jbrowse" style="border: 1px solid #505050;" src="http://jbrowse.org/ucsc/hg19/touch.html?loc=chr1:208,056,300..208,073,080&tracks=DNA,knownGene,ccdsGene,snp131,pgWatson,simpleRepeat" height="650" width="550"></iframe>
                 <pre>{{restQry}}</pre>
+
+              <!-- http://jbrowse.org/code/latest-release/?loc=ctgA:9908..32518&amp;tracks=DNA%2CTranscript%2Cvolvox_microarray_bw_density%2Cvolvox_microarray_bw_xyplot%2Cvolvox-sorted-vcf%2Cvolvox-sorted_bam_coverage%2Cvolvox-sorted_bam&amp;data=sample_data%2Fjson%2Fvolvox&amp;highlight=&amp;tracklist=0 -->
+
             </div>
             <div class="span5">
                 <ul class="unstyled">
                     <li class="well well-small" ng-repeat="hit in results.hits.hits">
                         <h4>{{hit._source.title}}</h4>
+                        <a href="javascript:changeJBrowse('http://jbrowse.org/ucsc/hg19/touch.html?loc=chr{{hit._source.location.chr}}:{{hit._source.location.start}}..{{hit._source.location.stop}}&tracks=DNA,knownGene,ccdsGene,snp131,pgWatson,simpleRepeat')">
+                        <!--a href="https://genome.ucsc.edu/cgi-bin/hgTracks?db=hg19&position=chr{{hit._source.location.chr}}:{{hit._source.location.start}}-{{hit._source.location.stop}}" -->
+                        <!-- document.frames["myInnerFrame"].location.href=fl; -->
+                        <span style="margin-right:1px;" class="badge badge-important" target="_blank">Browse...</span></a>
                         <span style="margin-right:1px;" class="badge badge-info" ng-repeat="tag in hit._source.databases">{{tag}}</span>
                         <span style="margin-right:1px;" class="badge badge-success" ng-repeat="kw in hit._source.consequences">{{kw}}</span>
                     </li>
+                    <li><span style="margin-right:1px;" class="badge badge-success" ng-click="previous()">previous</span>
+                    <span style="margin-right:1px;" class="badge badge-success" ng-click="next()">next</span></li>
+
                 </ul>
             </div>
         </div>
@@ -94,6 +193,5 @@
 
     <!-- project specific files -->
     <script src="js/app.js"></script>
-    
-</html>
 
+</html>
