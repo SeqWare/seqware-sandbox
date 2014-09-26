@@ -45,7 +45,7 @@ angular.module('multiselect.controllers', [])
           delete filters[field];
         }
       }
-
+      page=0;
       $scope.search()
     };
 
