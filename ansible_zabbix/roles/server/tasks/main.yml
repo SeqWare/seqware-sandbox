@@ -1,0 +1,26 @@
+# server/tasks/main.yml
+---
+
+- name: Install zabbix dependencies
+  apt: name={{ item }} state=latest
+  with_items:
+    - postgresql
+    - php5-pgsql
+
+- name: Install zabbix server 
+  apt: name=zabbix-server-pgsql state=latest
+
+- name: Install zabbix front-end
+  apt: name=zabbix-frontend-php state=latest
+  
+- name: Properly link front-end webpage
+  file: state=link src=/usr/share/zabbix path=/var/www/zabbix
+
+- name: Template zabbix front-end
+  template: src=zabbix.j2 dest=/etc/apache2/conf.d/zabbix
+  notify: restart apache2
+
+- name: Ensure state of server services
+  service: name={{ item }} state=started enabled=yes
+  with_items:
+    - zabbix-server 

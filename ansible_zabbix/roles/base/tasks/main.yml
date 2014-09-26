@@ -1,0 +1,11 @@
+#base/tasks/main/yml
+---
+
+- name: Downloads directory
+  file: state=directory path=/home/ubuntu/Downloads
+
+- name: Get zabbix package
+  get_url: url=http://repo.zabbix.com/zabbix/2.2/ubuntu/pool/main/z/zabbix-release/zabbix-release_2.2-1+precise_all.deb dest=/home/ubuntu/Downloads/zabbix-release_2.2-1+precise_all.deb
+
+- name: Install zabbix repository
+  apt: deb=/home/ubuntu/Downloads/zabbix-release_2.2-1+precise_all.deb 
