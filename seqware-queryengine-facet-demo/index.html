@@ -67,11 +67,11 @@
                     </li>
 
                     <li class="nav-header">Location of Crohn's</li>
-                    <li ng-repeat="location_of_Crohns in results.facets.location_of_CrohnsFacet.terms">
+                    <li ng-repeat="location_of_crohns in results.facets.location_of_crohnsFacet.terms">
                         <label class="checkbox">
-                            <input type="checkbox" ng-checked="hasFilter('location_of_Crohns', location_of_Crohns.term)" ng-click="handleFilter('location_of_Crohns', location_of_Crohns.term)">
-                            {{location_of_Crohns.term}}
-                            <span class="muted">({{location_of_Crohns.count}})</span>
+                            <input type="checkbox" ng-checked="hasFilter('location_of_crohns', location_of_crohns.term)" ng-click="handleFilter('location_of_crohns', location_of_crohns.term)">
+                            {{location_of_crohns.term}}
+                            <span class="muted">({{location_of_crohns.count}})</span>
                         </label>
                     </li>
 
@@ -87,31 +87,31 @@
 
                     <li class="divider"></li>
                     <li class="nav-header">IBD Surgery</li>
-                    <li ng-repeat="IBD_surgery in results.facets.IBD_surgeryFacet.terms">
+                    <li ng-repeat="ibd_surgery in results.facets.ibd_surgeryFacet.terms">
                         <label class="checkbox">
-                            <input type="checkbox" ng-checked="hasFilter('IBD_surgery', IBD_surgery.term)" ng-click="handleFilter('IBD_surgery', IBD_surgery.term)">
-                            {{IBD_surgery.term}}
-                            <span class="muted">({{IBD_surgery.count}})</span>
+                            <input type="checkbox" ng-checked="hasFilter('ibd_surgery', ibd_surgery.term)" ng-click="handleFilter('ibd_surgery', ibd_surgery.term)">
+                            {{ibd_surgery.term}}
+                            <span class="muted">({{ibd_surgery.count}})</span>
                         </label>
                     </li>
 
                     <li class="divider"></li>
                     <li class="nav-header">IBD Family History</li>
-                    <li ng-repeat="IBD_family_history in results.facets.IBD_family_historyFacet.terms">
+                    <li ng-repeat="ibd_family_history in results.facets.ibd_family_historyFacet.terms">
                         <label class="checkbox">
-                            <input type="checkbox" ng-checked="hasFilter('IBD_family_history', IBD_family_history.term)" ng-click="handleFilter('IBD_family_history', IBD_family_history.term)">
-                            {{IBD_family_history.term}}
-                            <span class="muted">({{IBD_family_history.count}})</span>
+                            <input type="checkbox" ng-checked="hasFilter('ibd_family_history', ibd_family_history.term)" ng-click="handleFilter('ibd_family_history', ibd_family_history.term)">
+                            {{ibd_family_history.term}}
+                            <span class="muted">({{ibd_family_history.count}})</span>
                         </label>
                     </li>
 
                     <li class="divider"></li>
                     <li class="nav-header">IBD 2nd Degree Relative</li>
-                    <li ng-repeat="IBD_2nd_degree_relative in results.facets.IBD_2nd_degree_relativeFacet.terms">
+                    <li ng-repeat="ibd_2nd_degree_relative in results.facets.ibd_2nd_degree_relativeFacet.terms">
                         <label class="checkbox">
-                            <input type="checkbox" ng-checked="hasFilter('IBD_2nd_degree_relative', IBD_2nd_degree_relative.term)" ng-click="handleFilter('IBD_2nd_degree_relative', IBD_2nd_degree_relative.term)">
-                            IBD_2nd_degree_relative.term}}
-                            <span class="muted">({{IBD_2nd_degree_relative.count}})</span>
+                            <input type="checkbox" ng-checked="hasFilter('ibd_2nd_degree_relative', ibd_2nd_degree_relative.term)" ng-click="handleFilter('ibd_2nd_degree_relative', ibd_2nd_degree_relative.term)">
+                            ibd_2nd_degree_relative.term}}
+                            <span class="muted">({{ibd_2nd_degree_relative.count}})</span>
                         </label>
                     </li>
 
