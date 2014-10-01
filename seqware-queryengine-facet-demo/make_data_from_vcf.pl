@@ -15,19 +15,36 @@ my @pat_arr;
 foreach my $pat (keys %{$pd}) {
   my $curr_i=0;
   my $gender = $pd->{$pat}{"gender"};
-  my $age = $pd->{$pat}{"age"};
+  my $age = $pd->{$pat}{"age_at_diagnosis"};
   my $race = $pd->{$pat}{"race"};
   my $diagnosis_code = $pd->{$pat}{"diagnosis_code"};
+  my $diagnosis = $pd->{$pat}{"diagnosis"};
+  my $location_of_crohns = $pd->{$pat}{"location_of_Crohns"};
+  my $ibd_surgery = $pd->{$pat}{"IBD_surgery"};
+  my $ibd_family_history = $pd->{$pat}{"IBD_family_history"};
+  my $ibd_2nd_degree_relative = $pd->{$pat}{"IBD_2nd_degree_relative"};
+  my $jewish_paternal_grandparents = $pd->{$pat}{"jewish_paternal_grandparents"};
+  my $jewish_maternal_grandparents = $pd->{$pat}{"jewish_maternal_grandparents"};
   my $smoker = $pd->{$pat}{"smoker"};
   my $drugs = $pd->{$pat}{"drugs"};
-  my $biorepo = $pd->{$pat}{"biorepo"};
+  my $aliquot_type = $pd->{$pat}{"aliquot_type"};
+  my $inventory_status = $pd->{$pat}{"inventory_status"};
   my $vcf = $pd->{$pat}{"vcf_file"};
   my $max_vars = $pd->{$pat}{"max_variants"};
   my $random_max = $pd->{$pat}{"prob_of_inclusion"};
   #print "MAX: $max_vars Curr $curr_i $vcf\n";
   #print "HERE1\n";
   #my $pstr = qq("feature_set": "$pat", "patient_id": "$pat", "gender": "$gender", "age": "$age", "race": "$race", "diagnosis_code": ).printArr($diagnosis_code).qq(, "smoker": "$smoker", "drugs": ).printArr($drugs).qq(, "biorepo": ).qq($biorepo).qq( });
-  my $pstr = qq("feature_set": "$pat", "patient_id": "$pat", "gender": "$gender", "age": "$age", "race": "$race", "diagnosis_code": ).printArr($diagnosis_code).qq(, "smoker": "$smoker", "drugs": ).printArr($drugs).qq(, "biorepo": ).printArr($biorepo).qq(, "properties" : { "age" : {"type" : "string" } } } );
+  my $pstr = qq("feature_set": "$pat", "patient_id": "$pat", "gender": "$gender", "age_at_diagnosis": "$age", "race": "$race", "diagnosis_code": ).printArr($diagnosis_code).qq(, "smoker": "$smoker", )
+.qq("diagnosis": ).printArr($diagnosis).qq(, )
+.qq("location_of_crohns": ).printArr($location_of_crohns).qq(, )
+.qq("ibd_surgery": "$ibd_surgery", )
+.qq("ibd_family_history": ).printArr($ibd_family_history).qq(, )
+.qq("ibd_2nd_degree_relative": "$ibd_2nd_degree_relative", )
+.qq("jewish_paternal_grandparents": "$jewish_paternal_grandparents", )
+.qq("jewish_maternal_grandparents": "$jewish_maternal_grandparents", )
+.qq("inventory_status": ).printArr($inventory_status).qq(, )
+.qq("drugs": ).printArr($drugs).qq(, "aliquot_type": ).printArr($aliquot_type).qq(, "properties" : { "age" : {"type" : "string" } } } );
   #my $pstr ="";
   #print "HERE2\n";
   open IN, "<$vcf" or die "DIE: can't open file";
@@ -95,7 +112,7 @@ sub printArr {
       $r = qq([ ").join("\", \"", @{$arr}).qq(" ]);
     }
     else {
-      $r = qq([ "none" ]); 
+      $r = qq([ "none" ]);
     }
   } else {
     $r = qq([ "$arr" ]);
