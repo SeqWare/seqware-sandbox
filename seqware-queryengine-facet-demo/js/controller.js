@@ -7,7 +7,8 @@
 angular.module('demo.controllers', [])
     .controller('SearchCtrl', function($scope, ejsResource) {
 
-        var ejs = ejsResource('http://localhost:9200');
+        //var ejs = ejsResource('http://localhost:9200');
+        var ejs = ejsResource('http://portal.nimbusinformatics.com:9200');
 
         var QueryObj = ejs.QueryStringQuery().defaultField('Title');
 
