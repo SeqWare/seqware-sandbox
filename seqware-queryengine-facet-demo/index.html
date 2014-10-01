@@ -110,7 +110,7 @@
                     <li ng-repeat="ibd_2nd_degree_relative in results.facets.ibd_2nd_degree_relativeFacet.terms">
                         <label class="checkbox">
                             <input type="checkbox" ng-checked="hasFilter('ibd_2nd_degree_relative', ibd_2nd_degree_relative.term)" ng-click="handleFilter('ibd_2nd_degree_relative', ibd_2nd_degree_relative.term)">
-                            ibd_2nd_degree_relative.term}}
+                            {{ibd_2nd_degree_relative.term}}
                             <span class="muted">({{ibd_2nd_degree_relative.count}})</span>
                         </label>
                     </li>
@@ -120,7 +120,7 @@
                     <li ng-repeat="jewish_paternal_grandparents in results.facets.jewish_paternal_grandparentsFacet.terms">
                         <label class="checkbox">
                             <input type="checkbox" ng-checked="hasFilter('jewish_paternal_grandparents', jewish_paternal_grandparents.term)" ng-click="handleFilter('jewish_paternal_grandparents', jewish_paternal_grandparents.term)">
-                            jewish_paternal_grandparents.term}}
+                            {{jewish_paternal_grandparents.term}}
                             <span class="muted">({{jewish_paternal_grandparents.count}})</span>
                         </label>
                     </li>
@@ -130,7 +130,7 @@
                     <li ng-repeat="jewish_maternal_grandparents in results.facets.jewish_maternal_grandparentsFacet.terms">
                         <label class="checkbox">
                             <input type="checkbox" ng-checked="hasFilter('jewish_maternal_grandparents', jewish_maternal_grandparents.term)" ng-click="handleFilter('jewish_maternal_grandparents', jewish_maternal_grandparents.term)">
-                            jewish_maternal_grandparents.term}}
+                            {{jewish_maternal_grandparents.term}}
                             <span class="muted">({{jewish_maternal_grandparents.count}})</span>
                         </label>
                     </li>
