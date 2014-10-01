@@ -218,7 +218,7 @@ angular.module('multiselect.service', [])
     return FormatJSON;
   });
 
-angular.module('multiselect.helpers')
+angular.module('multiselect.helpers', [])
   .filter('uts', function () {
     return function (input) {
       if (input) {
