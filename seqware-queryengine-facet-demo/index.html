@@ -52,7 +52,7 @@
                     <li ng-repeat="diagnosis in results.facets.diagnosisFacet.terms">
                         <label class="checkbox">
                             <input type="checkbox" ng-checked="hasFilter('diagnosis', diagnosis.term)" ng-click="handleFilter('diagnosis', diagnosis.term)">
-                            {{diagnosis.term}}
+                            {{diagnosis.term | uts }}
                             <span class="muted">({{diagnosis.count}})</span>
                         </label>
                     </li>

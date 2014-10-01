@@ -7,7 +7,8 @@
 angular.module('multiselect', [
   'multiselect.controllers',
   'multiselect.service',
-  'elasticjs.service'
+  'elasticjs.service',
+  'multiselect.helpers'
 ]);
 
 /* Controller Module */
@@ -215,4 +216,13 @@ angular.module('multiselect.service', [])
     };
 
     return FormatJSON;
+  });
+
+angular.module('multiselect.helpers')
+  .filter('uts', function () {
+    return function (input) {
+      if (input) {
+        return input.toLowerCase().replace(/_/g, ' ');
+      }
+    };
   });
