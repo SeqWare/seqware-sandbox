@@ -22,7 +22,7 @@ angular.module('multiselect.controllers', [])
     var page = 0;
 
     // the fields we want to facet on
-    var facets = ['feature_set', 'variant_type', 'databases', 'consequences', 'gender', 'age', 'race', 'diagnosis_code', 'smoker', 'drugs', 'biorepo'];
+    var facets = ['feature_set', 'variant_type', 'databases', 'consequences', 'gender', 'age_at_diagnosis', 'race', 'diagnosis_code', 'smoker', 'drugs', 'aliquot_type', 'location_of_Crohns', 'IBD_family_history', 'IBD_surgery', 'IBD_2nd_degree_relative', 'jewish_paternal_grandparents', 'jewish_maternal_grandparents', 'inventory_status'];
 
     // for storing selected filters
     // format will be {field: [term1, term2], field2: [term1, term2]}

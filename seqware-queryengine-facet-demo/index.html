@@ -41,69 +41,37 @@
             <div class="span2 well">
                 <ul class="nav nav-list">
 
-                    <li class="divider"></li>
-                    <li class="nav-header">Demographic Data</li>
-                    <li class="divider"></li>
-                    <li class="nav-header">Patient</li>
-                    <li ng-repeat="feature_set in results.facets.feature_setFacet.terms">
-                        <label class="checkbox">
-                            <input type="checkbox" ng-checked="hasFilter('feature_set', feature_set.term)" ng-click="handleFilter('feature_set', feature_set.term)">
-                            {{feature_set.term}}
-                            <span class="muted">({{feature_set.count}})</span>
-                        </label>
-                    </li>
 
-                    <li class="divider"></li>
-                    <li class="nav-header">Gender</li>
-                    <li ng-repeat="gender in results.facets.genderFacet.terms">
-                        <label class="checkbox">
-                            <input type="checkbox" ng-checked="hasFilter('gender', gender.term)" ng-click="handleFilter('gender', gender.term)">
-                            {{gender.term}}
-                            <span class="muted">({{gender.count}})</span>
-                        </label>
-                    </li>
 
-                    <li class="divider"></li>
-                    <li class="nav-header">Age</li>
-                    <li ng-repeat="age in results.facets.ageFacet.terms">
-                        <label class="checkbox">
-                            <input type="checkbox" ng-checked="hasFilter('age', age.term)" ng-click="handleFilter('age', age.term)">
-                            {{age.term}}
-                            <span class="muted">({{age.count}})</span>
-                        </label>
-                    </li>
-
-                    <li class="divider"></li>
-                    <li class="nav-header">Race</li>
-                    <li ng-repeat="race in results.facets.raceFacet.terms">
-                        <label class="checkbox">
-                            <input type="checkbox" ng-checked="hasFilter('race', race.term)" ng-click="handleFilter('race', race.term)">
-                            {{race.term}}
-                            <span class="muted">({{race.count}})</span>
-                        </label>
-                    </li>
-
-                    <li class="divider"></li>
-                    <li class="nav-header">Vitals Data</li>
-                    <li class="divider"></li>
-                    <li class="nav-header">Smoker</li>
-                    <li ng-repeat="smoker in results.facets.smokerFacet.terms">
-                        <label class="checkbox">
-                            <input type="checkbox" ng-checked="hasFilter('smoker', smoker.term)" ng-click="handleFilter('smoker', smoker.term)">
-                            {{smoker.term}}
-                            <span class="muted">({{smoker.count}})</span>
-                        </label>
-                    </li>
 
                     <li class="divider"></li>
                     <li class="nav-header">Clinical Data</li>
                     <li class="divider"></li>
+
+                    <li class="nav-header">Diagnosis</li>
+                    <li ng-repeat="diagnosis in results.facets.diagnosisFacet.terms">
+                        <label class="checkbox">
+                            <input type="checkbox" ng-checked="hasFilter('diagnosis', diagnosis.term)" ng-click="handleFilter('diagnosis', diagnosis_code.term)">
+                            {{diagnosis_code.term}}
+                            <span class="muted">({{diagnosis_code.count}})</span>
+                        </label>
+                    </li>
+
                     <li class="nav-header">Diagnosis Code</li>
                     <li ng-repeat="diagnosis_code in results.facets.diagnosis_codeFacet.terms">
                         <label class="checkbox">
                             <input type="checkbox" ng-checked="hasFilter('diagnosis_code', diagnosis_code.term)" ng-click="handleFilter('diagnosis_code', diagnosis_code.term)">
                             {{diagnosis_code.term}}
                             <span class="muted">({{diagnosis_code.count}})</span>
+                        </label>
+                    </li>
+
+                    <li class="nav-header">Location of Crohn's</li>
+                    <li ng-repeat="location_of_Crohns in results.facets.location_of_CrohnsFacet.terms">
+                        <label class="checkbox">
+                            <input type="checkbox" ng-checked="hasFilter('location_of_Crohns', location_of_Crohns.term)" ng-click="handleFilter('location_of_Crohns', location_of_Crohns.term)">
+                            {{location_of_Crohns.term}}
+                            <span class="muted">({{location_of_Crohns.count}})</span>
                         </label>
                     </li>
 
@@ -118,14 +86,77 @@
                     </li>
 
                     <li class="divider"></li>
-                    <li class="nav-header">Bio Repository</li>
-                    <li ng-repeat="biorepo in results.facets.biorepoFacet.terms">
+                    <li class="nav-header">IBD Surgery</li>
+                    <li ng-repeat="IBD_surgery in results.facets.IBD_surgeryFacet.terms">
                         <label class="checkbox">
-                            <input type="checkbox" ng-checked="hasFilter('biorepo', biorepo.term)" ng-click="handleFilter('biorepo', biorepo.term)">
-                            {{biorepo.term}}
-                            <span class="muted">({{biorepo.count}})</span>
+                            <input type="checkbox" ng-checked="hasFilter('IBD_surgery', IBD_surgery.term)" ng-click="handleFilter('IBD_surgery', IBD_surgery.term)">
+                            {{IBD_surgery.term}}
+                            <span class="muted">({{IBD_surgery.count}})</span>
                         </label>
                     </li>
+
+                    <li class="divider"></li>
+                    <li class="nav-header">IBD Family History</li>
+                    <li ng-repeat="IBD_family_history in results.facets.IBD_family_historyFacet.terms">
+                        <label class="checkbox">
+                            <input type="checkbox" ng-checked="hasFilter('IBD_family_history', IBD_family_history.term)" ng-click="handleFilter('IBD_family_history', IBD_family_history.term)">
+                            {{IBD_family_history.term}}
+                            <span class="muted">({{IBD_family_history.count}})</span>
+                        </label>
+                    </li>
+
+                    <li class="divider"></li>
+                    <li class="nav-header">IBD 2nd Degree Relative</li>
+                    <li ng-repeat="IBD_2nd_degree_relative in results.facets.IBD_2nd_degree_relativeFacet.terms">
+                        <label class="checkbox">
+                            <input type="checkbox" ng-checked="hasFilter('IBD_2nd_degree_relative', IBD_2nd_degree_relative.term)" ng-click="handleFilter('IBD_2nd_degree_relative', IBD_2nd_degree_relative.term)">
+                            IBD_2nd_degree_relative.term}}
+                            <span class="muted">({{IBD_2nd_degree_relative.count}})</span>
+                        </label>
+                    </li>
+
+                    <li class="divider"></li>
+                    <li class="nav-header">Jewish Paternal Grandparents</li>
+                    <li ng-repeat="jewish_paternal_grandparents in results.facets.jewish_paternal_grandparentsFacet.terms">
+                        <label class="checkbox">
+                            <input type="checkbox" ng-checked="hasFilter('jewish_paternal_grandparents', jewish_paternal_grandparents.term)" ng-click="handleFilter('jewish_paternal_grandparents', jewish_paternal_grandparents.term)">
+                            jewish_paternal_grandparents.term}}
+                            <span class="muted">({{jewish_paternal_grandparents.count}})</span>
+                        </label>
+                    </li>
+
+                    <li class="divider"></li>
+                    <li class="nav-header">Jewish Maternal Grandparents</li>
+                    <li ng-repeat="jewish_maternal_grandparents in results.facets.jewish_maternal_grandparentsFacet.terms">
+                        <label class="checkbox">
+                            <input type="checkbox" ng-checked="hasFilter('jewish_maternal_grandparents', jewish_maternal_grandparents.term)" ng-click="handleFilter('jewish_maternal_grandparents', jewish_maternal_grandparents.term)">
+                            jewish_maternal_grandparents.term}}
+                            <span class="muted">({{jewish_maternal_grandparents.count}})</span>
+                        </label>
+                    </li>
+
+                    <li class="divider"></li>
+                    <li class="nav-header">Aliquot Types</li>
+                    <li ng-repeat="aliquot_type in results.facets.aliquot_typeFacet.terms">
+                        <label class="checkbox">
+                            <input type="checkbox" ng-checked="hasFilter('aliquot_type', aliquot_type.term)" ng-click="handleFilter('aliquot_type', aliquot_type.term)">
+                            {{aliquot_type.term}}
+                            <span class="muted">({{aliquot_type.count}})</span>
+                        </label>
+                    </li>
+
+                    <li class="divider"></li>
+                    <li class="nav-header">Aliquot Inventory Status</li>
+                    <li ng-repeat="inventory_status in results.facets.inventory_statusFacet.terms">
+                        <label class="checkbox">
+                            <input type="checkbox" ng-checked="hasFilter('inventory_status', inventory_status.term)" ng-click="handleFilter('inventory_status', inventory_status.term)">
+                            {{inventory_status.term}}
+                            <span class="muted">({{inventory_status.count}})</span>
+                        </label>
+                    </li>
+
+
+
 
                     <li class="divider"></li>
                     <li class="nav-header">Genomic Data</li>
@@ -156,6 +187,62 @@
                             <span class="muted">({{kw.count}})</span>
                         </label>
                     </li>
+
+
+
+
+                    <li class="divider"></li>
+                    <li class="nav-header">Demographic Data</li>
+                    <li class="divider"></li>
+                    <li class="nav-header">Patient</li>
+                    <li ng-repeat="feature_set in results.facets.feature_setFacet.terms">
+                        <label class="checkbox">
+                            <input type="checkbox" ng-checked="hasFilter('feature_set', feature_set.term)" ng-click="handleFilter('feature_set', feature_set.term)">
+                            {{feature_set.term}}
+                            <span class="muted">({{feature_set.count}})</span>
+                        </label>
+                    </li>
+
+                    <li class="divider"></li>
+                    <li class="nav-header">Gender</li>
+                    <li ng-repeat="gender in results.facets.genderFacet.terms">
+                        <label class="checkbox">
+                            <input type="checkbox" ng-checked="hasFilter('gender', gender.term)" ng-click="handleFilter('gender', gender.term)">
+                            {{gender.term}}
+                            <span class="muted">({{gender.count}})</span>
+                        </label>
+                    </li>
+
+                    <li class="divider"></li>
+                    <li class="nav-header">Age at Diagnosis</li>
+                    <li ng-repeat="age in results.facets.ageFacet.terms">
+                        <label class="checkbox">
+                            <input type="checkbox" ng-checked="hasFilter('age_at_diagnosis', age_at_diagnosis.term)" ng-click="handleFilter('age_at_diagnosis', age_at_diagnosis.term)">
+                            {{age_at_diagnosis.term}}
+                            <span class="muted">({{age_at_diagnosis.count}})</span>
+                        </label>
+                    </li>
+
+                    <li class="divider"></li>
+                    <li class="nav-header">Race</li>
+                    <li ng-repeat="race in results.facets.raceFacet.terms">
+                        <label class="checkbox">
+                            <input type="checkbox" ng-checked="hasFilter('race', race.term)" ng-click="handleFilter('race', race.term)">
+                            {{race.term}}
+                            <span class="muted">({{race.count}})</span>
+                        </label>
+                    </li>
+                    <li class="nav-header">Smoker</li>
+                    <li ng-repeat="smoker in results.facets.smokerFacet.terms">
+                        <label class="checkbox">
+                            <input type="checkbox" ng-checked="hasFilter('smoker', smoker.term)" ng-click="handleFilter('smoker', smoker.term)">
+                            {{smoker.term}}
+                            <span class="muted">({{smoker.count}})</span>
+                        </label>
+                    </li>
+
+
+
                 </ul>
             </div>
             <div class="span5">
