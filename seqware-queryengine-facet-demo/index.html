@@ -51,9 +51,9 @@
                     <li class="nav-header">Diagnosis</li>
                     <li ng-repeat="diagnosis in results.facets.diagnosisFacet.terms">
                         <label class="checkbox">
-                            <input type="checkbox" ng-checked="hasFilter('diagnosis', diagnosis.term)" ng-click="handleFilter('diagnosis', diagnosis_code.term)">
-                            {{diagnosis_code.term}}
-                            <span class="muted">({{diagnosis_code.count}})</span>
+                            <input type="checkbox" ng-checked="hasFilter('diagnosis', diagnosis.term)" ng-click="handleFilter('diagnosis', diagnosis.term)">
+                            {{diagnosis.term}}
+                            <span class="muted">({{diagnosis.count}})</span>
                         </label>
                     </li>
 
