@@ -70,7 +70,7 @@
                     <li ng-repeat="location_of_crohns in results.facets.location_of_crohnsFacet.terms">
                         <label class="checkbox">
                             <input type="checkbox" ng-checked="hasFilter('location_of_crohns', location_of_crohns.term)" ng-click="handleFilter('location_of_crohns', location_of_crohns.term)">
-                            {{location_of_crohns.term}}
+                            {{location_of_crohns.term | uts }}
                             <span class="muted">({{location_of_crohns.count}})</span>
                         </label>
                     </li>
@@ -140,7 +140,7 @@
                     <li ng-repeat="aliquot_type in results.facets.aliquot_typeFacet.terms">
                         <label class="checkbox">
                             <input type="checkbox" ng-checked="hasFilter('aliquot_type', aliquot_type.term)" ng-click="handleFilter('aliquot_type', aliquot_type.term)">
-                            {{aliquot_type.term}}
+                            {{aliquot_type.term  | uts }}
                             <span class="muted">({{aliquot_type.count}})</span>
                         </label>
                     </li>
