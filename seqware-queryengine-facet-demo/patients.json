@@ -73,10 +73,30 @@
     "diagnosis": ["Crohn's_disease"],
     "diagnosis_code": ["555.1"],
     "drugs": ["infliximab"],
-    "aliquot_type": [],
+    "aliquot_type": ["none"],
     "inventory_status": ["NA"],
     "vcf_file": "VariantAnnotation_0.10.4_LS1155.annotated.vcf",
     "max_variants" : 5235,
+    "prob_of_inclusion" : 0.1
+  },
+  "1005" : {
+    "gender": "male",
+    "race": "black",
+    "age_at_diagnosis": "22",
+    "location_of_Crohns": ["small_intestine"],
+    "IBD_surgery": "no",
+    "IBD_family_history": ["none"],
+    "smoker": "yes",
+    "IBD_2nd_degree_relative": "no",
+    "jewish_paternal_grandparents": 0,
+    "jewish_maternal_grandparents": 0,
+    "diagnosis": ["Crohn's_disease", "tobacco use disorder"],
+    "diagnosis_code": ["555.0", "305.1"],
+    "drugs": ["mesalamine", "nicodine_patch"],
+    "aliquot_type": ["urine"],
+    "inventory_status": ["available"],
+    "vcf_file": "VariantAnnotation_0.10.4_LS1155.annotated.vcf",
+    "max_variants" : 3829,
     "prob_of_inclusion" : 0.1
   }
 }
