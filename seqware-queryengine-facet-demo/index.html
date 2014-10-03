@@ -215,7 +215,7 @@
 
                     <li class="divider"></li>
                     <li class="nav-header">Age at Diagnosis</li>
-                    <li ng-repeat="age in results.facets.ageFacet.terms">
+                    <li ng-repeat="age_at_diagnosis in results.facets.age_at_diagnosisFacet.terms">
                         <label class="checkbox">
                             <input type="checkbox" ng-checked="hasFilter('age_at_diagnosis', age_at_diagnosis.term)" ng-click="handleFilter('age_at_diagnosis', age_at_diagnosis.term)">
                             {{age_at_diagnosis.term}}
