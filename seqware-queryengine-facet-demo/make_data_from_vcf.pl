@@ -68,6 +68,8 @@ foreach my $pat (keys %{$pd}) {
   }
   close IN;
   close VCFOUT;
+  system("bgzip $pat.vcf; tabix -p vcf $pat.vcf.gz");
+
   # {"id":"30", "title": "chrX:123-123:A->ACCA", "location": {"start":123, "stop":123, "chr":"chrX"}, "databases": ["omim","dbsnp"], "consequences": ["frameshift","coding"], "feature_set": "DO32839292", "variant_type": "Indel", "patient_id": 1002, "gender": "female", "age": 45, "race": "black", "diagnosis_code": ["555.1", "555.2"], "smoker": "former", "drugs": ["Azathioprine", "Infliximab"], "biorepo": ["small intestine FFPE"] }
 
  #  {"id":"133", "title": "chr1:69511 A -> G", "location": {"start":69511, "stop":69511, "chr":"1"}, "feature_set": "Patient 1005", "variant_type": "SNP", "databases": [dbsnp,sift], "consequences": [nonsynonymous,coding],
