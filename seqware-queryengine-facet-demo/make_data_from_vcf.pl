@@ -13,6 +13,9 @@ my $i=100;
 
 my @pat_arr;
 foreach my $pat (keys %{$pd}) {
+
+  open VCFOUT, ">$pat.vcf" or die;
+
   my $curr_i=0;
   my $gender = $pd->{$pat}{"gender"};
   my $age = $pd->{$pat}{"age_at_diagnosis"};
@@ -50,18 +53,21 @@ foreach my $pat (keys %{$pd}) {
   open IN, "<$vcf" or die "DIE: can't open file";
   #print "HERE\n";
   while(<IN>) {
-    next if (/^#/);
-    chomp;
-    #print "HERE\n";
-    my $random = rand();
-    next if ($random > $random_max);
-    $curr_i++;
-    $i++;
-    #print "$pstr\n";
-    print (print_vcf_line($i, $pat, $_, $pstr)."\n");
-    last if ($curr_i>$max_vars);
+    if (/^#/) {
+      print VCFOUT $_;
+    } else {
+      my $random = rand();
+      next if ($random > $random_max);
+      $curr_i++;
+      $i++;
+      print VCFOUT $_;
+      chomp;
+      print (print_vcf_line($i, $pat, $_, $pstr)."\n");
+      last if ($curr_i>$max_vars);
+    }
   }
   close IN;
+  close VCFOUT;
   # {"id":"30", "title": "chrX:123-123:A->ACCA", "location": {"start":123, "stop":123, "chr":"chrX"}, "databases": ["omim","dbsnp"], "consequences": ["frameshift","coding"], "feature_set": "DO32839292", "variant_type": "Indel", "patient_id": 1002, "gender": "female", "age": 45, "race": "black", "diagnosis_code": ["555.1", "555.2"], "smoker": "former", "drugs": ["Azathioprine", "Infliximab"], "biorepo": ["small intestine FFPE"] }
 
  #  {"id":"133", "title": "chr1:69511 A -> G", "location": {"start":69511, "stop":69511, "chr":"1"}, "feature_set": "Patient 1005", "variant_type": "SNP", "databases": [dbsnp,sift], "consequences": [nonsynonymous,coding],

@@ -80,7 +80,7 @@
                     <li ng-repeat="drugs in results.facets.drugsFacet.terms">
                         <label class="checkbox">
                             <input type="checkbox" ng-checked="hasFilter('drugs', drugs.term)" ng-click="handleFilter('drugs', drugs.term)">
-                            {{drugs.term}}
+                            {{drugs.term | uts }}
                             <span class="muted">({{drugs.count}})</span>
                         </label>
                     </li>

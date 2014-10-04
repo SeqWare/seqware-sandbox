@@ -90,7 +90,7 @@
     "IBD_2nd_degree_relative": "no",
     "jewish_paternal_grandparents": 0,
     "jewish_maternal_grandparents": 0,
-    "diagnosis": ["Crohn's_disease", "tobacco use disorder"],
+    "diagnosis": ["Crohn's_disease", "tobacco_use_disorder"],
     "diagnosis_code": ["555.0", "305.1"],
     "drugs": ["mesalamine", "nicodine_patch"],
     "aliquot_type": ["urine"],
