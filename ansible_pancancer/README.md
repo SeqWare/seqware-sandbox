@@ -12,3 +12,7 @@ ansible-playbook ./qstat-report.yaml -i ansible_host_inventory.ini --extra-vars 
 The file playbook_config.yaml contains environment specific configurations like names of users and locations of various files. This will likely be customized for each configuration.
 
 The file ansible.cfg indicates to Ansible that when sudo is used the sudo user's environment is loaded. This is needed to run seqware commands inside ansible scripts.
+
+In order for ansible to successfully log on to the hosts an SSH key needs to be provided. The most convenient way of doing this is via ssh-agent:
+ssh-agent bash
+ssh-add path_to_your_key

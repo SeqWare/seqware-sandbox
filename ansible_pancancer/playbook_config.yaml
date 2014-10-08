@@ -8,12 +8,14 @@ seqware_user: seqware
 reports_directory: ./reports/
 seqware_report_directory: seqware_reports/
 seqware_report_file: seqware-report.txt
+seqware_failed_report_file: seqware-failed-report.txt
+
 gluster_report_directory: gluster_reports/
 gluster_report_file: gluster-report.txt
 qstat_report_directory: qstat_reports/
 qstat_report_file: qstat-report.txt
 
 #GNOS Key Config
-local_gnos_key_path: /home/ubuntu/
+local_gnos_key_path: /home/ubuntu/.ssh/
 remote_gnos_key_path: /home/seqware/provisioned-bundles/Workflow_Bundle_BWA_2.6.0_SeqWare_1.0.15/Workflow_Bundle_BWA/2.6.0/scripts/
 gnos_key_filename: gnostest.pem

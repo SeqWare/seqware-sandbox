@@ -1,0 +1,21 @@
+---
+- hosts: 127.0.0.1
+  connection: local
+  gather_facts: no
+  sudo: yes
+  tasks:
+  - file: path="{{reports_directory}}{{seqware_report_directory}}" state=directory
+    sudo_user: "{{sudo_user}}"
+  - file: path="{{reports_directory}}{{seqware_report_directory}}{{seqware_failed_report_file}}" state=absent
+    sudo_user: "{{sudo_user}}"
+- hosts: all-masters
+  gather_facts: no
+  sudo: yes
+  tasks:
+  - name: Seqware Failed Workflows with Oozie Job and Directory info
+    shell: /home/seqware/bin/seqware workflow report --accession 2 | grep -A 20 -B 1 failed | perl -e 'my $swid; my $dir; my $id;  my $runtime; while(<>) { if (/Workflow Run SWID\s+\| (\d+)/) { $swid=$1 } if (/Workflow Run Working Dir\s+\| (\S+)/) { $dir=$1 } if (/Workflow Run Engine ID\s+\| (\S+)/) { $id=$1} if (/Workflow Run Time\s+\| ((\S+\s)+)/) { $runtime = $1; print "failed $swid $dir $id $runtime\n"; } }'
+    register: seqware_report
+    sudo_user: "{{seqware_user}}"
+  - name: Save Reports
+    local_action: shell echo '[{{inventory_hostname}}]\n{{seqware_report.stdout}}' >> {{reports_directory}}{{seqware_report_directory}}{{seqware_failed_report_file}}
+    sudo_user: "{{sudo_user}}"
