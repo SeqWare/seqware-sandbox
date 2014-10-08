@@ -1,0 +1,21 @@
+---
+- hosts: 127.0.0.1
+  connection: local
+  gather_facts: no
+  sudo: yes
+  tasks:
+  - file: path="{{reports_directory}}{{qstat_report_directory}}" state=directory
+    sudo_user: "{{sudo_user}}"
+  - file: path="{{reports_directory}}{{qstat_report_directory}}{{qstat_report_file}}" state=absent
+    sudo_user: "{{sudo_user}}"
+- hosts: all-masters
+  gather_facts: no
+  sudo: yes
+  sudo_user: "{{seqware_user}}"
+  tasks:
+  - name: Get Qstat -f
+    shell: qstat -f
+    register: qstat_report
+  - name: Download Reports
+    local_action: shell echo '[{{inventory_hostname}}]\n{{qstat_report.stdout}}' >> {{reports_directory}}{{qstat_report_directory}}{{qstat_report_file}}
+    sudo_user: "{{sudo_user}}"

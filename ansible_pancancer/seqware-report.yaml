@@ -1,0 +1,21 @@
+---
+- hosts: 127.0.0.1
+  connection: local
+  gather_facts: no
+  sudo: yes
+  tasks:
+  - file: path="{{reports_directory}}{{seqware_report_directory}}" state=directory
+    sudo_user: "{{sudo_user}}"
+
+- hosts: all-masters
+  gather_facts: no
+  sudo: yes
+  sudo_user: "{{sudo_user}}"
+  tasks:
+  - name: Seware Webservice Report
+    shell: curl -u admin@admin.com:admin http://localhost:8080/SeqWareWebService/reports/workflows/2 > /home/seqware/bwa_run_report_{{ inventory_hostname }}.out
+  - name: Download Reports
+    fetch: src=/home/seqware/bwa_run_report_{{ inventory_hostname }}.out
+           dest="{{reports_directory}}{{seqware_report_directory}}bwa_run_report_{{ inventory_hostname }}.out
+           flat=yes
+    

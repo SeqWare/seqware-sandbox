@@ -1,0 +1,16 @@
+---
+# Put gnostest in the BWA install
+- hosts: all-masters
+  gather_facts: no
+  sudo: yes
+  vars:
+  tasks:
+  - name: Copy gnostest.pem to remote master
+    copy: src="{{local_gnos_key_path}}{{gnos_key_filename}}"
+          dest={{remote_gnos_key_path}}
+  - name: Set permissions for GNOS key
+    file: path={{remote_gnos_key_path}}{{gnos_key_filename}}
+          owner="{{seqware_user}}"
+          group="{{seqware_user}}"
+          mode=600
+

@@ -1,0 +1,25 @@
+---
+- hosts: 127.0.0.1
+  connection: local
+  gather_facts: no
+  sudo: yes
+  tasks:
+  - file: path="{{reports_directory}}{{gluster_report_directory}}" state=directory
+    sudo_user: "{{sudo_user}}"
+  - file: path="{{reports_directory}}{{gluster_report_directory}}{{gluster_report_file}}" state=absent
+    sudo_user: "{{sudo_user}}"
+- hosts: all-masters
+  gather_facts: no
+  sudo: yes
+  tasks:
+  - name: Disk space
+    command: df -h
+    register: overall_disk_space
+  - name: Gluster peer status
+    command: gluster peer status
+    register: gluster_peer_status
+  - name: Gluster brick space distribution
+    command: gluster volume status gv0 detail
+    register: gluster_status 
+  - name: Store Gluster Status in local report
+    local_action: shell echo '[{{ inventory_hostname }}]\n{{overall_disk_space.stdout}}\n{{gluster_peer_status.stdout}}\n{{gluster_status.stdout}}' >> {{reports_directory}}{{gluster_report_directory}}{{gluster_report_file}}
