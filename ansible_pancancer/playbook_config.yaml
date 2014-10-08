@@ -5,7 +5,7 @@ sudo_user: ubuntu
 seqware_user: seqware
 
 #Report Config
-reports_directory: ./ 
+reports_directory: ./reports/
 seqware_report_directory: seqware_reports/
 seqware_report_file: seqware-report.txt
 gluster_report_directory: gluster_reports/
