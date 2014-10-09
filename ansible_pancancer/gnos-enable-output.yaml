@@ -1,0 +1,42 @@
+---
+- hosts: 127.0.0.1
+  connection: local
+  gather_facts: no
+  sudo: yes
+  tasks:
+#  - file: path="{{reports_directory}}{{qstat_report_directory}}" state=directory
+ #   sudo_user: "{{sudo_user}}"
+ # - file: path="{{reports_directory}}{{qstat_report_directory}}{{qstat_report_file}}" state=absent
+ #   sudo_user: "{{sudo_user}}"
+- hosts: all
+  gather_facts: no
+  sudo: yes
+  sudo_user: "{{sudo_user}}"
+  tasks:
+  - name: Get upload job PID
+    shell: pgrep gtupload
+    register: upload_pid
+  - name: Get gtupload parent PID
+    shell: "ps -p {{upload_pid.stdout}} -o ppid="
+    register: upload_parent_pid
+  - name: Get GNOS uuid from parent cmd
+    shell: ps -p {{upload_parent_pid.stdout}} -o cmd= | awk '{split($4,a,"/"); print a[3];}'
+    register: gnos_uuid
+  - name: Get upload directory from GNOS UUID
+    shell: find /usr/tmp/seqware-oozie/* -name {{gnos_uuid.stdout}}
+    register: gnos_upload_directory
+  - name: Write GDB script to redirect gtupload to a log file
+    shell: echo 'p close(2)\np dup2(creat("{{gnos_upload_directory.stdout}}/{{gnos_uuid.stdout}}_stderr.log", 444),2)\nq' > {{gnos_upload_directory.stdout}}_enable_logging.gdb    
+    sudo_user: "{{seqware_user}}"
+  - name: Make sure GDB is installed
+    apt: name=gdb state=present
+    sudo: yes
+    sudo_user: "root"
+  - name: Invoke GDB to enable stderr redirection for the gtupload process
+    shell: "gdb --batch --command={{gnos_upload_directory.stdout}}_enable_logging.gdb -p {{upload_pid.stdout}} gtupload"
+    sudo: yes
+    sudo_user: "root"
+  - name: Write command to fetch gtupload log files to a local shell script
+    local_action: shell echo scp {{hostvars[inventory_hostname]["ansible_ssh_host"]}}:{{gnos_upload_directory.stdout}}/{{gnos_uuid.stdout}}_stderr.log {{inventory_hostname}}_{{gnos_uuid.stdout}}_stderr.log >> ./gnos_log_commands.sh 
+  - name: Set permissions
+    local_action: shell chmod 777 ./gnos_log_commands.sh

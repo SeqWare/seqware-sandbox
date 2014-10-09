@@ -39,7 +39,7 @@ outfile = open(inventory_file_path, "w")
 for cluster_name in cluster_dict:
 	outfile.write("[" + cluster_name + "]\n");
 	for (node_name, node_ip) in cluster_dict[cluster_name]:
-		outfile.write(node_name + " ansible_ssh_host=" + node_ip + "\n")
+		outfile.write(cluster_name + "-" + node_name + " ansible_ssh_host=" + node_ip + "\n")
 
 outfile.write("[all-masters]\n")
 for (cluster_name, node_name, node_ip) in all_masters_list:
