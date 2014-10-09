@@ -37,6 +37,6 @@
     sudo: yes
     sudo_user: "root"
   - name: Write command to fetch gtupload log files to a local shell script
-    local_action: shell echo scp {{hostvars[inventory_hostname]["ansible_ssh_host"]}}:{{gnos_upload_directory.stdout}}/{{gnos_uuid.stdout}}_stderr.log {{inventory_hostname}}_{{gnos_uuid.stdout}}_stderr.log >> ./gnos_log_commands.sh 
+    local_action: shell echo scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no {{hostvars[inventory_hostname]["ansible_ssh_host"]}}:{{gnos_upload_directory.stdout}}/{{gnos_uuid.stdout}}_stderr.log {{inventory_hostname}}_{{gnos_uuid.stdout}}_stderr.log >> ./gnos_log_commands.sh 
   - name: Set permissions
     local_action: shell chmod 777 ./gnos_log_commands.sh
