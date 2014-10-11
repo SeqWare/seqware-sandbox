@@ -4,9 +4,10 @@
   gather_facts: no
   sudo: yes
   tasks:
+  - file: path="{{reports_directory}}{{seqware_report_directory}}" state=absent
+    sudo_user: "{{sudo_user}}"
   - file: path="{{reports_directory}}{{seqware_report_directory}}" state=directory
     sudo_user: "{{sudo_user}}"
-
 - hosts: all-masters
   gather_facts: no
   sudo: yes
