@@ -3,4 +3,4 @@
   sudo: True
   tasks:
   - name: Ensure sdb is mounted
-    mount: name=/sdb src=/dev/sdb state=present fstype='xfs' 
+    mount: name=/sdb src=/dev/sdb fstype='xfs' opts=defaults dump=1 passno=2 state=mounted
