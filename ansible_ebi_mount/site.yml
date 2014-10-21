@@ -1,0 +1,6 @@
+---
+- hosts: all
+  sudo: True
+  tasks:
+  - name: Ensure sdb is mounted
+    mount: name=/sdb src=/dev/sdb state=present fstype='xfs' 
