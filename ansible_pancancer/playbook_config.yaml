@@ -1,7 +1,7 @@
 ---
 
 #User config
-sudo_user: ubuntu
+sudo_user: vagrant 
 seqware_user: seqware
 
 #Report Config
@@ -16,6 +16,6 @@ qstat_report_directory: qstat_reports/
 qstat_report_file: qstat-report.txt
 
 #GNOS Key Config
-local_gnos_key_path: /home/ubuntu/.ssh/
-remote_gnos_key_path: /home/seqware/provisioned-bundles/Workflow_Bundle_BWA_2.6.0_SeqWare_1.0.15/Workflow_Bundle_BWA/2.6.0/scripts/
+local_gnos_key_path: /home/vagrant/
+remote_gnos_key_path: /home/seqware/provisioned-bundles/Workflow_Bundle_BWA_2.6.2_SeqWare_1.0.15/Workflow_Bundle_BWA/2.6.0/scripts/
 gnos_key_filename: gnostest.pem
