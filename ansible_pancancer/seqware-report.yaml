@@ -14,7 +14,7 @@
   sudo_user: "{{seqware_user}}"
   tasks:
   - name: Seware Webservice Report
-    shell: curl -u admin@admin.com:admin http://localhost:8080/SeqWareWebService/reports/workflows/2 > /home/seqware/bwa_run_report_{{ inventory_hostname }}.out
+    shell: curl -u admin@admin.com:admin http://localhost:8080/SeqWareWebService/reports/workflows/{{bwa_workflow_swid}} > /home/seqware/bwa_run_report_{{ inventory_hostname }}.out
   - name: Download Reports
     fetch: src=/home/seqware/bwa_run_report_{{ inventory_hostname }}.out
            dest="{{reports_directory}}{{seqware_report_directory}}bwa_run_report_{{ inventory_hostname }}.out"
