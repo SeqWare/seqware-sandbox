@@ -29,5 +29,11 @@ WORKDIR /home/ubuntu/seqware-bag
 RUN ansible-playbook mini-seqware-install.yml -c local --extra-vars "seqware_version=1.1.0-alpha.5"
 ENV PATH /home/ubuntu/bin:/tmp/ansible/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 # at this point, seqware has been fully setup
+# proceed on to layer on pan-cancer BWA workflow
+WORKDIR /home/ubuntu
+RUN git clone -b feature/mini-pancancer https://github.com/ICGC-TCGA-PanCancer/pancancer-bag.git 
+WORKDIR /home/ubuntu/pancancer-bag 
+RUN ansible-playbook mini-pancancer.yml -c local --extra-vars "user_name=ubuntu"
+
 EXPOSE 22 3000
 
