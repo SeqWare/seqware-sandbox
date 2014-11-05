@@ -12,8 +12,3 @@ WORKDIR /home/seqware
 RUN git clone -b feature/mini-pancancer https://github.com/ICGC-TCGA-PanCancer/pancancer-bag.git 
 WORKDIR /home/seqware/pancancer-bag 
 RUN ansible-playbook mini-pancancer.yml -c local --extra-vars "user_name=seqware"
-# do final cleanup and setup, inherited from seqware:1.1.0-alpha.5
-EXPOSE 22 3000
-WORKDIR /home/seqware
-USER root
-CMD ["wrapdocker"]
