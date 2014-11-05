@@ -42,5 +42,8 @@ RUN     export LANGUAGE=en_US.UTF-8;\
         sudo gem install nanoc -v 3.7.1 ;\
         sudo gem uninstall yajl-ruby --version 1.2.1
 
+RUN git config --global user.name "Seqware jenkins" ;\
+    git config --global user.email seqware-jenkins@oicr.on.ca 
+
 WORKDIR /home/seqware/seqware
 
