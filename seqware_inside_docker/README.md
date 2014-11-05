@@ -1,13 +1,14 @@
-
+This is the base Dockerfile for seqware inside docker. 
 
 1. Assuming docker is installed properly, build image with 
 
-        sudo docker build .
+        sudo docker build  -t seqware/seqware_1.1.0-alpha.5 .
 
-2. Run container and login with 
+2. Run container and login with the following (while persisting workflow run directories to datastore)
 
-        sudo docker run -h master -t -i <last container ID> /bin/bash
+        sudo docker run --privileged -h master -t -i seqware/seqware_1.1.0-alpha.5 -v datastore:/datastore /bin/bash
 
 3. Run workflow with 
 
-        seqware bundle launch --dir ~/provisioned-bundles/Workflow_Bundle_BWA_2.6.1_SeqWare_1.1.0-alpha.2/ --no-metadata
+        seqware bundle launch --dir <hello world> --no-metadata
+
