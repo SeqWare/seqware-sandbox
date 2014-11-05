@@ -14,7 +14,7 @@ Assumes that seqware inside docker has already been built.
 
 3. Run container and login with the following (while persisting workflow run directories to datastore)
  
-    sudo docker run -h master -t -v `pwd`/datastore:/datastore  -i seqware_1.1.0-alpha.5_bwa
+    sudo docker run --rm -h master -t -v `pwd`/datastore:/datastore  -i seqware_1.1.0-alpha.5_bwa
 
 4. Run workflow with 
 

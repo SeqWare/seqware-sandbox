@@ -12,5 +12,5 @@ Assumes that seqware inside docker has already been built.
 
 3. Run container and build our docs with the following 
  
-    sudo docker run -h master -t -i seqware_1.1.0-alpha.5_docs
+    sudo docker run --rm -h master -t -i seqware_1.1.0-alpha.5_docs
 
