@@ -9,6 +9,10 @@ TO-DO: Setup seqware-vagrant (Bindle) without hard-coding floating IP addresses 
 1. Add your public keys to files/public_keys and edit the listed keys under "setup SSH keys" in the site.yml accordingly. 
 2. Either add your Maven XML configuration file to files or delete the task "Copy maven configuration" (This is used to setup Maven repository mirroring for jenkins) 
 3. Setup your inventory file (production) appropriately.  (For this version, you will need to launch a VM in openstack manually)
-4. Run this playbook via
+4. Install the docker role (needs worker, I needed to go in and add the key+install docker-lxc manually, may be an ansible version issue)  
+
+    ansible-galaxy install -p . angstwad.docker_ubuntu
+
+5. Run this playbook via
 
     ansible-playbook -i production site.yml

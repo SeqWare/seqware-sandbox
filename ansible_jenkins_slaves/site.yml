@@ -2,6 +2,7 @@
 - hosts: all
   sudo: True
   roles:
+    - role: angstwad.docker_ubuntu 
     - role: postgres
       tags:
         - postgres
@@ -49,6 +50,7 @@
     lineinfile: dest=/etc/hosts regexp='.*{{ item }}$' line="{{ hostvars[item].ansible_default_ipv4.address }} {{item}}" state=present
     when: hostvars[item].ansible_default_ipv4.address is defined
     with_items: groups['all']
+
 
 - hosts: jenkins_bindle
   sudo: True
