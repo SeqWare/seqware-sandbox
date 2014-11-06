@@ -3,13 +3,9 @@
 FROM seqware_1.1.0-alpha.5 
 MAINTAINER Denis Yuen <denis.yuen@oicr.on.ca>
 
-# at this point, assume seqware has been fully setup
-# proceed on to layer on pan-cancer BWA workflow
 USER seqware
 WORKDIR /home/seqware
-RUN git clone -b develop https://github.com/SeqWare/seqware.git 
-WORKDIR /home/seqware/seqware
-RUN mvn clean install -DskipTests 
+
 ADD config /home/seqware/.ssh/config
 ADD private_key.pem /home/seqware/.ssh/id_rsa
 RUN sudo chown -R seqware /home/seqware/.ssh ;\
@@ -45,5 +41,10 @@ RUN     export LANGUAGE=en_US.UTF-8;\
 RUN git config --global user.name "Seqware jenkins" ;\
     git config --global user.email seqware-jenkins@oicr.on.ca 
 
+ADD settings.xml  /home/seqware/.m2/settings.xml
+RUN sudo chown -R seqware /home/seqware/.m2/settings.xml
+RUN git clone -b develop https://github.com/SeqWare/seqware.git 
 WORKDIR /home/seqware/seqware
+RUN mvn clean install -DskipTests 
+
 
