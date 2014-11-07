@@ -15,3 +15,8 @@ This is the base Dockerfile for seqware inside docker.
 4. Run workflow with 
 
         seqware bundle launch --dir ~/provisioned-bundles/Workflow_Bundle_HelloWorld_1.0-SNAPSHOT_SeqWare_1.1.0-alpha.5/ --no-metadata
+        
+5. Exit the container and save the image
+
+        exit
+        sudo docker save -o seqware_1.1.0-alpha.5.tar seqware_1.1.0-alpha.5
