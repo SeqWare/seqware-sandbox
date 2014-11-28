@@ -1,15 +1,3 @@
-<<<<<<< HEAD
-SeqWare-Sandbox
-===============
-
-A location where we can explore new SeqWare sub-projects, tools, and prototypes
-before they are ready for the main repo.
-
-Please use HubFlow with feature branches when you prototype.  Make sure you use
-a distinct directory for each prototype with your own pom.xml file at the root.
-We will not use a common pom.xml inn the root of the repo, each prototype will
-be built independently.
-=======
 nginx
 ==============
 
@@ -21,5 +9,18 @@ A playbook that does the following:
 
 	- configure Nginx to use the EBS volume as document root
 
+## Usage
 
->>>>>>> 40b182458de9aa58320b44631a49ce5e9684b8c5
+1. Spin up a Ubuntu 12.04 instance with a 350GB epehermal drive at /dev/sdb (Amazon maps this to /dev/xvdb)
+2. Point the inventory file at your tabix server
+3. Run the playbook
+
+    ansible-playbook -i inventory site.yml
+
+4. Login to the instance, add your aws credentials ( http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html ), and populate /data/unmatched with tabix data
+
+    mkdir ~/.aws
+    vim ~/.aws/config    
+    sudo aws s3 cp s3://pan-cancer-data/workflow-data/SangerPancancerCgpCnIndelSnvStr/tabix_data /data/unmatched --recursive
+    
+    

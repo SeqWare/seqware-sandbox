@@ -13,3 +13,11 @@
 
 - name: Start the Nginx service after boot
   service: name=nginx state=started enabled=yes
+
+
+- name: Install AWS CLI Dependency 
+  apt: name=python-pip state=latest update_cache=yes
+
+
+- name: Install AWS CLI
+  pip: name=awscli state=present
