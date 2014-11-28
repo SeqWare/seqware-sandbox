@@ -9,6 +9,6 @@ MAINTAINER Denis Yuen <denis.yuen@oicr.on.ca>
 # proceed on to layer on pan-cancer BWA workflow
 USER seqware
 WORKDIR /home/seqware
-RUN git clone -b feature/mini-pancancer https://github.com/ICGC-TCGA-PanCancer/pancancer-bag.git 
+RUN git clone -b feature/workflow_Sanger https://github.com/ICGC-TCGA-PanCancer/pancancer-bag.git 
 WORKDIR /home/seqware/pancancer-bag 
-RUN ansible-playbook mini-pancancer.yml -c local --extra-vars "user_name=seqware"
+RUN ansible-playbook mini-sanger-pancancer.yml -c local --extra-vars "user_name=seqware"
