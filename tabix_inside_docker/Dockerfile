@@ -32,4 +32,9 @@ RUN git clone -b feature/pancancer-217 https://github.com/SeqWare/seqware-sandbo
 ADD inventory /etc/ansible/hosts
 WORKDIR /home/ubuntu/seqware-sandbox/ansible_tabix
 ADD local.inventory /home/ubuntu/seqware-sandbox/ansible_tabix/local.inventory
-RUN ansible-playbook -i local.inventory site.yml -c local
+RUN ansible-playbook -i local.inventory site_noebs.yml -c local
+RUN echo "\ndaemon off;" >> /etc/nginx/nginx.conf
+
+CMD ["/usr/sbin/nginx"]
+
+EXPOSE 80

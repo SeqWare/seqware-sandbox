@@ -20,4 +20,4 @@ Assumes that seqware inside docker has already been built.
 
 6. Run workflow with 
 
-    seqware bundle launch --dir ~/provisioned-bundles/Workflow_Bundle_<fill this in>/ --no-metadata
+    seqware bundle launch --dir ~/provisioned-bundles/Workflow_Bundle_SangerPancancerCgpCnIndelSnvStr_1.0.0_SeqWare_1.1.0-alpha.5/ --no-metadata
