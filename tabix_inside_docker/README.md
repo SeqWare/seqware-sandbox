@@ -4,7 +4,10 @@ This is the base Dockerfile for tabix inside docker.
 
         chmod a+w datastore
 
-2. Copy or link all tabix data from https://s3.amazonaws.com/pan-cancer-data/workflow-data/SangerPancancerCgpCnIndelSnvStr/tabix\_data/data/unmatched/ into the datastore directory
+2. Copy or link all tabix data from https://s3.amazonaws.com/pan-cancer-data/workflow-data/SangerPancancerCgpCnIndelSnvStr/tabix\_data/data/unmatched/ into the datastore directory. For example, after installing the AWS CLI and setting up your AWS credentials ( https://aws.amazon.com/cli/ and http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html ):
+
+        aws s3 cp s3://pan-cancer-data/workflow-data/SangerPancancerCgpCnIndelSnvStr/tabix_data datastore --recursive
+        
 
 2. Assuming docker is installed properly, build image with 
 

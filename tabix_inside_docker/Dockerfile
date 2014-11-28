@@ -1,10 +1,10 @@
-# SeqWare 
+# Tabix 
 #
-# VERSION               1.1.0-alpha.5 
+# VERSION               1
 #
 # Setup SeqWare with WhiteStar (no sge, no oozie, no metadata)
 # Volume mount \datastore to persist the contents of your workflows
-# ex:  sudo docker run -d -P --name web -v datastore:/datastore \bin\bash 
+# ex:  sudo docker run -d -P --name web -v datastore/data:/data \bin\bash 
 
 FROM ubuntu:12.04
 MAINTAINER Denis Yuen <denis.yuen@oicr.on.ca>
@@ -26,14 +26,10 @@ RUN git checkout v1.6.10 ;\
 ENV PATH /tmp/ansible/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 ENV ANSIBLE_LIBRARY /tmp/ansible/library
 ENV PYTHONPATH /tmp/ansible/lib:$PYTHON_PATH
-ENV HOME /home/seqware
-WORKDIR /home/seqware
-USER seqware
-# setup seqware white star
-RUN git clone -b develop https://github.com/SeqWare/seqware-bag.git
+WORKDIR /home/ubuntu
+# setup tabix 
+RUN git clone -b feature/pancancer-217 https://github.com/SeqWare/seqware-sandbox.git 
 ADD inventory /etc/ansible/hosts
-WORKDIR /home/seqware/seqware-bag 
-RUN ansible-playbook mini-seqware-install.yml -c local --extra-vars "seqware_version=1.1.0-alpha.5"
-ENV PATH /home/seqware/bin:/tmp/ansible/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-# at this point, seqware has been fully setup
-
+WORKDIR /home/ubuntu/seqware-sandbox/ansible_tabix
+ADD local.inventory /home/ubuntu/seqware-sandbox/ansible_tabix/local.inventory
+RUN ansible-playbook -i local.inventory site.yml -c local

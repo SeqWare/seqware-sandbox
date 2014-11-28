@@ -8,13 +8,9 @@ Assumes that seqware inside docker has already been built.
 
     chmod a+w datastore
 
-2. Download the Sanger workflow from S3
+2. Run the tabix server as a named container if you have not already (see tabix\_inside\_docker) 
 
-    wget <fill in bucker URL here>
-
-3. Run the tabix server as a named container if you have not already (see tabix\_inside\_docker) 
-
-4. Assuming docker is installed properly, build image with 
+3. Assuming docker is installed properly, build image with 
 
     sudo docker build  -t seqware_1.1.0-alpha.5_sanger .
 
