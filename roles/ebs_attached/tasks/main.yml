@@ -1,0 +1,10 @@
+---
+- name: Format the attached EBS volume
+  filesystem: fstype=ext4 dev=/dev/{{ device }} opts="-F"
+
+- name: Create the mount point
+  file: path={{ mountpoint }} owner=root group=root mode=0777 state=directory
+
+- name: Mount the EBS volume
+  mount: name={{ mountpoint }} src=/dev/{{ device }} fstype=ext4 opts=noatime state=mounted
+

@@ -1,0 +1,3 @@
+---
+device: "xvdb"
+mountpoint: "/data"
