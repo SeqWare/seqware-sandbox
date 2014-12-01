@@ -12,3 +12,4 @@ WORKDIR /home/seqware
 RUN git clone -b feature/workflow_Sanger https://github.com/ICGC-TCGA-PanCancer/pancancer-bag.git 
 WORKDIR /home/seqware/pancancer-bag 
 RUN ansible-playbook mini-sanger-pancancer.yml -c local --extra-vars "user_name=seqware"
+RUN echo "testMode=false\ntabixSrvUri=http://$PANCANCER_TABIX_SERVER_PORT_80_TCP_ADDR/" > /home/seqware/workflow.ini
