@@ -29,7 +29,6 @@ ENV PYTHONPATH /tmp/ansible/lib:$PYTHON_PATH
 WORKDIR /home/ubuntu
 # setup tabix 
 RUN git clone -b feature/pancancer-217 https://github.com/SeqWare/seqware-sandbox.git 
-ADD inventory /etc/ansible/hosts
 WORKDIR /home/ubuntu/seqware-sandbox/ansible_tabix
 ADD local.inventory /home/ubuntu/seqware-sandbox/ansible_tabix/local.inventory
 RUN ansible-playbook -i local.inventory site_noebs.yml -c local
