@@ -1,6 +1,6 @@
 # SeqWare 
 #
-# VERSION               1.1.0-alpha.5 
+# VERSION               1.1.0-alpha.6 
 #
 # Setup SeqWare with WhiteStar (no sge, no oozie, no metadata)
 # Volume mount \datastore to persist the contents of your workflows
@@ -33,7 +33,7 @@ USER seqware
 RUN git clone -b develop https://github.com/SeqWare/seqware-bag.git
 ADD inventory /etc/ansible/hosts
 WORKDIR /home/seqware/seqware-bag 
-RUN ansible-playbook mini-seqware-install.yml -c local --extra-vars "seqware_version=1.1.0-alpha.5"
+RUN ansible-playbook mini-seqware-install.yml -c local --extra-vars "seqware_version=1.1.0-alpha.6"
 ENV PATH /home/seqware/bin:/tmp/ansible/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 # at this point, seqware has been fully setup
 
