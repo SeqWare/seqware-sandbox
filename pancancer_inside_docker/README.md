@@ -18,7 +18,7 @@ If you are building the container, you will require the seqware\_inside docker i
 
 1. Assuming docker is installed properly, build image with 
  
-     sudo docker build  -t seqware_1.1.0-alpha.6_pancancer .
+        sudo docker build  -t seqware_1.1.0-alpha.6_pancancer .
 
 ### Downloading and restoring the image
 
@@ -32,28 +32,28 @@ If you are building the container, you will require the seqware\_inside docker i
 
 1. Set permissions on datastore which will hold results of workflows after they run
 
-     chmod a+w datastore
+         chmod a+w datastore
 
 2. Run the tabix server as a named container if you have not already (see tabix\_inside\_docker) 
 
 3. Download and expand your workflows using the SeqWare unzip tool. Here we use Sanger as an example (you should probably pick a shared directory outside of this directory to avoid interfering with the Docker context if you need to rebuild the image). 
 
-     cd workflows
-     wget https://seqwaremaven.oicr.on.ca/artifactory/seqware-release/com/github/seqware/seqware-distribution/1.1.0-alpha.6/seqware-distribution-1.1.0-alpha.6-full.jar
-     wget https://s3.amazonaws.com/oicr.workflow.bundles/released-bundles/Workflow_Bundle_SangerPancancerCgpCnIndelSnvStr_1.0.1_SeqWare_1.1.0-alpha.5.zip
-     java -cp seqware-distribution-1.1.0-alpha.6-full.jar net.sourceforge.seqware.pipeline.tools.UnZip --input-zip Workflow_Bundle_SangerPancancerCgpCnIndelSnvStr_1.0.1_SeqWare_1.1.0-alpha.5.zip --output-dir  Workflow_Bundle_SangerPancancerCgpCnIndelSnvStr_1.0.1_SeqWare_1.1.0-alpha.5
+         cd workflows
+         wget https://seqwaremaven.oicr.on.ca/artifactory/seqware-release/com/github/seqware/seqware-distribution/1.1.0-alpha.6/seqware-distribution-1.1.0-alpha.6-full.jar
+         wget https://s3.amazonaws.com/oicr.workflow.bundles/released-bundles/Workflow_Bundle_SangerPancancerCgpCnIndelSnvStr_1.0.1_SeqWare_1.1.0-alpha.5.zip
+         java -cp seqware-distribution-1.1.0-alpha.6-full.jar net.sourceforge.seqware.pipeline.tools.UnZip --input-zip Workflow_Bundle_SangerPancancerCgpCnIndelSnvStr_1.0.1_SeqWare_1.1.0-alpha.5.zip --output-dir  Workflow_Bundle_SangerPancancerCgpCnIndelSnvStr_1.0.1_SeqWare_1.1.0-alpha.5
 
 4. Run container and login with the following (while persisting workflow run directories to datastore, and opening a secure link to the tabix server). Here we assume that a tabix container has already started, that you want to store your workflow results at /datastore and that the workflow that you wish to run (Sanger) is present in the workflows directory. Change these locations as required for your environment.  
 
-     sudo docker run --rm -h master -t --link pancancer_tabix_server:pancancer_tabix_server -v `pwd`/datastore:/datastore -v workflows/Workflow_Bundle_SangerPancancerCgpCnIndelSnvStr_1.0.1_SeqWare_1.1.0-alpha.5:/workflow  -i seqware_1.1.0-alpha.6_pancancer
+         sudo docker run --rm -h master -t --link pancancer_tabix_server:pancancer_tabix_server -v `pwd`/datastore:/datastore -v workflows/Workflow_Bundle_SangerPancancerCgpCnIndelSnvStr_1.0.1_SeqWare_1.1.0-alpha.5:/workflow  -i seqware_1.1.0-alpha.6_pancancer
 
 5. Run workflow sequentially with 
 
-     seqware bundle launch --dir /workflow --no-metadata --ini workflow.ini
+         seqware bundle launch --dir /workflow --no-metadata --ini workflow.ini
 
    Alternatively, run it in parallel with the following command. 
  
-     seqware bundle launch --dir /workflow --no-metadata --ini workflow.ini --engine whitestar-parallel
+         seqware bundle launch --dir /workflow --no-metadata --ini workflow.ini --engine whitestar-parallel
 
 ## Saving the image
 
