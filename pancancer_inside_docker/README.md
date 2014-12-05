@@ -47,7 +47,14 @@ If you are building the container, you will require the seqware\_inside docker i
 
          sudo docker run --rm -h master -t --link pancancer_tabix_server:pancancer_tabix_server -v `pwd`/datastore:/datastore -v workflows/Workflow_Bundle_SangerPancancerCgpCnIndelSnvStr_1.0.1_SeqWare_1.1.0-alpha.5:/workflow  -i seqware_1.1.0-alpha.6_pancancer
 
-5. Run workflow sequentially with 
+5. Create an ini file (the contents of this will depend on your workflow). For testing purposes, you will require the following ini, note that the ip address for the tabix server will appear in your environment variables as PANCANCER\_TABIX\_SERVER\_PORT\_80\_TCP\_ADDR 
+
+         # not "true" means the data will be downloaded using AliquotIDs
+         testMode=true
+         # the server that has various tabix-indexed files on it, see above, update with your URL
+         tabixSrvUri=http://172.17.0.13/   
+
+6. Run workflow sequentially with 
 
          seqware bundle launch --dir /workflow --no-metadata --ini workflow.ini
 
@@ -60,7 +67,7 @@ If you are building the container, you will require the seqware\_inside docker i
 1. Save the image
 
         exit
-        sudo docker save -o seqware_1.1.0-alpha.6_pancancer.tar pancancer_tabix_server
+        sudo docker save -o seqware_1.1.0-alpha.6_pancancer.tar seqware_1.1.0-alpha.6_pancancer
 
 2. Upload the image to S3 (given proper credentials)
 
