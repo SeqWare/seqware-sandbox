@@ -23,7 +23,7 @@ Install the AWS CLI. Refer to the following guides and remember to setup your AW
 
 ## Running the Container
 
-1. Copy or link all tabix data from https://s3.amazonaws.com/pan-cancer-data/workflow-data/SangerPancancerCgpCnIndelSnvStr/tabix\_data/data/unmatched/ into the datastore directory. These files are confidential and cannot be freely shared:
+1. Copy or link all tabix data from https://s3.amazonaws.com/pan-cancer-data/workflow-data/SangerPancancerCgpCnIndelSnvStr/tabix_data/data/unmatched/ into the datastore directory. These files are confidential and cannot be freely shared:
 
         aws s3 cp s3://pan-cancer-data/workflow-data/SangerPancancerCgpCnIndelSnvStr/tabix_data /media/large_volume/tabix/data --recursive
 
