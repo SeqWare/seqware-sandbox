@@ -7,6 +7,9 @@ Install the AWS CLI. Refer to the following guides and remember to setup your AW
 * https://aws.amazon.com/cli/ 
 * http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html 
 
+        sudo apt-get install python-pip
+        pip install awscli
+
 
 You will also require the tabix container in order to run the Sanger workflow. 
 
