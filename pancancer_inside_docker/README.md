@@ -65,6 +65,8 @@ If you are building the container, you will require the seqware\_inside docker i
  
          seqware bundle launch --dir /workflow --no-metadata --ini workflow.ini --engine whitestar-parallel
 
+7. For running real workflows, you will be provided with a gnos pem key that should be installed to the scripts directory of the Sanger workflow.
+
 ## Saving the image
 
 1. Save the image
