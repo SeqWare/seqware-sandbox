@@ -27,8 +27,8 @@ If you are building the container, you will require the seqware\_inside docker i
 
 1. Rather than building the image, you can also download and restore it from S3 
 
-        aws s3 cp s3://oicr.docker.images/seqware_1.1.0-alpha.6_pancancer.tar .
-        sudo docker load -i seqware_1.1.0-alpha.6_pancancer.tar
+        aws s3 cp s3://oicr.docker.images/seqware_1.1.0-alpha.6_pancancer2.tar .
+        sudo docker load -i seqware_1.1.0-alpha.6_pancancer2.tar
 
 ## Running the Container
 
