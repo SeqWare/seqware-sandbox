@@ -30,9 +30,10 @@ WORKDIR /root
 RUN git clone -b feature/oozie-sge_inside_docker  https://github.com/SeqWare/seqware-bag.git
 ADD inventory /etc/ansible/hosts
 WORKDIR /root/seqware-bag 
-RUN ansible-playbook docker-seqware-install.yml -c local --extra-vars "seqware_version=1.1.0-alpha.6"
-ENV PATH /home/seqware/bin:/tmp/ansible/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+ENV HOSTNAME master
+#RUN ansible-playbook docker-seqware-install.yml -c local --extra-vars "seqware_version=1.1.0-alpha.6"
+#ENV PATH /home/seqware/bin:/tmp/ansible/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 # at this point, seqware has been fully setup
-ENV HOME /home/seqware
-USER seqware
-WORKDIR /home/seqware
+#ENV HOME /home/seqware
+#USER seqware
+#WORKDIR /home/seqware
