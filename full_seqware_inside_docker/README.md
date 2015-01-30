@@ -29,6 +29,7 @@ Install the AWS CLI. Refer to the following guides and remember to setup your AW
 4. Use a second Dockerfile to prime the container as a valid image (and save it for export).           
 
         cd launcher
+        sudo docker build  -t seqware_1.1.0-alpha.6_full .
         sudo docker run --rm -h master -t -v `pwd`/datastore:/mnt/datastore  -i seqware_1.1.0-alpha.6_full
         
 
@@ -43,11 +44,12 @@ Install the AWS CLI. Refer to the following guides and remember to setup your AW
 
 1. Set permissions on datastore which will hold results of workflows after they run
 
+        cd launcher
         chmod a+w datastore
 
 2. Run container and login with the following (while persisting workflow run directories to datastore)
  
-        sudo docker run --rm -h master -t -v `pwd`/datastore:/mnt/datastore  -i seqware_1.1.0-alpha.6
+        sudo docker run --rm -h master -t -v `pwd`/datastore:/mnt/datastore  -i seqware_1.1.0-alpha.6_full
 
 3. Run the HelloWorld (sample) workflow with 
 
