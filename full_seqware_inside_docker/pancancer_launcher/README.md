@@ -48,7 +48,7 @@ If you are building the container, you will require the seqware\_inside docker i
 
 4. Run container and login with the following (while persisting workflow run directories to datastore, and opening a secure link to the tabix server). Here we assume that a tabix container has already started, that you want to store your workflow results at /datastore and that the workflow that you wish to run (Sanger) is present in the workflows directory. Change these locations as required for your environment.  
 
-         sudo docker run --rm -h master -t --link pancancer_tabix_server:pancancer_tabix_server -v `pwd`/datastore:/datastore -v workflows/Workflow_Bundle_SangerPancancerCgpCnIndelSnvStr_1.0.1_SeqWare_1.1.0-alpha.5:/workflow  -i seqware_1.1.0-alpha.6_pancancer
+         docker run --rm -h master -t --link pancancer_tabix_server:pancancer_tabix_server -v `pwd`/datastore:/datastore -v `pwd`/workflows/Workflow_Bundle_SangerPancancerCgpCnIndelSnvStr_1.0.1_SeqWare_1.1.0-alpha.5:/workflow  -i seqware_1.1.0-alpha.6_full_pancancer
 
 5. Create an ini file (the contents of this will depend on your workflow). For testing purposes, you will require the following ini, note that the ip address for the tabix server will appear in your environment variables as PANCANCER\_TABIX\_SERVER\_PORT\_80\_TCP\_ADDR 
 
@@ -57,13 +57,9 @@ If you are building the container, you will require the seqware\_inside docker i
          # the server that has various tabix-indexed files on it, see above, update with your URL
          tabixSrvUri=http://172.17.0.13/   
 
-6. Run workflow sequentially with 
+6. Run workflow with oozie-sge with
 
-         seqware bundle launch --dir /workflow --no-metadata --ini workflow.ini
-
-   Alternatively, run it in parallel with the following command. 
- 
-         seqware bundle launch --dir /workflow --no-metadata --ini workflow.ini --engine whitestar-parallel
+         seqware bundle launch --dir /workflow --ini workflow.ini
 
 7. For running real workflows, you will be provided with a gnos pem key that should be installed to the scripts directory of the Sanger workflow.
 
