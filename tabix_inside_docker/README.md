@@ -32,6 +32,8 @@ Further details can be found at the following:
 
 1. Copy or link all tabix data from https://s3.amazonaws.com/pan-cancer-data/workflow-data/SangerPancancerCgpCnIndelSnvStr/tabix_data/data/unmatched/ into the datastore directory. These files are confidential and cannot be freely shared:
 
+        sudo mkdir -p /media/large_volume/tabix/data
+        sudo chmod 777 -R /media/large_volume
         aws s3 cp s3://pan-cancer-data/workflow-data/SangerPancancerCgpCnIndelSnvStr/tabix_data /media/large_volume/tabix/data --recursive
 
 2. Run container in the background while mounting the tabix data. You should be able to browse to  http://localhost/ and see a listing of the tabix files after this step. 
