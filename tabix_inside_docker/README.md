@@ -3,6 +3,13 @@ This is the base Dockerfile for tabix inside docker.
 ## Prerequisites
 
 Install the AWS CLI. Refer to the following guides and remember to setup your AWS credentials. 
+In other words, create a file at ~/.aws/config with the following filled in. 
+
+        [default]
+        aws_access_key_id     = 
+        aws_secret_access_key =
+        
+Further details can be found at the following:
 * https://aws.amazon.com/cli/ 
 * http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html 
 
