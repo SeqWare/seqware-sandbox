@@ -48,9 +48,15 @@
                     <li class="nav-header">Status</li>
                     <li ng-repeat="variant_type in results.facets.variant_typeFacet.terms">
                       <label class="checkbox">
-                        <input type="checkbox" ng-checked="hasFilter('variant_type', variant_type.term)" ng-click="handleFilter('variant_type', variant_type.term)">
-                        false Positive
-                        <span class="muted">({{variant_type.count}})</span>
+                        <input type="checkbox">
+                        false positive
+                        <span class="muted">(233)</span>
+                        <input type="checkbox">
+                        true positive
+                        <span class="muted">(233)</span>
+                        <input type="checkbox">
+                        false negative
+                        <span class="muted">(233)</span>
                       </label>
                     </li>
 
