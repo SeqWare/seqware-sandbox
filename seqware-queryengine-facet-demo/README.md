@@ -14,7 +14,7 @@ Just use the sample data and curl to load
 
     curl -s -XPOST 'http://localhost:9200/_bulk' --data-binary @data.json
 
-Alternatively, you can follow the SeqWare Query Engine readme to import a VCF and dump it to JSON. 
+Alternatively, you can follow the SeqWare Query Engine readme to import a VCF and dump it to JSON.
 
 ## Making Custom Data
 
@@ -63,7 +63,7 @@ The command:
 
     perl make_data_from_vcf.pl patients.json  > data.json
 
-## Pruging Data
+## Purging Data
 
 If you want to clean out elastic search do the following:
 
@@ -84,7 +84,7 @@ Or via the Sense UI.
 ## Try Out the App
 
 Install apache if you have not already
- 
+
     sudo apt-get install apache2
 
 Copy the app to the install directory and edit the application to resolve to a resolveable ip address if you wish to access the app from a different computer:
@@ -107,4 +107,3 @@ And you should see the faceted browser.
 Make a plugin that uses Elasticsearch's Java API to write an index.
 
 After that, we can expand the demo to include all possible tags, some of which will be treated specially as they are here, others may be selectable via a search field, etc.  The rest of the interface needs to be completed as well and hooked up to the general SeqWare Query Engine REST API for file writeback, for example.
-
