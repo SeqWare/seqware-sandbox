@@ -45,6 +45,15 @@
                     <li class="divider"></li>
                     <li class="nav-header">Genomic Data</li>
                     <li class="divider"></li>
+                    <li class="nav-header">Status</li>
+                    <li ng-repeat="variant_type in results.facets.variant_typeFacet.terms">
+                      <label class="checkbox">
+                        <input type="checkbox" ng-checked="hasFilter('variant_type', variant_type.term)" ng-click="handleFilter('variant_type', variant_type.term)">
+                        false Positive
+                        <span class="muted">({{variant_type.count}})</span>
+                      </label>
+                    </li>
+
                     <li class="nav-header">Variant Type</li>
                     <li ng-repeat="variant_type in results.facets.variant_typeFacet.terms">
                         <label class="checkbox">
@@ -75,7 +84,7 @@
 
 
 
-                    
+
 
 
 
