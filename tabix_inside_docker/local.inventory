@@ -1,2 +1,0 @@
-[web-server]
-localhost              ansible_connection=local
