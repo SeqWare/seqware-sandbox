@@ -1,0 +1,7 @@
+---
+# setup Nginx and EBS volume
+- hosts: web-server
+  sudo: True
+  roles: 
+    - { role: ebs_attached }
+    - { role: web }

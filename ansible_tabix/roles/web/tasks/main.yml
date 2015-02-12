@@ -1,0 +1,23 @@
+# server/tasks/main.yml
+---
+- name: Install Nginx
+  apt: name=nginx state=latest update_cache=yes
+
+- name: Template over Nginx config
+  template: src=nginx.json.j2 dest=/etc/nginx/nginx.conf
+  notify: restart nginx
+
+- name: Template over site config
+  template: src=default.json.j2 dest=/etc/nginx/sites-available/default
+  notify: restart nginx
+
+- name: Start the Nginx service after boot
+  service: name=nginx state=started enabled=yes
+
+
+- name: Install AWS CLI Dependency 
+  apt: name=python-pip state=latest update_cache=yes
+
+
+- name: Install AWS CLI
+  pip: name=awscli state=present
