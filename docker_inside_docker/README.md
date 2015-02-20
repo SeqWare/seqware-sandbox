@@ -12,5 +12,5 @@ This wraps docker in docker with seqware functionality
 
 3. Explore the possibilities of running docker inside docker
 
-        docker run -t -i ubuntu bash
+        sudo docker run -t -i ubuntu bash
 

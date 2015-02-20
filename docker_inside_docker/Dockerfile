@@ -35,4 +35,4 @@ RUN ansible-playbook mini-seqware-install.yml -c local --extra-vars "seqware_ver
 ENV PATH /home/seqware/bin:/tmp/ansible/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 # at this point, seqware has been fully setup
 USER root
-CMD ["wrapdocker"]
+CMD ["wrapdocker","sudo -u seqware -i"]
