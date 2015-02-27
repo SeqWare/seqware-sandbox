@@ -1,0 +1,9 @@
+<bundle version="1.0-SNAPSHOT">
+  <workflow name="WorkflowOfWorkflows" version="${workflow-version}" seqware_version="${seqware-version}"
+  basedir="${workflow_bundle_dir}/Workflow_Bundle_WorkflowOfWorkflows/${workflow-version}">
+    <description>${workflow-description}</description>
+    <workflow_class path="${workflow_bundle_dir}/Workflow_Bundle_WorkflowOfWorkflows/${workflow-version}/classes/io/seqware/WorkflowOfWorkflowsWorkflow.java"/>
+    <config path="${workflow_bundle_dir}/Workflow_Bundle_WorkflowOfWorkflows/${workflow-version}/config/WorkflowOfWorkflowsWorkflow.ini"/>
+    <requirements compute="single" memory="20M" network="local"  workflow_engine="Oozie" workflow_type="java"/>
+  </workflow>
+</bundle>
