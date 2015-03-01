@@ -39,7 +39,7 @@ See http://jason.pureconcepts.net/2014/11/install-apache-php-mysql-mac-os-x-yose
 
     sudo apachectl start
     
-The location for the doc root is `/Library/WebServer/Documents`
+The location for the doc root is `/Library/WebServer/Documents`.  You can copy the contents to this location as instructed above.
 
 # Example 1 - Basic Variant Browser
 
