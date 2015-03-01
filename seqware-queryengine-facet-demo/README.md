@@ -39,7 +39,7 @@ See http://jason.pureconcepts.net/2014/11/install-apache-php-mysql-mac-os-x-yose
 
     sudo apachectl start
 
-The location for the doc root is `/Library/WebServer/Documents`
+The location for the doc root is `/Library/WebServer/Documents`.  You can copy the contents to this location as instructed above.
 
 # Example 1 - Basic Variant Browser
 
@@ -120,9 +120,42 @@ Open in your browser:
 
 You may run into cross domain Javascript issues although it seems to work for me when I host on Ubuntu and replace with an actual domain name here and in the js/app*.js files.
 
-## Example 3 - GIAB Data Visualization
+# Example 3 - GIAB Data Visualization
 
 This is a pretty complex example.  First, some background.  The Genome in a Bottle Consortium provides physical material and informatics variant calls to serve as a "gold standard" when variant calling whole genomes. See https://sites.stanford.edu/abms/giab.  This example starts with sequencing from Ion Torrent sequencing of NA12878.  Variant calling was then performed using a variety of parameterizations for the Torrent Variant Caller (TVC), resulting in several differnt sets of variant calls.  The idea being that we want to find a well-performing parameterization for this tool and we determine this by comparing to the "known good" variant calls from GIAB.  These variant calls are then annotated using
+
+## Making Custom Data
+
+I created a simple script that will take a JSON describing individual variant calling trials and the VCF files to use for each. First it calls SNPEff on each VCF then loads the data. It will then directly generate a JSON doc ready to load into Elasticsearch:
+
+    {
+      "trial1" : {
+        "params": "params1.json",
+        "true_positives": "truepositives1.vcf",
+        "false_positives": "falsepositives1.vcf",
+        "run_snpeff": true
+      },
+      "trial2" : {
+        "params": "params2.json",
+        "true_positives": "truepositives2.vcf",
+        "false_positives": "falsepositives2.vcf",
+        "run_snpeff": true
+      }
+    }
+
+The command:
+
+    perl make_data_from_giab_vcfs.pl giab.json > data.json
+
+You will need to supply your own VCF files in the above example, this demo assumes you're starting with NA12878 variants that have been run through GIAB tools to produce TP and FP variant calls.
+
+## View Demo
+
+Open in your browser:
+
+    http://localhost/index.giab.html
+
+You may run into cross domain Javascript issues although it seems to work for me when I host on Ubuntu and replace with an actual domain name here and in the js/app*.js files.
 
 # Purging Data
 
