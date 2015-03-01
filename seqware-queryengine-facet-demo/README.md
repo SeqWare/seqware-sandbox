@@ -1,12 +1,47 @@
 # Query Engine README
 
-This is a demo showing how a faceted browser can be created for genomic features from the Query Engine.
+This is a demo showing how a faceted browser can be created for genomic features from the Query Engine project (or just a VCF file(s)).
 
-## Setup
+# Setup
 
-Download and install elasticsearch.  I found the debian package to be easiest.  Start it using the /etc/init.d/elasticsearch script.
+## Elasticsearch
 
-Install apache and copy the contents of this directory to your root web dir.
+Download and install elasticsearch.  I found the debian package to be easiest on Ubuntu.  Start it using the /etc/init.d/elasticsearch script. Or, if you're on a mac, you can download a tarball and just execute the ./bin/elasticsearch script.
+
+## Sense (Optional)
+
+Install the chrome Sense plugin for elasticsearch. This makes it easy to see what's in the index and to do searches.  Once you load data you can search using, for example:
+
+    curl -XPOST 'http://localhost:9200/queryengine/features/_search' -d @query.json
+
+Or via the Sense UI.
+
+## Apache
+
+### Ubuntu
+
+Install apache if you have not already
+
+    sudo apt-get install apache2
+
+Copy the app to the install directory and edit the application to resolve to a resolveable ip address if you wish to access the app from a different computer:
+
+    cp -R * /var/www
+    vim /var/www/js/app.js (replace localhost with whatever IP you're using if on a server)
+
+Restart apache:
+
+    sudo /etc/init.d/apache2 restart
+    
+### Mac
+
+See http://jason.pureconcepts.net/2014/11/install-apache-php-mysql-mac-os-x-yosemite/ It's already installed, just do
+
+    sudo apachectl start
+    
+The location for the doc root is `/Library/WebServer/Documents`
+
+# Example 1 - Basic Variant Browser
 
 ## Load Sample Data
 
@@ -14,7 +49,17 @@ Just use the sample data and curl to load
 
     curl -s -XPOST 'http://localhost:9200/_bulk' --data-binary @data.json
 
-Alternatively, you can follow the SeqWare Query Engine readme to import a VCF and dump it to JSON.
+Alternatively, you can follow the SeqWare Query Engine readme to import a VCF and dump it back to JSON for use with elasticsearch.
+
+## View Demo
+
+Open in your browser:
+
+    http://localhost...
+
+# Example 2 - Clinical Variant Browser
+
+This example shows several "patients" and their variants.
 
 ## Making Custom Data
 
@@ -63,7 +108,11 @@ The command:
 
     perl make_data_from_vcf.pl patients.json  > data.json
 
-## Purging Data
+## Example 3 - GIAB Data Visualiztion
+
+This is a pretty complex example.  First, some background.  The Genome in a Bottle Consortium provides physical material and informatics variant calls to serve as a "gold standard" when variant calling whole genomes. See https://sites.stanford.edu/abms/giab.  This example starts with sequencing from Ion Torrent sequencing of NA12878.  Variant calling was then performed using a variety of parameterizations for the Torrent Variant Caller (TVC), resulting in several differnt sets of variant calls.  The idea being that we want to find a well-performing parameterization for this tool and we determine this by comparing to the "known good" variant calls from GIAB.  These variant calls are then annotated using 
+
+# Purging Data
 
 If you want to clean out elastic search do the following:
 
@@ -73,36 +122,7 @@ You can see the general status and confirm you removed this with:
 
     curl 'localhost:9200/_cat/indices?v'
 
-## Setup Sense
-
-Install the chrome Sense plugin for elasticsearch. This makes it easy to see what's in the index and to do searches.  Once you load data you can search using:
-
-    curl -XPOST 'http://localhost:9200/queryengine/features/_search' -d @query.json
-
-Or via the Sense UI.
-
-## Try Out the App
-
-Install apache if you have not already
-
-    sudo apt-get install apache2
-
-Copy the app to the install directory and edit the application to resolve to a resolveable ip address if you wish to access the app from a different computer:
-
-    cp -R * /var/www
-    vim /var/www/js/app.js (replace localhost)
-
-Restart apache:
-
-    sudo /etc/init.d/apache2 restart
-
-You can now load:
-
-    http://localhost
-
-And you should see the faceted browser.
-
-## Next Steps
+# Next Steps
 
 Make a plugin that uses Elasticsearch's Java API to write an index.
 
