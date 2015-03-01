@@ -1,0 +1,292 @@
+<html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7 ng-app:multiselect" lang="en" id="ng-app"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8 ng-app:multiselect" lang="en" id="ng-app"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" lang="en" ng-app="multiselect"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" ng-app="multiselect"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="description" content="Genomic Data Query Tool">
+    <meta name="viewport" content="width=device-width">
+
+    <title>Genomic Data Query Tool</title>
+
+    <link rel="stylesheet" href="/common/css/normalize.min.css">
+    <link rel="stylesheet" href="/common/css/main.min.css">
+    <link rel="stylesheet" href="/common/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/common/css/bootstrap-responsive.min.css">
+    <link rel="stylesheet" href="/common/css/elasticjs.css">
+
+    <script src="/common/lib/modernizr-2.6.1.min.js"></script>
+    <script language="JavaScript">
+     function changeJBrowse(url)
+     {
+       window.frames["jbrowse"].location.href=url;
+     }
+    </script>
+</body>
+</head>
+
+<body ng-controller="SearchCtrl">
+    <div class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container-fluid">
+                <span class="brand">Genomic Data Query Tool</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="row-fluid" style="margin-top:5%">
+            <div class="span2 well">
+                <ul class="nav nav-list">
+
+
+
+
+                    <li class="divider"></li>
+                    <li class="nav-header">Clinical Data</li>
+                    <li class="divider"></li>
+
+                    <li class="nav-header">Diagnosis</li>
+                    <li ng-repeat="diagnosis in results.facets.diagnosisFacet.terms">
+                        <label class="checkbox">
+                            <input type="checkbox" ng-checked="hasFilter('diagnosis', diagnosis.term)" ng-click="handleFilter('diagnosis', diagnosis.term)">
+                            {{diagnosis.term | uts }}
+                            <span class="muted">({{diagnosis.count}})</span>
+                        </label>
+                    </li>
+
+                    <li class="nav-header">Diagnosis Code</li>
+                    <li ng-repeat="diagnosis_code in results.facets.diagnosis_codeFacet.terms">
+                        <label class="checkbox">
+                            <input type="checkbox" ng-checked="hasFilter('diagnosis_code', diagnosis_code.term)" ng-click="handleFilter('diagnosis_code', diagnosis_code.term)">
+                            {{diagnosis_code.term}}
+                            <span class="muted">({{diagnosis_code.count}})</span>
+                        </label>
+                    </li>
+
+                    <li class="nav-header">Location of Crohn's</li>
+                    <li ng-repeat="location_of_crohns in results.facets.location_of_crohnsFacet.terms">
+                        <label class="checkbox">
+                            <input type="checkbox" ng-checked="hasFilter('location_of_crohns', location_of_crohns.term)" ng-click="handleFilter('location_of_crohns', location_of_crohns.term)">
+                            {{location_of_crohns.term | uts }}
+                            <span class="muted">({{location_of_crohns.count}})</span>
+                        </label>
+                    </li>
+
+                    <li class="divider"></li>
+                    <li class="nav-header">Drugs</li>
+                    <li ng-repeat="drugs in results.facets.drugsFacet.terms">
+                        <label class="checkbox">
+                            <input type="checkbox" ng-checked="hasFilter('drugs', drugs.term)" ng-click="handleFilter('drugs', drugs.term)">
+                            {{drugs.term | uts }}
+                            <span class="muted">({{drugs.count}})</span>
+                        </label>
+                    </li>
+
+                    <li class="divider"></li>
+                    <li class="nav-header">IBD Surgery</li>
+                    <li ng-repeat="ibd_surgery in results.facets.ibd_surgeryFacet.terms">
+                        <label class="checkbox">
+                            <input type="checkbox" ng-checked="hasFilter('ibd_surgery', ibd_surgery.term)" ng-click="handleFilter('ibd_surgery', ibd_surgery.term)">
+                            {{ibd_surgery.term}}
+                            <span class="muted">({{ibd_surgery.count}})</span>
+                        </label>
+                    </li>
+
+                    <li class="divider"></li>
+                    <li class="nav-header">IBD Family History</li>
+                    <li ng-repeat="ibd_family_history in results.facets.ibd_family_historyFacet.terms">
+                        <label class="checkbox">
+                            <input type="checkbox" ng-checked="hasFilter('ibd_family_history', ibd_family_history.term)" ng-click="handleFilter('ibd_family_history', ibd_family_history.term)">
+                            {{ibd_family_history.term}}
+                            <span class="muted">({{ibd_family_history.count}})</span>
+                        </label>
+                    </li>
+
+                    <li class="divider"></li>
+                    <li class="nav-header">IBD 2nd Degree Relative</li>
+                    <li ng-repeat="ibd_2nd_degree_relative in results.facets.ibd_2nd_degree_relativeFacet.terms">
+                        <label class="checkbox">
+                            <input type="checkbox" ng-checked="hasFilter('ibd_2nd_degree_relative', ibd_2nd_degree_relative.term)" ng-click="handleFilter('ibd_2nd_degree_relative', ibd_2nd_degree_relative.term)">
+                            {{ibd_2nd_degree_relative.term}}
+                            <span class="muted">({{ibd_2nd_degree_relative.count}})</span>
+                        </label>
+                    </li>
+
+                    <li class="divider"></li>
+                    <li class="nav-header">Jewish Paternal Grandparents</li>
+                    <li ng-repeat="jewish_paternal_grandparents in results.facets.jewish_paternal_grandparentsFacet.terms">
+                        <label class="checkbox">
+                            <input type="checkbox" ng-checked="hasFilter('jewish_paternal_grandparents', jewish_paternal_grandparents.term)" ng-click="handleFilter('jewish_paternal_grandparents', jewish_paternal_grandparents.term)">
+                            {{jewish_paternal_grandparents.term}}
+                            <span class="muted">({{jewish_paternal_grandparents.count}})</span>
+                        </label>
+                    </li>
+
+                    <li class="divider"></li>
+                    <li class="nav-header">Jewish Maternal Grandparents</li>
+                    <li ng-repeat="jewish_maternal_grandparents in results.facets.jewish_maternal_grandparentsFacet.terms">
+                        <label class="checkbox">
+                            <input type="checkbox" ng-checked="hasFilter('jewish_maternal_grandparents', jewish_maternal_grandparents.term)" ng-click="handleFilter('jewish_maternal_grandparents', jewish_maternal_grandparents.term)">
+                            {{jewish_maternal_grandparents.term}}
+                            <span class="muted">({{jewish_maternal_grandparents.count}})</span>
+                        </label>
+                    </li>
+
+                    <li class="divider"></li>
+                    <li class="nav-header">Aliquot Types</li>
+                    <li ng-repeat="aliquot_type in results.facets.aliquot_typeFacet.terms">
+                        <label class="checkbox">
+                            <input type="checkbox" ng-checked="hasFilter('aliquot_type', aliquot_type.term)" ng-click="handleFilter('aliquot_type', aliquot_type.term)">
+                            {{aliquot_type.term  | uts }}
+                            <span class="muted">({{aliquot_type.count}})</span>
+                        </label>
+                    </li>
+
+                    <li class="divider"></li>
+                    <li class="nav-header">Aliquot Inventory Status</li>
+                    <li ng-repeat="inventory_status in results.facets.inventory_statusFacet.terms">
+                        <label class="checkbox">
+                            <input type="checkbox" ng-checked="hasFilter('inventory_status', inventory_status.term)" ng-click="handleFilter('inventory_status', inventory_status.term)">
+                            {{inventory_status.term}}
+                            <span class="muted">({{inventory_status.count}})</span>
+                        </label>
+                    </li>
+
+
+
+
+                    <li class="divider"></li>
+                    <li class="nav-header">Genomic Data</li>
+                    <li class="divider"></li>
+                    <li class="nav-header">Variant Type</li>
+                    <li ng-repeat="variant_type in results.facets.variant_typeFacet.terms">
+                        <label class="checkbox">
+                            <input type="checkbox" ng-checked="hasFilter('variant_type', variant_type.term)" ng-click="handleFilter('variant_type', variant_type.term)">
+                            {{variant_type.term}}
+                            <span class="muted">({{variant_type.count}})</span>
+                        </label>
+                    </li>
+                    <li class="divider"></li>
+                    <li class="nav-header">Annotations</li>
+                    <li ng-repeat="tag in results.facets.databasesFacet.terms">
+                        <label class="checkbox">
+                            <input type="checkbox" ng-checked="hasFilter('databases', tag.term)" ng-click="handleFilter('databases', tag.term)">
+                            {{tag.term}}
+                            <span class="muted">({{tag.count}})</span>
+                        </label>
+                    </li>
+                    <li class="divider"></li>
+                    <li class="nav-header">Consequences</li>
+                    <li ng-repeat="kw in results.facets.consequencesFacet.terms">
+                        <label class="checkbox">
+                            <input type="checkbox" ng-checked="hasFilter('consequences', kw.term)" ng-click="handleFilter('consequences', kw.term)">
+                            {{kw.term}}
+                            <span class="muted">({{kw.count}})</span>
+                        </label>
+                    </li>
+
+
+
+
+                    <li class="divider"></li>
+                    <li class="nav-header">Demographic Data</li>
+                    <li class="divider"></li>
+                    <li class="nav-header">Patient</li>
+                    <li ng-repeat="feature_set in results.facets.feature_setFacet.terms">
+                        <label class="checkbox">
+                            <input type="checkbox" ng-checked="hasFilter('feature_set', feature_set.term)" ng-click="handleFilter('feature_set', feature_set.term)">
+                            {{feature_set.term}}
+                            <span class="muted">({{feature_set.count}})</span>
+                        </label>
+                    </li>
+
+                    <li class="divider"></li>
+                    <li class="nav-header">Gender</li>
+                    <li ng-repeat="gender in results.facets.genderFacet.terms">
+                        <label class="checkbox">
+                            <input type="checkbox" ng-checked="hasFilter('gender', gender.term)" ng-click="handleFilter('gender', gender.term)">
+                            {{gender.term}}
+                            <span class="muted">({{gender.count}})</span>
+                        </label>
+                    </li>
+
+                    <li class="divider"></li>
+                    <li class="nav-header">Age at Diagnosis</li>
+                    <li ng-repeat="age_at_diagnosis in results.facets.age_at_diagnosisFacet.terms">
+                        <label class="checkbox">
+                            <input type="checkbox" ng-checked="hasFilter('age_at_diagnosis', age_at_diagnosis.term)" ng-click="handleFilter('age_at_diagnosis', age_at_diagnosis.term)">
+                            {{age_at_diagnosis.term}}
+                            <span class="muted">({{age_at_diagnosis.count}})</span>
+                        </label>
+                    </li>
+
+                    <li class="divider"></li>
+                    <li class="nav-header">Race</li>
+                    <li ng-repeat="race in results.facets.raceFacet.terms">
+                        <label class="checkbox">
+                            <input type="checkbox" ng-checked="hasFilter('race', race.term)" ng-click="handleFilter('race', race.term)">
+                            {{race.term}}
+                            <span class="muted">({{race.count}})</span>
+                        </label>
+                    </li>
+                    <li class="nav-header">Smoker</li>
+                    <li ng-repeat="smoker in results.facets.smokerFacet.terms">
+                        <label class="checkbox">
+                            <input type="checkbox" ng-checked="hasFilter('smoker', smoker.term)" ng-click="handleFilter('smoker', smoker.term)">
+                            {{smoker.term}}
+                            <span class="muted">({{smoker.count}})</span>
+                        </label>
+                    </li>
+
+
+
+                </ul>
+            </div>
+            <div class="span5">
+
+                <iframe name="jbrowse" style="border: 1px solid #505050;" src="/jbrowse?loc=chr1:208,056,300..208,073,080&tracks=DNA%2CknownGene%2C1001%20Variants%2C1002%20Variants%2C1003%20Variants%2C1005%20Variants%2C1004%20Variants%2C1006%20Variants%2C1007%20Variants%2C1008%20Variants%2C1009%20Variants%2C1010%20Variants%2CReads&tracklist=0&nav=1&overview=0" height="1000" width="550"></iframe>
+
+                <!-- Use if Jbrowse isn't setup on this server -->
+                <!-- iframe name="jbrowse" style="border: 1px solid #505050;" src="http://jbrowse.org/ucsc/hg19/touch.html?loc=chr1:208,056,300..208,073,080&tracks=DNA,knownGene,ccdsGene,snp131,pgWatson,simpleRepeat" height="650" width="550"></iframe -->
+
+                <!--pre>{{restQry}}</pre-->
+
+              <!-- http://jbrowse.org/code/latest-release/?loc=ctgA:9908..32518&amp;tracks=DNA%2CTranscript%2Cvolvox_microarray_bw_density%2Cvolvox_microarray_bw_xyplot%2Cvolvox-sorted-vcf%2Cvolvox-sorted_bam_coverage%2Cvolvox-sorted_bam&amp;data=sample_data%2Fjson%2Fvolvox&amp;highlight=&amp;tracklist=0 -->
+
+            </div>
+            <div class="span5">
+                <ul class="unstyled">
+                    <li class="well well-small" ng-repeat="hit in results.hits.hits">
+                        <h4>{{hit._source.title}}</h4>
+                        <a href="javascript:changeJBrowse('/jbrowse?loc=chr{{hit._source.location.chr}}:{{hit._source.location.start}}..{{hit._source.location.stop}}&highlight=chr{{hit._source.location.chr}}:{{hit._source.location.start}}..{{hit._source.location.stop}}&tracks=DNA%2CknownGene%2C1001%20Variants%2C1002%20Variants%2C1003%20Variants%2C1005%20Variants%2C1004%20Variants%2C1006%20Variants%2C1007%20Variants%2C1008%20Variants%2C1009%20Variants%2C1010%20Variants%2CReads&tracklist=0&nav=1&overview=0')">
+
+                        <!-- Use if you don't have jbrowse installed -->
+                        <!-- a href="javascript:changeJBrowse('http://jbrowse.org/ucsc/hg19/touch.html?loc=chr{{hit._source.location.chr}}:{{hit._source.location.start}}..{{hit._source.location.stop}}&tracks=DNA,knownGene,ccdsGene,snp131,pgWatson,simpleRepeat')" -->
+
+                        <!--a href="https://genome.ucsc.edu/cgi-bin/hgTracks?db=hg19&position=chr{{hit._source.location.chr}}:{{hit._source.location.start}}-{{hit._source.location.stop}}" -->
+                        <!-- document.frames["myInnerFrame"].location.href=fl; -->
+                        <span style="margin-right:1px;" class="badge badge-important" target="_blank">Browse...</span></a>
+                        <span style="margin-right:1px;" class="badge badge-info" ng-repeat="tag in hit._source.databases">{{tag}}</span>
+                        <span style="margin-right:1px;" class="badge badge-success" ng-repeat="kw in hit._source.consequences">{{kw}}</span>
+                    </li>
+                    <li><span style="margin-right:1px;" class="badge badge-success" ng-click="previous()">previous</span>
+                    <span style="margin-right:1px;" class="badge badge-success" ng-click="next()">next</span></li>
+
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- project dependencies -->
+    <script src="/common/lib/underscore.min.js"></script>
+    <script src="/common/lib/angular.min.js"></script>
+    <script src="/common/js/elastic.min.js"></script>
+    <script src="/common/js/elastic-angular-client.min.js"></script>
+
+    <!-- project specific files -->
+    <script src="js/app.js"></script>
+
+</html>
