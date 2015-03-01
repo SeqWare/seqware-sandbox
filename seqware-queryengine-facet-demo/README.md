@@ -24,7 +24,7 @@ Install apache if you have not already
 
     sudo apt-get install apache2
 
-Copy the app to the install directory and edit the application to resolve to a resolveable ip address if you wish to access the app from a different computer:
+Copy the app (or symlink) to the install directory and edit the application to resolve to a resolveable ip address if you wish to access the app from a different computer:
 
     cp -R * /var/www
     vim /var/www/js/app.js (replace localhost with whatever IP you're using if on a server)
@@ -32,13 +32,13 @@ Copy the app to the install directory and edit the application to resolve to a r
 Restart apache:
 
     sudo /etc/init.d/apache2 restart
-    
+
 ### Mac
 
 See http://jason.pureconcepts.net/2014/11/install-apache-php-mysql-mac-os-x-yosemite/ It's already installed, just do
 
     sudo apachectl start
-    
+
 The location for the doc root is `/Library/WebServer/Documents`
 
 # Example 1 - Basic Variant Browser
@@ -55,7 +55,9 @@ Alternatively, you can follow the SeqWare Query Engine readme to import a VCF an
 
 Open in your browser:
 
-    http://localhost...
+    http://localhost/index.simple.html
+
+You may run into cross domain Javascript issues although it seems to work for me when I host on Ubuntu and replace with an actual domain name here and in the js/app*.js files.
 
 # Example 2 - Clinical Variant Browser
 
@@ -108,9 +110,19 @@ The command:
 
     perl make_data_from_vcf.pl patients.json  > data.json
 
-## Example 3 - GIAB Data Visualiztion
+You will need to supply your own VCF file in the above example.
 
-This is a pretty complex example.  First, some background.  The Genome in a Bottle Consortium provides physical material and informatics variant calls to serve as a "gold standard" when variant calling whole genomes. See https://sites.stanford.edu/abms/giab.  This example starts with sequencing from Ion Torrent sequencing of NA12878.  Variant calling was then performed using a variety of parameterizations for the Torrent Variant Caller (TVC), resulting in several differnt sets of variant calls.  The idea being that we want to find a well-performing parameterization for this tool and we determine this by comparing to the "known good" variant calls from GIAB.  These variant calls are then annotated using 
+## View Demo
+
+Open in your browser:
+
+    http://localhost/index.clinical.html
+
+You may run into cross domain Javascript issues although it seems to work for me when I host on Ubuntu and replace with an actual domain name here and in the js/app*.js files.
+
+## Example 3 - GIAB Data Visualization
+
+This is a pretty complex example.  First, some background.  The Genome in a Bottle Consortium provides physical material and informatics variant calls to serve as a "gold standard" when variant calling whole genomes. See https://sites.stanford.edu/abms/giab.  This example starts with sequencing from Ion Torrent sequencing of NA12878.  Variant calling was then performed using a variety of parameterizations for the Torrent Variant Caller (TVC), resulting in several differnt sets of variant calls.  The idea being that we want to find a well-performing parameterization for this tool and we determine this by comparing to the "known good" variant calls from GIAB.  These variant calls are then annotated using
 
 # Purging Data
 
