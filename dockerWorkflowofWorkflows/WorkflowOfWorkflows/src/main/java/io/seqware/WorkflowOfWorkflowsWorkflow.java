@@ -35,7 +35,6 @@ public class WorkflowOfWorkflowsWorkflow extends AbstractWorkflowDataModel {
                 // create input and output
                 currentJob.getCommand().addArgument("mkdir -m 0777 -p workspace" + i + "\n");
                 currentJob.getCommand().addArgument("mkdir -m 0777 -p workspace" + (i + 1) + "\n");
-                currentJob.getCommand().addArgument("mkdir -m 0777 -p datastore" + i + "\n");
                 currentJob.getCommand().addArgument("touch workspace" + i + "/content.txt \n");
                 currentJob.getCommand().addArgument(
                         "docker run --rm -h master \\\n"
@@ -46,7 +45,7 @@ public class WorkflowOfWorkflowsWorkflow extends AbstractWorkflowDataModel {
                                 // mount the workflow inside the inner container
                                 + "-v " + getProperty("workflow_dir") + ":/workflow \\\n"
                                 // mount a datastore directory so that we can look at the working directory for seqware inside the container
-                                + "-v `pwd`/datastore" + i + ":/datastore \\\n"
+                                + "-v /datastore:/datastore \\\n"
                                 // run a docker container with seqware 1.1.0-rc.1
                                 + "quay.io/seqware/seqware_whitestar:quay \\\n"
                                 // this is the actual command we run inside the container, which is to launch a workflow
