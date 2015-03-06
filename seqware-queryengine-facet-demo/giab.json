@@ -1,0 +1,18 @@
+{
+  "settings" : {
+    "snpEff_path" : "tools/snpEff/snpEff.jar",
+    "snpEff_db" : "GRCh37.75 -interval data/tracks/rmsk.bed"
+  },
+  "data" : {
+    "trial_1" : {
+      "vcf_file_match": "data/match_All_variants_key.subregions.8.vcf",
+      "vcf_file_nomatch": "data/noMatch_All_variants_key.subregions.8.vcf",
+      "param_file": "data/tvc.8.params"
+    },
+    "trial_2" : {
+      "vcf_file_match": "data/match_All_variants_key.subregions.14.vcf",
+      "vcf_file_nomatch": "data/noMatch_All_variants_key.subregions.14.vcf",
+      "param_file": "data/tvc.14.params"
+    }
+  }
+}
