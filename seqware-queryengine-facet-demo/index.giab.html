@@ -45,21 +45,15 @@
                     <li class="divider"></li>
                     <li class="nav-header">Genomic Data</li>
                     <li class="divider"></li>
-                    <li class="nav-header">Status</li>
-                    <li >
+                    <li class="nav-header">Call Status</li>
+                    <li ng-repeat="accuracy in results.facets.accuracyFacet.terms">
                       <label class="checkbox">
-                        <input type="checkbox">
-                        false positive
-                        <span class="muted">(23)</span></br>
-                        <input type="checkbox">
-                        true positive
-                        <span class="muted">(8938)</span></br>
-                        <input type="checkbox">
-                        false negative
-                        <span class="muted">(87)</span></br>
+                        <input type="checkbox" ng-checked="hasFilter('accuracy', accuracy.term)" ng-click="handleFilter('accuracy', accuracy.term)">
+                        {{accuracy.term}}
+                        <span class="muted">({{accuracy.count}})</span>
                       </label>
                     </li>
-
+                    <li class="divider"></li>
                     <li class="nav-header">Variant Type</li>
                     <li ng-repeat="variant_type in results.facets.variant_typeFacet.terms">
                         <label class="checkbox">
@@ -80,19 +74,44 @@
                     <li class="divider"></li>
                     <li class="nav-header">Consequences</li>
                     <li ng-repeat="kw in results.facets.consequencesFacet.terms">
-                        <label class="checkbox">
-                            <input type="checkbox" ng-checked="hasFilter('consequences', kw.term)" ng-click="handleFilter('consequences', kw.term)">
-                            {{kw.term}}
-                            <span class="muted">({{kw.count}})</span>
-                        </label>
+                      <label class="checkbox">
+                        <input type="checkbox" ng-checked="hasFilter('consequences', kw.term)" ng-click="handleFilter('consequences', kw.term)">
+                        {{kw.term}}
+                        <span class="muted">({{kw.count}})</span>
+                      </label>
                     </li>
-
-
-
-
-
-
-
+                    <li class="divider"></li>
+                    <li class="nav-header">Repeat Mask Overlap</li>
+                    <li ng-repeat="kw in results.facets.repeatFacet.terms">
+                      <label class="checkbox">
+                        <input type="checkbox" ng-checked="hasFilter('repeat', kw.term)" ng-click="handleFilter('repeat', kw.term)">
+                        {{kw.term}}
+                        <span class="muted">({{kw.count}})</span>
+                      </label>
+                    </li>
+                    <li class="divider"></li>
+                    <li class="nav-header">TVC Parameters</li>
+                    <li ng-repeat="kw in results.facets.param_indel_min_allele_freqFacet.terms">
+                      <label class="checkbox">
+                        <input type="checkbox" ng-checked="hasFilter('param_indel_min_allele_freq', kw.term)" ng-click="handleFilter('param_indel_min_allele_freq', kw.term)">
+                        {{kw.term}}
+                        <span class="muted">({{kw.count}})</span>
+                      </label>
+                    </li>
+                    <li ng-repeat="kw in results.facets.param_filter_unusual_predictionsFacet.terms">
+                      <label class="checkbox">
+                        <input type="checkbox" ng-checked="hasFilter('param_filter_unusual_predictions', kw.term)" ng-click="handleFilter('param_filter_unusual_predictions', kw.term)">
+                        {{kw.term}}
+                        <span class="muted">({{kw.count}})</span>
+                      </label>
+                    </li>
+                    <li ng-repeat="kw in results.facets.param_indel_strand_bias_pvalFacet.terms">
+                      <label class="checkbox">
+                        <input type="checkbox" ng-checked="hasFilter('param_indel_strand_bias_pval', kw.term)" ng-click="handleFilter('param_indel_strand_bias_pval', kw.term)">
+                        {{kw.term}}
+                        <span class="muted">({{kw.count}})</span>
+                      </label>
+                    </li>
 
                 </ul>
             </div>
