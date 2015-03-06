@@ -145,7 +145,7 @@ I created a simple script that will take a JSON describing individual variant ca
 
 The command:
 
-    perl make_data_from_giab_vcfs.pl giab.json > data.json
+    perl make_data_from_giab_vcfs.pl --json-file giab.json --output-json data.json
 
 You will need to supply your own VCF files in the above example, this demo assumes you're starting with NA12878 variants that have been run through GIAB tools to produce TP and FP variant calls.
 
