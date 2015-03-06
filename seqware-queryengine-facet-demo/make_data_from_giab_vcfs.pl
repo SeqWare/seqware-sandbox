@@ -22,7 +22,7 @@ my @trial_arr;
 foreach my $trial (keys %{$td->{data}}) {
 
   # params
-  my $params_file = $td->{data}{$trial}{"params_file"};
+  my $params_file = $td->{data}{$trial}{"param_file"};
   my $params = parse_params($params_file);
 
   # vcfs
@@ -42,8 +42,8 @@ foreach my $trial (keys %{$td->{data}}) {
 
   # output
   run("rm $output_file");
-  generate_json($match_file_annot, 1, $output_file);
-  generate_json($nomatch_file_annot, 0, $output_file);
+  generate_json($match_file_annot, 1, $output_file, $params);
+  generate_json($nomatch_file_annot, 0, $output_file, $params);
 
 }
 
@@ -55,7 +55,7 @@ print Dumper($global_d);
 
 
 sub generate_json {
-  my ($input, $tp, $output) = @_;
+  my ($input, $tp, $output, $params) = @_;
   open IN, "<$input" or die "DIE: can't open file $input";
   open VCFOUT, ">>$output" or die "DIE: can't open file $output";
   while(<IN>) {
@@ -87,7 +87,7 @@ sub generate_json {
           }
         }
       }
-      print VCFOUT print_vcf_line($global_i, $_, "}", $d, $tp);
+      print VCFOUT print_vcf_line($global_i, $_, "}", $d, $tp, $params);
     }
   }
   close IN;
@@ -109,33 +109,22 @@ sub run {
   return(system($cmd));
 }
 
-sub generate_json_tmp {
-#  open IN, "<$match_file" or die "DIE: can't open file";
-#  while(<IN>) {
-#    if (/^#/) {
-#      print VCFOUT $_;
-#    } else {
-#      my $random = rand();
-#      next if ($random > $random_max);
-#      $curr_i++;
-#      $i++;
-#      print VCFOUT $_;
-#      chomp;
-#      print (print_vcf_line($i, $pat, $_, $pstr)."\n");
-#      last if ($curr_i>$max_vars);
-#    }
-#  }
-#  close IN;
-#  close VCFOUT;
-#  system("bgzip $pat.vcf; tabix -p vcf $pat.vcf.gz");
-}
-
 sub parse_params {
-
+  my ($file) = @_;
+  my $r = {};
+  print "FILE: $file\n";
+  my $data = `cat $file`;
+  my $d = decode_json $data;
+  foreach my $key (keys %{$d}) {
+    print "$key : ".$d->{$key}."\n";
+    my @a = split /:/, $key;
+    $r->{$a[1]} = $d->{$key};
+  }
+  return($r);
 }
 
 sub print_vcf_line {
-  my ($i, $vln, $pln, $d, $tp) = @_;
+  my ($i, $vln, $pln, $d, $tp, $params) = @_;
   $vln =~ /^chr(\S+)\s(\d+)\s(\S+)\s(\S+)\s(\S+)/;
   my $ln = qq({"index":{"_index":"queryengine","_type":"features","_id":"$i"}}
 {"id":"$i", "title": "chr$1:$2 $4 -> $5", "location": {"start":$2, "stop":$2, "chr":"$1"}, );
@@ -182,6 +171,10 @@ sub print_vcf_line {
     $ln .= qq("repeat": [ "none" ], );
   } else {
     $ln .= qq("repeat": [ ").join("\", \"", @repeat).qq(" ], );
+  }
+
+  foreach my $param (keys %{$params}) {
+    $ln .= qq("param_).$param.qq(": ").$params->{$param}.qq(", );
   }
 
   if ($tp) {
