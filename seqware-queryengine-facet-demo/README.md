@@ -150,6 +150,11 @@ The command:
 
 You will need to supply your own VCF files in the above example, this demo assumes you're starting with NA12878 variants that have been run through GIAB tools to produce TP and FP variant calls.
 
+## Load Data
+
+    curl -XDELETE 'http://localhost:9200/queryengine'
+    curl -s -XPOST 'http://localhost:9200/_bulk' --data-binary @giab_data.json
+
 ## View Demo
 
 Open in your browser:
