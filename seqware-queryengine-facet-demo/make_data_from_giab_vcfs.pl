@@ -28,6 +28,8 @@ foreach my $trial (keys %{$td->{data}}) {
   # vcfs
   my $match_file = $td->{data}{$trial}{"vcf_file_match"};
   my $nomatch_file = $td->{data}{$trial}{"vcf_file_nomatch"};
+  if ($match_file =~ /\.vcf\.gz$/) { run("gunzip $match_file"); $match_file =~ s/\.vcf\.gz/\.vcf/; }
+  if ($nomatch_file =~ /\.vcf\.gz$/) { run("gunzip $nomatch_file"); $nomatch_file =~ s/\.vcf\.gz/\.vcf/; }
 
   # annotations
   my $tstr = qq("feature_set": "$trial", "trial_id": "$trial" } );

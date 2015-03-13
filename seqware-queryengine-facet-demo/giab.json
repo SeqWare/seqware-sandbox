@@ -4,15 +4,150 @@
     "snpEff_db" : "GRCh37.75 -interval data/tracks/rmsk.bed"
   },
   "data" : {
+    "trial_0" : {
+      "vcf_file_match": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//0/all/match_All_variants_key.subregions.vcf.gz",
+      "vcf_file_nomatch": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//0/all/noMatch_All_variants_key.subregions.vcf.gz",
+      "param_file": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//0/tvc.params"
+    },
     "trial_1" : {
-      "vcf_file_match": "data/match_All_variants_key.subregions.8.vcf",
-      "vcf_file_nomatch": "data/noMatch_All_variants_key.subregions.8.vcf",
-      "param_file": "data/tvc.8.params"
+      "vcf_file_match": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//1/all/match_All_variants_key.subregions.vcf.gz",
+      "vcf_file_nomatch": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//1/all/noMatch_All_variants_key.subregions.vcf.gz",
+      "param_file": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//1/tvc.params"
+    },
+    "trial_10" : {
+      "vcf_file_match": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//10/all/match_All_variants_key.subregions.vcf.gz",
+      "vcf_file_nomatch": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//10/all/noMatch_All_variants_key.subregions.vcf.gz",
+      "param_file": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//10/tvc.params"
+    },
+    "trial_11" : {
+      "vcf_file_match": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//11/all/match_All_variants_key.subregions.vcf.gz",
+      "vcf_file_nomatch": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//11/all/noMatch_All_variants_key.subregions.vcf.gz",
+      "param_file": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//11/tvc.params"
+    },
+    "trial_12" : {
+      "vcf_file_match": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//12/all/match_All_variants_key.subregions.vcf.gz",
+      "vcf_file_nomatch": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//12/all/noMatch_All_variants_key.subregions.vcf.gz",
+      "param_file": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//12/tvc.params"
+    },
+    "trial_13" : {
+      "vcf_file_match": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//13/all/match_All_variants_key.subregions.vcf.gz",
+      "vcf_file_nomatch": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//13/all/noMatch_All_variants_key.subregions.vcf.gz",
+      "param_file": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//13/tvc.params"
+    },
+    "trial_14" : {
+      "vcf_file_match": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//14/all/match_All_variants_key.subregions.vcf.gz",
+      "vcf_file_nomatch": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//14/all/noMatch_All_variants_key.subregions.vcf.gz",
+      "param_file": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//14/tvc.params"
+    },
+    "trial_15" : {
+      "vcf_file_match": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//15/all/match_All_variants_key.subregions.vcf.gz",
+      "vcf_file_nomatch": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//15/all/noMatch_All_variants_key.subregions.vcf.gz",
+      "param_file": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//15/tvc.params"
+    },
+    "trial_16" : {
+      "vcf_file_match": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//16/all/match_All_variants_key.subregions.vcf.gz",
+      "vcf_file_nomatch": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//16/all/noMatch_All_variants_key.subregions.vcf.gz",
+      "param_file": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//16/tvc.params"
+    },
+    "trial_17" : {
+      "vcf_file_match": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//17/all/match_All_variants_key.subregions.vcf.gz",
+      "vcf_file_nomatch": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//17/all/noMatch_All_variants_key.subregions.vcf.gz",
+      "param_file": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//17/tvc.params"
+    },
+    "trial_18" : {
+      "vcf_file_match": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//18/all/match_All_variants_key.subregions.vcf.gz",
+      "vcf_file_nomatch": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//18/all/noMatch_All_variants_key.subregions.vcf.gz",
+      "param_file": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//18/tvc.params"
     },
     "trial_2" : {
-      "vcf_file_match": "data/match_All_variants_key.subregions.14.vcf",
-      "vcf_file_nomatch": "data/noMatch_All_variants_key.subregions.14.vcf",
-      "param_file": "data/tvc.14.params"
+      "vcf_file_match": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//2/all/match_All_variants_key.subregions.vcf.gz",
+      "vcf_file_nomatch": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//2/all/noMatch_All_variants_key.subregions.vcf.gz",
+      "param_file": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//2/tvc.params"
+    },
+    "trial_20" : {
+      "vcf_file_match": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//20/all/match_All_variants_key.subregions.vcf.gz",
+      "vcf_file_nomatch": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//20/all/noMatch_All_variants_key.subregions.vcf.gz",
+      "param_file": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//20/tvc.params"
+    },
+    "trial_21" : {
+      "vcf_file_match": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//21/all/match_All_variants_key.subregions.vcf.gz",
+      "vcf_file_nomatch": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//21/all/noMatch_All_variants_key.subregions.vcf.gz",
+      "param_file": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//21/tvc.params"
+    },
+    "trial_22" : {
+      "vcf_file_match": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//22/all/match_All_variants_key.subregions.vcf.gz",
+      "vcf_file_nomatch": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//22/all/noMatch_All_variants_key.subregions.vcf.gz",
+      "param_file": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//22/tvc.params"
+    },
+    "trial_23" : {
+      "vcf_file_match": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//23/all/match_All_variants_key.subregions.vcf.gz",
+      "vcf_file_nomatch": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//23/all/noMatch_All_variants_key.subregions.vcf.gz",
+      "param_file": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//23/tvc.params"
+    },
+    "trial_24" : {
+      "vcf_file_match": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//24/all/match_All_variants_key.subregions.vcf.gz",
+      "vcf_file_nomatch": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//24/all/noMatch_All_variants_key.subregions.vcf.gz",
+      "param_file": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//24/tvc.params"
+    },
+    "trial_25" : {
+      "vcf_file_match": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//25/all/match_All_variants_key.subregions.vcf.gz",
+      "vcf_file_nomatch": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//25/all/noMatch_All_variants_key.subregions.vcf.gz",
+      "param_file": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//25/tvc.params"
+    },
+    "trial_26" : {
+      "vcf_file_match": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//26/all/match_All_variants_key.subregions.vcf.gz",
+      "vcf_file_nomatch": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//26/all/noMatch_All_variants_key.subregions.vcf.gz",
+      "param_file": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//26/tvc.params"
+    },
+    "trial_27" : {
+      "vcf_file_match": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//27/all/match_All_variants_key.subregions.vcf.gz",
+      "vcf_file_nomatch": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//27/all/noMatch_All_variants_key.subregions.vcf.gz",
+      "param_file": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//27/tvc.params"
+    },
+    "trial_28" : {
+      "vcf_file_match": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//28/all/match_All_variants_key.subregions.vcf.gz",
+      "vcf_file_nomatch": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//28/all/noMatch_All_variants_key.subregions.vcf.gz",
+      "param_file": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//28/tvc.params"
+    },
+    "trial_29" : {
+      "vcf_file_match": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//29/all/match_All_variants_key.subregions.vcf.gz",
+      "vcf_file_nomatch": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//29/all/noMatch_All_variants_key.subregions.vcf.gz",
+      "param_file": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//29/tvc.params"
+    },
+    "trial_3" : {
+      "vcf_file_match": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//3/all/match_All_variants_key.subregions.vcf.gz",
+      "vcf_file_nomatch": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//3/all/noMatch_All_variants_key.subregions.vcf.gz",
+      "param_file": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//3/tvc.params"
+    },
+    "trial_4" : {
+      "vcf_file_match": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//4/all/match_All_variants_key.subregions.vcf.gz",
+      "vcf_file_nomatch": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//4/all/noMatch_All_variants_key.subregions.vcf.gz",
+      "param_file": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//4/tvc.params"
+    },
+    "trial_5" : {
+      "vcf_file_match": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//5/all/match_All_variants_key.subregions.vcf.gz",
+      "vcf_file_nomatch": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//5/all/noMatch_All_variants_key.subregions.vcf.gz",
+      "param_file": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//5/tvc.params"
+    },
+    "trial_6" : {
+      "vcf_file_match": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//6/all/match_All_variants_key.subregions.vcf.gz",
+      "vcf_file_nomatch": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//6/all/noMatch_All_variants_key.subregions.vcf.gz",
+      "param_file": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//6/tvc.params"
+    },
+    "trial_7" : {
+      "vcf_file_match": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//7/all/match_All_variants_key.subregions.vcf.gz",
+      "vcf_file_nomatch": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//7/all/noMatch_All_variants_key.subregions.vcf.gz",
+      "param_file": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//7/tvc.params"
+    },
+    "trial_8" : {
+      "vcf_file_match": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//8/all/match_All_variants_key.subregions.vcf.gz",
+      "vcf_file_nomatch": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//8/all/noMatch_All_variants_key.subregions.vcf.gz",
+      "param_file": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//8/tvc.params"
+    },
+    "trial_9" : {
+      "vcf_file_match": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//9/all/match_All_variants_key.subregions.vcf.gz",
+      "vcf_file_nomatch": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//9/all/noMatch_All_variants_key.subregions.vcf.gz",
+      "param_file": "/media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f//9/tvc.params"
     }
   }
 }

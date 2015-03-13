@@ -17,7 +17,7 @@ angular.module('multiselect.controllers', [])
 
     // point to your ElasticSearch server
     // CUSTOMIZE THIS FOR YOUR SERVER NAME!!!
-    var ejs = ejsResource('http://localhost:9200');
+    var ejs = ejsResource('http://ec2-50-112-215-129.us-west-2.compute.amazonaws.com:9200');
     var index = 'queryengine';
     var type = 'features';
     var page = 0;
