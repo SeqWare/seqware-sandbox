@@ -147,6 +147,7 @@ The command:
 
     perl bin/make_giab_json.pl /media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f/ > giab.json
     perl make_data_from_giab_vcfs.pl --json-file giab.json --output-json giab_data.json
+    perl bin/make_giab_jbrowse_json.pl /media/data2/IonXpress_005_rawlib_PTRIM/tvc_eval_reports/2015-01-23/2b42d14c-7db5-4118-a65d-53deb607167f/
 
 You will need to supply your own VCF files in the above example, this demo assumes you're starting with NA12878 variants that have been run through GIAB tools to produce TP and FP variant calls.
 
