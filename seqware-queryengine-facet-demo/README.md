@@ -41,6 +41,18 @@ See http://jason.pureconcepts.net/2014/11/install-apache-php-mysql-mac-os-x-yose
 
 The location for the doc root is `/Library/WebServer/Documents`.  You can copy the contents to this location as instructed above.
 
+### Standalone HTTP
+
+A really easy way to do this is to just run Python's built-in HTTP server:
+
+    python -m SimpleHTTPServer
+
+## Same Origin Problem
+
+For development purposes you may want to launch Chrome with the following setting.  It allows you to run the demo on `localhost` which is ideal for development.
+
+    /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --disable-web-security
+
 # Example 1 - Basic Variant Browser
 
 ## Load Sample Data
