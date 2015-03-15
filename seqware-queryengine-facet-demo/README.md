@@ -43,9 +43,11 @@ The location for the doc root is `/Library/WebServer/Documents`.  You can copy t
 
 ### Standalone HTTP
 
-A really easy way to do this is to just run Python's built-in HTTP server:
+A really easy way to do this is to just run Python's built-in HTTP server in the `seqware-queryengine-facet-demo` directory:
 
     python -m SimpleHTTPServer
+
+You can then load on port 8000, for example `http://localhost:8000/index.simple.html`.
 
 ## Same Origin Problem
 
