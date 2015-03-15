@@ -78,7 +78,7 @@ You may run into cross domain Javascript issues although it seems to work for me
 This is beyond the scope of the above but if you're interested in how to interact directly with Elasticsearch see:
 
     # sample queries
-    curl -X GET http://localhost:9200/queryengine/features/_search?q=databases:omim
+    curl -X GET 'http://localhost:9200/queryengine/features/_search?q=databases:omim&pretty'
 
 # Example 2 - Clinical Variant Browser
 
