@@ -73,6 +73,13 @@ Open in your browser:
 
 You may run into cross domain Javascript issues although it seems to work for me when I host on Ubuntu and replace with an actual domain name here and in the js/app*.js files.  See above for a workaround to the single origin problem in Chrome while you're developing.
 
+## Querying on the Command Line
+
+This is beyond the scope of the above but if you're interested in how to interact directly with Elasticsearch see:
+
+    # sample queries
+    curl -X GET http://localhost:9200/queryengine/features/_search?q=databases:omim
+
 # Example 2 - Clinical Variant Browser
 
 This example shows several "patients" and their variants.
