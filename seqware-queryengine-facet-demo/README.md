@@ -71,7 +71,7 @@ Open in your browser:
 
     http://localhost/index.simple.html
 
-You may run into cross domain Javascript issues although it seems to work for me when I host on Ubuntu and replace with an actual domain name here and in the js/app*.js files.
+You may run into cross domain Javascript issues although it seems to work for me when I host on Ubuntu and replace with an actual domain name here and in the js/app*.js files.  See above for a workaround to the single origin problem in Chrome while you're developing.
 
 # Example 2 - Clinical Variant Browser
 
