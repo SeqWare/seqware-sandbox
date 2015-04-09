@@ -1,0 +1,18 @@
+tabix:
+   image: seqware/pancancer_tabix_server
+   ports:
+   - "80"
+   volumes:
+    - ./tabix/data:/data
+   restart: always
+   hostname: master
+seqware:
+   image: seqware/seqware_whitestar_pancancer 
+   hostname: master
+   volumes:
+    - ./datastore:/datastore
+    - ./workflows/Workflow_Bundle_SangerPancancerCgpCnIndelSnvStr_1.0.5.1_SeqWare_1.1.0-alpha.5:/workflow
+    - ./run.sh:/run.sh
+   links:
+    - tabix
+   command: bash /run.sh
