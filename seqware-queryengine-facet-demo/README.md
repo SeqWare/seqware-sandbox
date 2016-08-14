@@ -8,6 +8,8 @@ This is a demo showing how a faceted browser can be created for genomic features
 
 Download and install elasticsearch.  I found the debian package to be easiest on Ubuntu.  Start it using the /etc/init.d/elasticsearch script. Or, if you're on a mac, you can download a tarball and just execute the ./bin/elasticsearch script.
 
+Use [elasticsearch 1.7.2](https://www.elastic.co/downloads/past-releases/elasticsearch-1-7-2)
+
 ## Sense (Optional)
 
 Install the chrome Sense plugin for elasticsearch. This makes it easy to see what's in the index and to do searches.  Once you load data you can search using, for example:
